@@ -62,15 +62,15 @@ mkdir -p /opt/logstash/config
 mkdir -p /opt/datasets
 
 echo "Downloading logstash files locally to be mounted to docker container"
-wget -O /opt/logstash/scripts/logstash-entrypoint.sh https://raw.githubusercontent.com/hunters-forge/Blacksmith/azure/templates/azure/Sentinel2Go/logstash/scripts/logstash-entrypoint.sh
-wget -O /opt/logstash/pipeline/eventhub-input.conf https://raw.githubusercontent.com/hunters-forge/Blacksmith/azure/templates/azure/Sentinel2Go/logstash/pipeline/eventhub-input.conf
-wget -O /opt/logstash/pipeline/loganalytics-output.conf https://raw.githubusercontent.com/hunters-forge/Blacksmith/azure/templates/azure/Sentinel2Go/logstash/pipeline/loganalytics-output.conf
-wget -O /opt/logstash/config/logstash.yml https://raw.githubusercontent.com/hunters-forge/Blacksmith/azure/templates/azure/Sentinel2Go/logstash/config/logstash.yml
-wget -O /opt/logstash/docker-compose.yml https://raw.githubusercontent.com/hunters-forge/Blacksmith/azure/templates/azure/Sentinel2Go/logstash/docker-compose.yml
-wget -O /opt/logstash/Dockerfile https://raw.githubusercontent.com/hunters-forge/Blacksmith/azure/templates/azure/Sentinel2Go/logstash/Dockerfile
+wget -O /opt/logstash/scripts/logstash-entrypoint.sh https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/logstash/scripts/logstash-entrypoint.sh
+wget -O /opt/logstash/pipeline/eventhub-input.conf https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/logstash/pipeline/eventhub-input.conf
+wget -O /opt/logstash/pipeline/loganalytics-output.conf https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/logstash/pipeline/loganalytics-output.conf
+wget -O /opt/logstash/config/logstash.yml https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/logstash/config/logstash.yml
+wget -O /opt/logstash/docker-compose.yml https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/logstash/docker-compose.yml
+wget -O /opt/logstash/Dockerfile https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/logstash/Dockerfile
 
 if [[ $MORDOR_MODE ]]; then
-    wget -O /opt/logstash/pipeline/json-file-input.conf https://raw.githubusercontent.com/hunters-forge/Blacksmith/azure/templates/azure/Sentinel2Go/logstash/pipeline/json-file-input.conf
+    wget -O /opt/logstash/pipeline/json-file-input.conf https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/logstash/pipeline/json-file-input.conf
 
     echo "Installing Git.."
     apt install -y git
