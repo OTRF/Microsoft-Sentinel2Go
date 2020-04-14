@@ -1,0 +1,8 @@
+pipeline.batch.size: 500
+config.reload.automatic: true
+config.reload.interval: 60s
+# pipeline.workers: 2
+# xpack.monitoring.elasticsearch.hosts: http://helk-elasticsearch:9200
+# log.level: warn
+# http.host: "0.0.0.0"
+# xpack.monitoring.enabled: true

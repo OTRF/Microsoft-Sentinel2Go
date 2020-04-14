@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspaceName": {
+            "value": "Sentinel2Go"
+        },
+        "pricingTier": {
+            "value": "PerGB2018"
+        },
+        "dataRetention": {
+            "value": 30
+        },
+        "enableDataPipeline": {
+            "value": false
+        },
+        "adminUsername": {
+            "value": "GEN-UNIQUE"
+        },
+        "linuxAuthenticationType": {
+            "value": "password"
+        },
+        "linuxAdminPasswordOrKey": {
+            "value": "GEN-PASSWORD"
+        },
+        "ingestMordor": {
+            "value": false
+        },
+        "enableAzureConnectors": {
+            "value": false
+        },
+        "enableMDATPIntegration": {
+            "value": false
+        },
+        "enableALAWinEventLogs": {
+            "value": false
+        },
+        "enableSCWinSecurityLogs": {
+            "value": false
+        },
+        "securityCollectionTier": {
+            "value": "Minimal"
+        },
+        "deployWinVM": {
+            "value": false
+        },
+        "allowedIPAddresses": {
+            "value": "*"
+        }
+    }
+}

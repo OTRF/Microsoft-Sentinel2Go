@@ -1,0 +1,30 @@
+version: '3.5'
+
+services:
+  mordor-logstash:
+    build: ./
+    container_name: mordor-logstash
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "9"
+        max-size: "6m"
+    volumes:
+      - /opt/logstash/pipeline:/usr/share/logstash/pipeline
+      - /opt/logstash/scripts:/usr/share/logstash/scripts
+      - /opt/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - /opt/datasets:/usr/share/logstash/datasets
+    entrypoint: /usr/share/logstash/scripts/logstash-entrypoint.sh
+    environment:
+      - xpack.monitoring.enabled=false
+      - WORKSPACE_ID=${WORKSPACE_ID}
+      - EVENTHUB_CONNECTIONSTRING=${EVENTHUB_CONNECTIONSTRING}
+      - WORKSPACE_KEY=${WORKSPACE_KEY}
+      - EVENTHUB_NAME=${EVENTHUB_NAME}
+    restart: always
+    networks:
+      mordor:
+
+networks:
+    mordor:
+        driver: bridge

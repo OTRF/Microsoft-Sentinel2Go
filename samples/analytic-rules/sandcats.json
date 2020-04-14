@@ -1,0 +1,101 @@
+[
+    {
+        "kind": "Scheduled",
+        "properties": {
+            "alertRuleTemplateName": null,
+            "description": "Basic internal rule to detect binary named sandcat.exe",
+            "displayName": "Sandcat Execution",
+            "enabled": true,
+            "incidentConfiguration": {
+                "createIncident": true,
+                "groupingConfiguration": {
+                    "enabled": false,
+                    "entitiesMatchingMethod": "All",
+                    "groupByEntities": [],
+                    "lookbackDuration": "PT5H",
+                    "reopenClosedIncident": false
+                }
+            },
+            "query": "SecurityEvent | where EventID == \"4688\" and CommandLine contains \"sandcat.exe\"",
+            "queryFrequency": "PT5M",
+            "queryPeriod": "PT5M",
+            "queryResultsAggregationSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "High",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "Execution"
+            ],
+            "triggerOperator": "Equal",
+            "triggerThreshold": 1
+        }
+    },
+    {
+        "kind": "Scheduled",
+        "properties": {
+            "alertRuleTemplateName": null,
+            "description": "Basic internal rule to detect binary named sandcat.exe",
+            "displayName": "Sandcat Network",
+            "enabled": true,
+            "incidentConfiguration": {
+                "createIncident": true,
+                "groupingConfiguration": {
+                    "enabled": false,
+                    "entitiesMatchingMethod": "All",
+                    "groupByEntities": [],
+                    "lookbackDuration": "PT5H",
+                    "reopenClosedIncident": false
+                }
+            },
+            "query": "AzureDiagnostics | where EventID == \"4688\" and CommandLine contains \"sandcat.exe\"",
+            "queryFrequency": "PT5M",
+            "queryPeriod": "PT5M",
+            "queryResultsAggregationSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "High",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "Execution"
+            ],
+            "triggerOperator": "Equal",
+            "triggerThreshold": 1
+        }
+    },
+    {
+        "kind": "Scheduled",
+        "properties": {
+            "alertRuleTemplateName": null,
+            "description": "Basic internal rule to detect binary named sandcat.exe",
+            "displayName": "Sandcat Network",
+            "enabled": true,
+            "incidentConfiguration": {
+                "createIncident": true,
+                "groupingConfiguration": {
+                    "enabled": false,
+                    "entitiesMatchingMethod": "All",
+                    "groupByEntities": [],
+                    "lookbackDuration": "PT5H",
+                    "reopenClosedIncident": false
+                }
+            },
+            "query": "SecurityEvent | where EventID == \"4688\" and CommandLine contains \"sandcat.exe\"",
+            "queryFrequency": "PT5M",
+            "queryPeriod": "PT5M",
+            "queryResultsAggregationSettings": {
+                "aggregationKind": "SingleAlert"
+            },
+            "severity": "High",
+            "suppressionDuration": "PT5H",
+            "suppressionEnabled": false,
+            "tactics": [
+                "Execution"
+            ],
+            "triggerOperator": "Equal",
+            "triggerThreshold": 1
+        }
+    }
+]
