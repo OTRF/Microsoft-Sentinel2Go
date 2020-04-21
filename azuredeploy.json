@@ -209,7 +209,7 @@
         }
     },
     "variables": {
-        "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/hunters-forge/Blacksmith/azure/",
+        "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/hunters-forge/Blacksmith/master/",
         "uniqueWorkspace": "[concat(parameters('workspaceName'), uniquestring(resourceGroup().id, parameters('utcValue')))]",
         "customScriptExTemplateUri": "[uri(parameters('_artifactsLocation'), concat('linkedtemplates/customScriptExtension.json', parameters('_artifactsLocationSasToken')))]",
         "customScriptTemplateUri": "[uri(parameters('_artifactsLocation'), concat('linkedtemplates/customScript.json', parameters('_artifactsLocationSasToken')))]"
