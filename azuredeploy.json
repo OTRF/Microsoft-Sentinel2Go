@@ -48,9 +48,9 @@
         },
         "deployCustomLogsPipeline": {
             "type": "string",
-            "defaultValue": " ",
+            "defaultValue": "NoPipe",
             "allowedValues": [
-                " ",
+                "NoPipe",
                 "Logstash",
                 "Logstash-EventHub"
             ],
@@ -60,9 +60,9 @@
         },
         "addToCart": {
             "type": "string",
-            "defaultValue": " ",
+            "defaultValue": "NoItems",
             "allowedValues": [
-                " ",
+                "NoItems",
                 "mordor-small-datasets(1.1GB)",
                 "mordor-large-apt29(2.0GB)"
             ],
@@ -342,7 +342,7 @@
             }
         },
         {
-            "condition": "[or(not(empty(parameters('deployCustomLogsPipeline'))),not(empty(parameters('addToCart'))))]",
+            "condition": "[or(not(equals(parameters('deployCustomLogsPipeline'),'NoPipe')),not(equals(parameters('addToCart'),'NoItems')))]",
             "name": "deployLAFunctions",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
