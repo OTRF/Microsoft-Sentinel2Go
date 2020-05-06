@@ -465,7 +465,7 @@
                         "value": "SetupLogstash"
                     },
                     "commandToExecute": {
-                        "value": "[concat('bash Install-Logstash.sh -i', ' ', reference(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').customerId, if(contains(parameters('deployCustomLogsPipeline'), 'EventHub'), concat(' ', '-c', ' ', '\"', reference('deployEventHub').outputs.NamespaceConnectionString.value, '\"', ' ', '-e', ' ', reference('deployEventHub').outputs.EventHubName.value, ' ', '-k', ' ', listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').primarySharedKey, ' ', '-u', ' ', parameters('adminUsername')), concat(' ', '-u', ' ', parameters('adminUsername'))))]"
+                        "value": "[concat('bash Install-Logstash.sh -i', ' ', reference(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').customerId, ' ', '-k', ' ', listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').primarySharedKey, ' ', '-u', ' ', parameters('adminUsername'), if(contains(parameters('deployCustomLogsPipeline'), 'EventHub'), concat(' ', '-c', ' ', '\"', reference('deployEventHub').outputs.NamespaceConnectionString.value, '\"', ' ', '-e', ' ', reference('deployEventHub').outputs.EventHubName.value), ''))]"
                     },
                     "fileUris": {
                         "value": [
