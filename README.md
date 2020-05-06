@@ -13,3 +13,19 @@ For more information about the development of this project, feel free to check o
 # Author
 
 * Roberto Rodriguez ([@Cyb3rWard0g](https://twitter.com/Cyb3rWard0g))
+
+# Getting Started
+
+There are a few things that you can do with this project. This project is intended for research purposes, so I highly recommend to create a new resource group in your subscription to not interfere with any other system in the same resource while deploying VMs needed for some of the features provided by this Azure Resource Manager (ARM) template.
+
+## Ingest Mordor Datasets
+
+1) Click on the **Deploy to Azure** badge
+2) Set the following parameters:
+    * Subscription
+    * Resource Group
+    * Workspace Name
+    * Deploy Custom Logs Pipeline: Logstash
+    * Add to Cart: mordor-small-datasets(1.1GB) or mordor-large-apt29(2GB)
+    * Admin Username (Username for Linux VM - Logstash)
+    * Admin Password (Password for Linux VM - Logstash)
