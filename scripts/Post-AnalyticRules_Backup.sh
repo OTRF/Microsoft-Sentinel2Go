@@ -40,7 +40,7 @@ if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$WORKSPACE_NAME" ]; then
     usage
 else
     SYSTEM_KERNEL="$(uname -s)"
-    #for row in $(curl -sS https://raw.githubusercontent.com/hunters-forge/Blacksmith/azure/templates/azure/Sentinel2Go/analytic-rules/allAnalyticRules.json | jq -r '.[] | @base64'); do
+    #for row in $(curl -sS https://raw.githubusercontent.com/hunters-forge/Blacksmith/master/templates/azure/Sentinel2Go/analytic-rules/allAnalyticRules.json | jq -r '.[] | @base64'); do
     for row in $(cat ../samples/analytic-rules/sandcats.json | jq -r '.[] | @base64'); do
         return_code=$?
         # Generating GUID for analytic rule Id

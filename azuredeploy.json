@@ -46,13 +46,13 @@
                 "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
             }
         },
-        "deployPipeline": {
+        "deployCustomLogsPipeline": {
             "type": "string",
             "defaultValue": "",
             "allowedValues": [
                 "",
-                "Logstash-EventHub",
-                "Logstash-EventHub-Mordor"
+                "Logstash",
+                "Logstash-EventHub"
             ],
             "metadata": {
                 "description": "Do you want to deploy a data ingestion pipeline along with an Azure Sentinel solution? Events get sent to a custom logs table named prerecorded. You also have the option to deploy the pipeline with pre-recorded datasets from the Mordor project (https://mordordatasets.com)"
@@ -63,6 +63,8 @@
             "defaultValue": "",
             "allowedValues": [
                 "",
+                "mordor-small-datasets(1.1GB)",
+                "mordor-large-apt29(2.0GB)",
                 "win10",
                 "win10-calderaC2"
             ],
@@ -342,7 +344,7 @@
             }
         },
         {
-            "condition": "[or(not(empty(parameters('deployPipeline'))),not(empty(parameters('addToCart'))))]",
+            "condition": "[or(not(empty(parameters('deployCustomLogsPipeline'))),not(empty(parameters('addToCart'))))]",
             "name": "deployLAFunctions",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
@@ -390,7 +392,7 @@
             }
         },
         {
-            "condition": "[contains(parameters('deployPipeline'), 'Logstash-EventHub')]",
+            "condition": "[contains(parameters('deployCustomLogsPipeline'), 'Logstash')]",
             "name": "deployLogstashVM",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
@@ -423,7 +425,7 @@
             }
         },
         {
-            "condition": "[contains(parameters('deployPipeline'), 'Logstash-EventHub')]",
+            "condition": "[contains(parameters('deployCustomLogsPipeline'), 'EventHub')]",
             "name": "deployEventHub",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
@@ -435,7 +437,7 @@
                 },
                 "parameters": {
                     "projectName": {
-                        "value": "SentinelPipe"
+                        "value": "AZSentinelPipe"
                     },
                     "eventHubSku": {
                         "value": "Standard"
@@ -444,13 +446,13 @@
             }
         },
         {
-            "condition": "[equals(parameters('deployPipeline'), 'Logstash-EventHub')]",
-            "name": "pipelineOnly",
+            "condition": "[contains(parameters('deployCustomLogsPipeline'), 'Logstash')]",
+            "name": "customLogsPipeline",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
             "dependsOn": [
-                "deployEventHub",
-                "deployLogstashVM"
+                "deployLogstashVM",
+                "deployEventHub"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -463,15 +465,15 @@
                         "value": "SetupLogstash"
                     },
                     "commandToExecute": {
-                        "value": "[if(equals(parameters('deployPipeline'), 'Logstash-EventHub'), concat('bash logstash-setup.sh -i', ' ', reference(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').customerId, ' ', '-c', ' ', '\"', reference('deployEventHub').outputs.NamespaceConnectionString.value, '\"', ' ', '-e', ' ', reference('deployEventHub').outputs.EventHubName.value, ' ', '-k', ' ', listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').primarySharedKey, ' ', '-u', ' ', parameters('adminUsername')), 'Resource not deployed')]"
+                        "value": "[concat('bash Install-Logstash.sh -i', ' ', reference(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').customerId, if(contains(parameters('deployCustomLogsPipeline'), 'EventHub'), concat(' ', '-c', ' ', '\"', reference('deployEventHub').outputs.NamespaceConnectionString.value, '\"', ' ', '-e', ' ', reference('deployEventHub').outputs.EventHubName.value, ' ', '-k', ' ', listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').primarySharedKey, ' ', '-u', ' ', parameters('adminUsername')), concat(' ', '-u', ' ', parameters('adminUsername'))))]"
                     },
                     "fileUris": {
                         "value": [
-                            "[uri(parameters('_artifactsLocation'), concat('scripts/logstash-setup.sh', parameters('_artifactsLocationSasToken')))]"
+                            "[uri(parameters('_artifactsLocation'), concat('scripts/Install-Logstash.sh', parameters('_artifactsLocationSasToken')))]"
                         ]
                     },
                     "vmName": {
-                        "value": "[if(equals(parameters('deployPipeline'), 'Logstash-EventHub'), reference('deployLogstashVM').outputs.vmName.value, 'Resource not deployed')]"
+                        "value": "[if(contains(parameters('deployCustomLogsPipeline'), 'Logstash'), reference('deployLogstashVM').outputs.vmName.value, 'Resource not deployed')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -480,13 +482,12 @@
             }
         },
         {
-            "condition": "[equals(parameters('deployPipeline'), 'Logstash-EventHub-Mordor')]",
-            "name": "pipelineMordor",
+            "condition": "[or(contains(parameters('addToCart'), 'mordor-small-datasets(1.1GB)'), contains(parameters('addToCart'), 'mordor-large-apt29(2.0GB)'))]",
+            "name": "importMordorDatasets",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
             "dependsOn": [
-                "deployEventHub",
-                "deployLogstashVM"
+                "customLogsPipeline"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -499,15 +500,15 @@
                         "value": "SetupLogstash"
                     },
                     "commandToExecute": {
-                        "value": "[if(equals(parameters('deployPipeline'), 'Logstash-EventHub-Mordor'), concat('bash logstash-setup.sh -i', ' ', reference(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').customerId, ' ', '-c', ' ', '\"', reference('deployEventHub').outputs.NamespaceConnectionString.value, '\"', ' ', '-e', ' ', reference('deployEventHub').outputs.EventHubName.value, ' ', '-k', ' ', listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').primarySharedKey, ' ', '-u', ' ', parameters('adminUsername'), ' ', '-m'), 'Resource not deployed')]"
+                        "value": "[concat('bash Get-Mordor.sh -d', ' ', if(contains(parameters('addToCart'), 'mordor-small-datasets(1.1GB)'),'SMALL_DATASETS', 'LARGE_APT29' ))]"
                     },
                     "fileUris": {
                         "value": [
-                            "[uri(parameters('_artifactsLocation'), concat('scripts/logstash-setup.sh', parameters('_artifactsLocationSasToken')))]"
+                            "[uri(parameters('_artifactsLocation'), concat('scripts/Get-Mordor.sh', parameters('_artifactsLocationSasToken')))]"
                         ]
                     },
                     "vmName": {
-                        "value": "[if(equals(parameters('deployPipeline'), 'Logstash-EventHub-Mordor'), reference('deployLogstashVM').outputs.vmName.value, 'Resource not deployed')]"
+                        "value": "[if(contains(parameters('deployCustomLogsPipeline'), 'Logstash'), reference('deployLogstashVM').outputs.vmName.value, 'Resource not deployed')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
