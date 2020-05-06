@@ -48,9 +48,9 @@
         },
         "deployCustomLogsPipeline": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": " ",
             "allowedValues": [
-                "",
+                " ",
                 "Logstash",
                 "Logstash-EventHub"
             ],
@@ -60,13 +60,11 @@
         },
         "addToCart": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": " ",
             "allowedValues": [
-                "",
+                " ",
                 "mordor-small-datasets(1.1GB)",
-                "mordor-large-apt29(2.0GB)",
-                "win10",
-                "win10-calderaC2"
+                "mordor-large-apt29(2.0GB)"
             ],
             "metadata": {
                 "description": "Do you want to deploy additional resources and connect them to your current Azure Sentinel's workspace?"
@@ -193,7 +191,7 @@
             "metadata": {
                 "description": "The location of resources"
             },
-            "defaultValue": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/dev/"
+            "defaultValue": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/"
         },
         "_artifactsLocationSasToken": {
             "type": "securestring",
