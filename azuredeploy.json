@@ -145,6 +145,13 @@
                 "description": "The kind of data connectors that can be deployed via ARM templates are the following: [\"AzureActivityLog\",\"SecurityInsightsSecurityEventCollectionConfiguration\",\"WindowsFirewall\",\"DnsAnalytics\"]"
             }
         },
+        "enableLAFunctions": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "List of functions to enable in your Log Analytics Workspace. Available: Sysmon"
+            }
+        },
         "setSecurityCollectionTier": {
             "type": "string",
             "allowedValues": [
@@ -342,7 +349,7 @@
             }
         },
         {
-            "condition": "[or(not(equals(parameters('deployCustomLogsPipeline'),'NoPipe')),not(equals(parameters('addToCart'),'NoItems')))]",
+            "condition": "[not(empty(parameters('enableLAFunctions')))]",
             "name": "deployLAFunctions",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
@@ -358,6 +365,9 @@
                 "parameters": {
                     "workspaceName": {
                         "value": "[variables('uniqueWorkspace')]"
+                    },
+                    "enableLAFunctions": {
+                        "value": "[parameters('enableLAFunctions')]"
                     }
                 }
             }

@@ -7,10 +7,18 @@
             "metadata": {
                 "description": "Name for the Log Analytics workspace used to aggregate data"
             }
+        },
+        "enableLAFunctions": {
+            "type": "array",
+            "metadata": {
+                "description": "List of functions to enable in your Log Analytics Workspace. Available: Sysmon"
+            },
+            "defaultValue": []
         }
     },
     "resources": [
         {
+            "condition": "[contains(parameters('enableLAFunctions'),'Sysmon')]",
             "apiVersion": "2015-03-20",
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "name": "[concat(parameters('workspaceName'), '/', 'SysmonFunction')]",

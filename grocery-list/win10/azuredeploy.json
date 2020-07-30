@@ -170,6 +170,9 @@
                             "Microsoft-Windows-PowerShell/Operational",
                             "Microsoft-Windows-WMI-Activity/Operational"
                         ]
+                    },
+                    "enableLAFunctions": {
+                        "value": ["Sysmon"]
                     }
                 }
             }
