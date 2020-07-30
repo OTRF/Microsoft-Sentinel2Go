@@ -108,6 +108,13 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
+        "enableSysmon": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Do you want to install Sysmon on the endpoint?"
+            }
+        },
         "allowedIPAddresses": {
             "type": "string",
             "metadata": {
@@ -219,7 +226,7 @@
                         "value": true
                     },
                     "enableSysmon": {
-                        "value": true
+                        "value": "[parameters('enableSysmon')]"
                     },
                     "workspaceId": {
                         "value": "[reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value]"
