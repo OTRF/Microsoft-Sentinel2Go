@@ -18,9 +18,9 @@ A few deployments available through Azure Sentinel To-go!
 | Items | Deploy |
 | :---| :---|
 | Azure Sentinel | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fazure-sentinel%2Fazuredeploy.json) |
-| Azure Sentinel + Custom Log Pipeline | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fcustom-log-pipeline%2Fazuredeploy.json) |
-| Azure Sentinel + Win10 Workstations | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10%2Fazuredeploy.json) |
-| Azure Sentinel + Win10 + C2 | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10-C2%2Fazuredeploy.json) |
+| [Azure Sentinel + Custom Log Pipeline](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/custom-log-pipeline) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fcustom-log-pipeline%2Fazuredeploy.json) |
+| [Azure Sentinel + Win10 Workstations](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/win10) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10%2Fazuredeploy.json) |
+| [Azure Sentinel + Win10 + C2](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/win10-C2) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10-C2%2Fazuredeploy.json) |
 
 # Media
 

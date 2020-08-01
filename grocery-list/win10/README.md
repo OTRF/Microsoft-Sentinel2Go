@@ -1,4 +1,4 @@
-# Azure Sentinel To-Go + Windows 10 Environment
+# Azure Sentinel + Windows 10 Environment
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10%2Fazuredeploy.json)
 
