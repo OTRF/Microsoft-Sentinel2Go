@@ -268,9 +268,6 @@
             "name": "deployC2",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
-            "dependsOn": [
-                "deployAzureSentinel2Go"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -306,7 +303,7 @@
             }
         },
         {
-            "name": "C2/peering-to-remote-Win10",
+            "name": "vnet-c2/peering-to-remote-vnet-win",
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2019-11-01",
             "dependsOn": [
@@ -325,7 +322,7 @@
             }
         },
         {
-            "name": "Win10/peering-to-remote-C2",
+            "name": "vnet-win/peering-to-remote-vnet-c2",
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2019-11-01",
             "dependsOn": [
