@@ -1,0 +1,322 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow()]",
+            "metadata": {
+                "description": "Returns the current (UTC) datetime value in the specified format. If no format is provided, the ISO 8601 (yyyyMMddTHHmmssZ) format is used"
+            }
+        },
+        "workspaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the Log Analytics workspace used to aggregate data"
+            }
+        },
+        "pricingTier": {
+            "type": "string",
+            "allowedValues": [
+                "PerGB2018",
+                "Free",
+                "Standalone",
+                "PerNode",
+                "Standard",
+                "Premium"
+            ],
+            "defaultValue": "PerGB2018",
+            "metadata": {
+                "description": "Pricing tier: pergb2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers."
+            }
+        },
+        "dataRetention": {
+            "type": "int",
+            "defaultValue": 30,
+            "minValue": 7,
+            "maxValue": 730,
+            "metadata": {
+                "description": "Number of days of retention. Workspaces in the legacy Free pricing tier can only have 7 days."
+            }
+        },
+        "immediatePurgeDataOn30Days": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
+            }
+        },
+        "enableAdditionalLASolutions": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "Additional Log Solutions that you can install on the top of your Log Analytics Workspace. (e.g [\"ServiceMap\",\"WireData2\",\"InfrastructureInsights\"])"
+            }
+        },
+        "enableDataConnectorsKind": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "The kind of data connectors that can be deployed via ARM templates are the following: [\"AzureActivityLog\",\"SecurityInsightsSecurityEventCollectionConfiguration\",\"WindowsFirewall\",\"DnsAnalytics\"]"
+            }
+        },
+        "enableLAFunctions": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "List of functions to enable in your Log Analytics Workspace. Available: Sysmon"
+            }
+        },
+        "setSecurityCollectionTier": {
+            "type": "string",
+            "allowedValues": [
+                "All",
+                "Recommended",
+                "Minimal",
+                "None"
+            ],
+            "defaultValue": "Minimal",
+            "metadata": {
+                "description": "Tier for gathering Windows Security Events."
+            }
+        },
+        "enableWinEventProviders": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "Do you want to configure your Log Analytics Workspace to collect Windows Event Logs from several pre-defined event providers?. Windows Security Auditing is not enabled through this option. It is enabled through the Data Connectors parameter."
+            }
+        },
+        "postAnalyticRules": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "If set to true, Analytic rules from the official Azure Sentinel GitHub Repository https://github.com/Azure/Azure-Sentinel/tree/master/Detections translated to JSON files in https://github.com/hunters-forge/Blacksmith/tree/azure/templates/azure/Sentinel2Go/azure-sentinel/analytic-rules are created in your Log Analytics workspace. Remember that several queries need specific data tables to be enabled in Log Analytics."
+            }
+        },
+        "userAssignedIdentityName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Paremeter needed to upload Sentinel's analytic rules from the Azure-Sentinel GitHub repo. This parameter requires a user assigned managed identity with a Contributor role at a subscription scope. Reference: https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-cli#user-at-a-subscription-scope"
+            }
+        },
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "The location of resources"
+            },
+            "defaultValue": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/"
+        },
+        "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Auto-generated token to access _artifactsLocation. Leave it blank unless you need to provide your own value."
+            },
+            "defaultValue": ""
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        }
+    },
+    "variables": {
+        "uniqueWorkspace": "[concat(parameters('workspaceName'), uniquestring(resourceGroup().id, parameters('utcValue')))]"
+    },
+    "resources": [
+        {
+            "name": "[variables('uniqueWorkspace')]",
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "apiVersion": "2015-11-01-preview",
+            "location": "[parameters('location')]",
+            "properties": {
+                "retentionInDays": "[parameters('dataRetention')]",
+                "features": {
+                    "immediatePurgeDataOn30Days": "[parameters('immediatePurgeDataOn30Days')]"
+                },
+                "sku": {
+                    "name": "[parameters('pricingTier')]"
+                }
+            }
+        },
+        {
+            "name": "[concat('SecurityInsights','(', variables('uniqueWorkspace'),')')]",
+            "type": "Microsoft.OperationsManagement/solutions",
+            "apiVersion": "2015-11-01-preview",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+            ],
+            "properties": {
+                "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('uniqueWorkspace'))]"
+            },
+            "plan": {
+                "name": "[concat('SecurityInsights','(', variables('uniqueWorkspace'),')')]",
+                "product": "OMSGallery/SecurityInsights",
+                "publisher": "Microsoft",
+                "promotionCode": ""
+            }
+        },
+        {
+            "condition": "[not(empty(parameters('enableAdditionalLASolutions')))]",
+            "name": "enableAdditionalLASolutions",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-05-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationsManagement/solutions/', concat('SecurityInsights','(', variables('uniqueWorkspace'),')'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(parameters('_artifactsLocation'), concat('azure-sentinel/linkedtemplates/log-analytics/additionalSolutions.json', parameters('_artifactsLocationSasToken')))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "solutionTypes": {
+                        "value": "[parameters('enableAdditionalLASolutions')]"
+                    },
+                    "workspaceName": {
+                        "value": "[variables('uniqueWorkspace')]"
+                    },
+                    "workspaceId": {
+                         "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+                     },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[not(empty(parameters('enableDataConnectorsKind')))]",
+            "name": "enableDataConnectorsKind",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-05-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationsManagement/solutions/', concat('SecurityInsights','(', variables('uniqueWorkspace'),')'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(parameters('_artifactsLocation'), concat('azure-sentinel/linkedtemplates/data-connectors/allConnectors.json', parameters('_artifactsLocationSasToken')))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "dataConnectorsKind": {
+                        "value": "[parameters('enableDataConnectorsKind')]"
+                    },
+                    "workspaceName": {
+                        "value": "[variables('uniqueWorkspace')]"
+                    },
+                    "workspaceId": {
+                         "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+                     },
+                     "subscriptionId": {
+                         "value": "[subscription().subscriptionId]"
+                     },
+                    "securityCollectionTier": {
+                        "value": "[parameters('setSecurityCollectionTier')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[not(empty(parameters('enableWinEventProviders')))]",
+            "name": "enableLAWinDataSources",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-05-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(parameters('_artifactsLocation'), concat('azure-sentinel/linkedtemplates/log-analytics/winDataSources.json', parameters('_artifactsLocationSasToken')))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[variables('uniqueWorkspace')]"
+                    },
+                    "winEventProviders": {
+                        "value": "[parameters('enableWinEventProviders')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[not(empty(parameters('enableLAFunctions')))]",
+            "name": "deployLAFunctions",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-05-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(parameters('_artifactsLocation'), concat('azure-sentinel/linkedtemplates/log-analytics/functions.json', parameters('_artifactsLocationSasToken')))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[variables('uniqueWorkspace')]"
+                    },
+                    "enableLAFunctions": {
+                        "value": "[parameters('enableLAFunctions')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[and(parameters('postAnalyticRules'),not(empty(parameters('userAssignedIdentityName'))),contains(parameters('enableAdditionalLASolutions'),'ServiceMap'),contains(parameters('enableAdditionalLASolutions'),'WireData2'))]",
+            "name": "azCLIPostAnalyticRules",
+            "type": "Microsoft.Resources/deploymentScripts",
+            "apiVersion": "2019-10-01-preview",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationsManagement/solutions/', concat('SecurityInsights','(', variables('uniqueWorkspace'),')'))]"
+            ],
+            "kind": "AzureCLI",
+            "identity": {
+                "type": "userAssigned",
+                "userAssignedIdentities": {
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName'))]" : {}
+                }
+            },
+            "properties": {
+                "forceUpdateTag": 1,
+                "azCliVersion": "2.0.80",
+                "arguments": "[concat('-r', ' ', resourceGroup().name, ' ', '-w', ' ', variables('uniqueWorkspace'))]",
+                "primaryScriptUri": "[concat(parameters('_artifactsLocation'), 'resources/scripts/Post-AnalyticRules.sh')]",
+                "supportingScriptUris":[],
+                "timeout": "PT30M",
+                "cleanupPreference": "OnSuccess",
+                "retentionInterval": "P1D"
+            }
+        }
+    ],
+    "outputs": {
+        "workspaceName": {
+            "type": "string",
+            "value": "[variables('uniqueWorkspace')]"
+        },
+        "workspaceIdOutput": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').customerId]"
+        },
+        "workspaceKeyOutput": {
+            "type": "string",
+            "value": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').primarySharedKey]"
+        }
+    }
+}

@@ -1,10 +1,26 @@
 # Azure Sentinel To-Go!
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fazuredeploy.json)
+![Open_Threat_Research Community](https://img.shields.io/badge/Open_Threat_Research-Community-brightgreen.svg)
+[![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 
 <img src="images/logo.png" alt="Azure Sentinel To-Go!" width="650"/>
 
 Azure Sentinel2Go is an open source project developed to expedite the deployment of an Azure Sentinel lab along with other Azure resources and a data ingestion pipeline to consume pre-recorded datasets for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Mordor project](https://mordordatasets.com/) right at deployment time.
+
+# Getting Started
+
+There are a few things that you can do with this project. This project is intended for research purposes, so I highly recommend to create a new resource group in your subscription to not interfere with any other system in the same resource while deploying VMs needed for some of the features provided by this Azure Resource Manager (ARM) template.
+
+# Grocery List
+
+A few deployments available through Azure Sentinel To-go!
+
+| Items | Deploy |
+| :---| :---|
+| Azure Sentinel | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fazure-sentinel%2Fazuredeploy.json) |
+| Azure Sentinel + Custom Log Pipeline | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fcustom-log-pipeline%2Fazuredeploy.json) |
+| Azure Sentinel + Win10 Workstations | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10%2Fazuredeploy.json) |
+| Azure Sentinel + Win10 + C2 | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10-C2%2Fazuredeploy.json) |
 
 # Media
 
@@ -15,19 +31,3 @@ For more information about the development of this project, feel free to check o
 # Author
 
 * Roberto Rodriguez ([@Cyb3rWard0g](https://twitter.com/Cyb3rWard0g))
-
-# Getting Started
-
-There are a few things that you can do with this project. This project is intended for research purposes, so I highly recommend to create a new resource group in your subscription to not interfere with any other system in the same resource while deploying VMs needed for some of the features provided by this Azure Resource Manager (ARM) template.
-
-## Ingest Mordor Datasets
-
-1) Click on the **Deploy to Azure** badge
-2) Set the following parameters:
-    * Subscription
-    * Resource Group
-    * Workspace Name
-    * Deploy Custom Logs Pipeline: Logstash
-    * Add to Cart: mordor-small-datasets(1.1GB) or mordor-large-apt29(2GB)
-    * Admin Username (Username for Linux VM - Logstash)
-    * Admin Password (Password for Linux VM - Logstash)
