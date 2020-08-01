@@ -306,7 +306,7 @@
             }
         },
         {
-            "name": "[concat(reference('deployC2').outputs.virtualNetworkName.value, '/peering-to-remote-', reference('deployWin10VM').outputs.virtualNetworkName.value)]",
+            "name": "C2/peering-to-remote-Win10",
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2019-11-01",
             "dependsOn": [
@@ -325,7 +325,7 @@
             }
         },
         {
-            "name": "[concat(reference('deployWin10VM').outputs.virtualNetworkName.value, '/peering-to-remote-', reference('deployC2').outputs.virtualNetworkName.value)]",
+            "name": "Win10/peering-to-remote-C2",
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2019-11-01",
             "dependsOn": [
