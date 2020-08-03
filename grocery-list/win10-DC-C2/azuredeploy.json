@@ -93,6 +93,16 @@
                 "description": "The Windows version for the Desktop VM. This will pick a fully patched image of this given Windows version."
             }
         },
+        "windowsServerSKU": {
+            "type": "string",
+            "defaultValue": "2019-Datacenter",
+            "allowedValues": [
+                "2019-Datacenter"
+            ],
+            "metadata": {
+                "description": "The Windows version for the Server VM. This will pick a fully patched image of this given Windows version."
+            }
+        },
         "ubuntuSKU": {
             "type": "string",
             "defaultValue": "18.04-LTS",
@@ -117,6 +127,12 @@
             ],
             "metadata": {
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
+            }
+        },
+        "domainFQDN": {
+            "type": "string",
+            "metadata": {
+                "description": "The FQDN of the Active Directory Domain to be created"
             }
         },
         "enableSysmon": {
@@ -210,7 +226,7 @@
             }
         },
         {
-            "name": "deployWin10VM",
+            "name": "deployWinAD",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
             "dependsOn": [
@@ -219,7 +235,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/Win10/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/Win10-DC/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -238,8 +254,14 @@
                     "windowsDesktopSKU": {
                         "value": "[parameters('windowsDesktopSKU')]"
                     },
+                    "windowsServerSKU": {
+                        "value": "[parameters('windowsServerSKU')]"
+                    },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
+                    },
+                    "domainFQDN": {
+                        "value": "[parameters('domainFQDN')]"
                     },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
@@ -309,7 +331,7 @@
             "apiVersion": "2019-11-01",
             "dependsOn": [
                 "deployC2",
-                "deployWin10VM"
+                "deployWinAD"
             ],
             "location": "[parameters('location')]",
             "properties": {
@@ -318,7 +340,7 @@
                 "allowGatewayTransit": false,
                 "useRemoteGateways": false,
                 "remoteVirtualNetwork": {
-                    "id": "[reference('deployWin10VM').outputs.virtualNetworkId.value]"
+                    "id": "[reference('deployWinAD').outputs.virtualNetworkId.value]"
                 }
             }
         },
@@ -328,7 +350,7 @@
             "apiVersion": "2019-11-01",
             "dependsOn": [
                 "deployC2",
-                "deployWin10VM"
+                "deployWinAD"
             ],
             "location": "[parameters('location')]",
             "properties": {
