@@ -93,15 +93,14 @@
                 "description": "The Windows version for the Desktop VM. This will pick a fully patched image of this given Windows version."
             }
         },
-        "ubuntuSKU": {
+        "windowsServerSKU": {
             "type": "string",
-            "defaultValue": "18.04-LTS",
+            "defaultValue": "2019-Datacenter",
             "allowedValues": [
-                "18.04-LTS",
-                "19.04"
+                "2019-Datacenter"
             ],
             "metadata": {
-                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
+                "description": "The Windows version for the Server VM. This will pick a fully patched image of this given Windows version."
             }
         },
         "vmSize": {
@@ -119,25 +118,17 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
+        "domainFQDN": {
+            "type": "string",
+            "metadata": {
+                "description": "The FQDN of the Active Directory Domain to be created"
+            }
+        },
         "enableSysmon": {
             "type": "bool",
             "defaultValue": false,
             "metadata": {
                 "description": "Do you want to install Sysmon on the endpoint?"
-            }
-        },
-        "c2Framework": {
-            "type": "string",
-            "defaultValue": "empire",
-            "allowedValues": [
-                "empire",
-                "covenant",
-                "caldera",
-                "metasploit",
-                "shad0w"
-            ],
-            "metadata": {
-                "description": "C2 framework to deploy"
             }
         },
         "allowedIPAddresses": {
@@ -210,7 +201,7 @@
             }
         },
         {
-            "name": "deployWin10VM",
+            "name": "deployWinAD",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
             "dependsOn": [
@@ -219,7 +210,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/Win10/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/Win10-DC/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -238,8 +229,14 @@
                     "windowsDesktopSKU": {
                         "value": "[parameters('windowsDesktopSKU')]"
                     },
+                    "windowsServerSKU": {
+                        "value": "[parameters('windowsServerSKU')]"
+                    },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
+                    },
+                    "domainFQDN": {
+                        "value": "[parameters('domainFQDN')]"
                     },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
@@ -262,82 +259,6 @@
                     "location": {
                         "value": "[parameters('location')]"
                     }
-                }
-            }
-        },
-        {
-            "name": "deployC2",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-05-01",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/C2/azuredeploy.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "adminUsername": {
-                        "value": "[parameters('adminUsername')]"
-                    },
-                    "authenticationType": {
-                        "value": "password"
-                    },
-                    "adminPasswordOrKey": {
-                        "value": "[parameters('adminPassword')]"
-                    },
-                    "vmName": {
-                        "value": "C2001"
-                    },
-                    "ubuntuSKU": {
-                        "value": "[parameters('ubuntuSKU')]"
-                    },
-                    "vmSize": {
-                        "value": "[parameters('vmSize')]"
-                    },
-                    "allowedIPAddresses": {
-                        "value": "[parameters('allowedIPAddresses')]"
-                    },
-                    "c2Framework": {
-                        "value": "[parameters('c2Framework')]"
-                    }
-                }
-            }
-        },
-        {
-            "name": "vnet-c2/peering-to-remote-vnet-win",
-            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "apiVersion": "2019-11-01",
-            "dependsOn": [
-                "deployC2",
-                "deployWin10VM"
-            ],
-            "location": "[parameters('location')]",
-            "properties": {
-                "allowVirtualNetworkAccess": true,
-                "allowForwardedTraffic": false,
-                "allowGatewayTransit": false,
-                "useRemoteGateways": false,
-                "remoteVirtualNetwork": {
-                    "id": "[reference('deployC2').outputs.virtualNetworkId.value]"
-                }
-            }
-        },
-        {
-            "name": "vnet-win/peering-to-remote-vnet-c2",
-            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "apiVersion": "2019-11-01",
-            "dependsOn": [
-                "deployC2",
-                "deployWin10VM"
-            ],
-            "location": "[parameters('location')]",
-            "properties": {
-                "allowVirtualNetworkAccess": true,
-                "allowForwardedTraffic": false,
-                "allowGatewayTransit": false,
-                "useRemoteGateways": false,
-                "remoteVirtualNetwork": {
-                    "id": "[reference('deployC2').outputs.virtualNetworkId.value]"
                 }
             }
         }
