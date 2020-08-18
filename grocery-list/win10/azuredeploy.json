@@ -216,7 +216,8 @@
                             "Microsoft-Windows-Windows Firewall With Advanced Security/Firewall",
                             "Windows PowerShell",
                             "Microsoft-Windows-PowerShell/Operational",
-                            "Microsoft-Windows-WMI-Activity/Operational"
+                            "Microsoft-Windows-WMI-Activity/Operational",
+                            "Microsoft-Windows-TaskScheduler/Operational"
                         ]
                     },
                     "enableLAFunctions": {
