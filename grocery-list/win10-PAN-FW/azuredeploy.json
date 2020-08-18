@@ -109,11 +109,25 @@
                 "description": "This is the size of PAN's firewall VM"
             }
         },
+        "enableMonitoringAgent": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Do you want to enable the Microsoft Log Analytics Monitoring agent on your Windows 10 workstation? "
+            }
+        },
         "enableSysmon": {
             "type": "bool",
             "defaultValue": false,
             "metadata": {
                 "description": "Do you want to install Sysmon on the endpoint?"
+            }
+        },
+        "enableAntimalware": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enable Antimalware extension to filter out some folders and file extensions from the Windows Defender service"
             }
         },
         "c2Framework": {
@@ -221,6 +235,12 @@
                     },
                     "firewallSubscription": {
                         "value": "[parameters('firewallSubscription')]"
+                    },
+                    "enableMonitoringAgent": {
+                        "value": "[parameters('enableMonitoringAgent')]"
+                    },
+                    "enableAntimalware": {
+                        "value": "[parameters('enableAntimalware')]"
                     },
                     "enableSysmon": {
                         "value": "[parameters('enableSysmon')]"
