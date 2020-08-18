@@ -11,7 +11,7 @@ Azure Sentinel2Go is an open source project developed to expedite the deployment
 
 There are a few things that you can do with this project. This project is intended for research purposes, so I highly recommend to create a new resource group in your subscription to not interfere with any other system in the same resource while deploying VMs needed for some of the features provided by this Azure Resource Manager (ARM) template.
 
-# Grocery List
+# Grocery List - Deployment Options
 
 A few deployments available through Azure Sentinel To-go!
 
@@ -20,9 +20,7 @@ A few deployments available through Azure Sentinel To-go!
 | [Azure Sentinel](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/azure-sentinel) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fazure-sentinel%2Fazuredeploy.json) |
 | [Azure Sentinel + Custom Log Pipeline](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/custom-log-pipeline) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fcustom-log-pipeline%2Fazuredeploy.json) |
 | [Azure Sentinel + Win10 Workstations](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/win10) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10%2Fazuredeploy.json) |
-| [Azure Sentinel + Win10 + C2](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/win10-C2) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10-C2%2Fazuredeploy.json) |
 | [Azure Sentinel + Win10 + Domain Controller](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/win10-DC) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10-DC%2Fazuredeploy.json) |
-| [Azure Sentinel + Win10 + DC + C2](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/win10-DC-C2) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10-DC-C2%2Fazuredeploy.json) |
 
 # Media
 

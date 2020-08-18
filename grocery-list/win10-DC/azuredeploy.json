@@ -2,6 +2,34 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "adminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Admin username for all virtual machines."
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the all Virtual machines. The password must be at least 8 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter"
+            }
+        },
+        "numberOfWorkstations": {
+            "type": "int",
+            "defaultValue": 1,
+            "minValue": 1,
+            "maxValue": 10,
+            "metadata": {
+                "description": "Number of Windows 10 virtual machines to deploy"
+            }
+        },
+        "allowedIPAddresses": {
+            "type": "string",
+            "metadata": {
+                "description": "The sourceAddressPrefixes allowed to connect to this deployment"
+            },
+            "defaultValue": "*"
+        },
         "workspaceName": {
             "type": "string",
             "metadata": {
@@ -52,32 +80,11 @@
                 "description": "Tier for gathering Windows Security Events."
             }
         },
-        "numberOfWorkstations": {
-            "type": "int",
-            "defaultValue": 1,
-            "minValue": 1,
-            "maxValue": 100,
-            "metadata": {
-                "description": "Number of VMs to deploy"
-            }
-        },
         "vmNamePrefix": {
             "type": "string",
             "defaultValue": "WORKSTATION",
             "metadata": {
                 "description": "Prefix for the name of your virtual machine. Template will add a number starting from 5."
-            }
-        },
-        "adminUsername": {
-            "type": "string",
-            "metadata": {
-                "description": "Username for the Virtual Machine."
-            }
-        },
-        "adminPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Password for the Virtual Machine."
             }
         },
         "windowsDesktopSKU": {
@@ -101,6 +108,17 @@
             ],
             "metadata": {
                 "description": "The Windows version for the Server VM. This will pick a fully patched image of this given Windows version."
+            }
+        },
+        "ubuntuSKU": {
+            "type": "string",
+            "defaultValue": "18.04-LTS",
+            "allowedValues": [
+                "18.04-LTS",
+                "19.04"
+            ],
+            "metadata": {
+                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
             }
         },
         "vmSize": {
@@ -131,12 +149,34 @@
                 "description": "Do you want to install Sysmon on the endpoint?"
             }
         },
-        "allowedIPAddresses": {
+        "c2Framework": {
             "type": "string",
+            "defaultValue": "None",
+            "allowedValues": [
+                "None",
+                "empire",
+                "covenant",
+                "caldera",
+                "metasploit",
+                "shad0w"
+            ],
             "metadata": {
-                "description": "The sourceAddressPrefixes allowed to connect to this deployment"
-            },
-            "defaultValue": "*"
+                "description": "C2 framework to deploy"
+            }
+        },
+        "workspaceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own log analytics workspace ID"
+            }
+        },
+        "workspaceKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own log analytics workspace keys"
+            }
         },
         "location": {
             "type": "string",
@@ -151,6 +191,7 @@
     },
     "resources": [
         {
+            "condition": "[and(empty(parameters('workspaceId')),empty(parameters('workspaceKey')))]",
             "name": "deployAzureSentinel2Go",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
@@ -251,14 +292,93 @@
                         "value": "[parameters('enableSysmon')]"
                     },
                     "workspaceId": {
-                        "value": "[reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value]"
+                        "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
                     },
                     "workspaceKey": {
-                        "value": "[reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value]"
+                        "value": "[if(empty(parameters('workspaceKey')), reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, parameters('workspaceKey'))]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
                     }
+                }
+            }
+        },
+        {
+            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
+            "name": "deployC2",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-05-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/C2/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "authenticationType": {
+                        "value": "password"
+                    },
+                    "adminPasswordOrKey": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "vmName": {
+                        "value": "C2001"
+                    },
+                    "ubuntuSKU": {
+                        "value": "[parameters('ubuntuSKU')]"
+                    },
+                    "vmSize": {
+                        "value": "[parameters('vmSize')]"
+                    },
+                    "allowedIPAddresses": {
+                        "value": "[parameters('allowedIPAddresses')]"
+                    },
+                    "c2Framework": {
+                        "value": "[parameters('c2Framework')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
+            "name": "vnet-c2/peering-to-remote-vnet-win",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2019-11-01",
+            "dependsOn": [
+                "deployC2",
+                "deployWinAD"
+            ],
+            "location": "[parameters('location')]",
+            "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteVirtualNetwork": {
+                    "id": "[reference('deployWinAD').outputs.virtualNetworkId.value]"
+                }
+            }
+        },
+        {
+            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
+            "name": "vnet-win/peering-to-remote-vnet-c2",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2019-11-01",
+            "dependsOn": [
+                "deployC2",
+                "deployWinAD"
+            ],
+            "location": "[parameters('location')]",
+            "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteVirtualNetwork": {
+                    "id": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkId.value, 'Resource not deployed')]"
                 }
             }
         }

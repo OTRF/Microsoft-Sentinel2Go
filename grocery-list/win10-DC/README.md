@@ -5,9 +5,12 @@
 ## Grocery Items
 
 * Azure Sentinel
-* One Windows Server (Domain Controller - Active Directory)
-* Windows 10 Workstations
-* Log Analytics agent installed
+    * Would you like to Bring-Your-Own Azure Sentinel?.
+    * If so, set the `workspaceId` and `workspaceKey` parameters of your own workspace.
+* One Windows Active Directory domain (One Domain Controller)
+* Windows 10 Workstations (Max. 10)
+* Windows [Microsoft Monitoring Agent](https://docs.microsoft.com/en-us/services-hub/health/mma-setup) installed
+    * It connects to the Microsoft Log Analytics workspace define in the template.
 * SecurityEvents data connector enabled
 * Windows event providers enabled
     * `System`
@@ -23,3 +26,9 @@
     * `Microsoft-Windows-WMI-Activity/Operational`
 * [OPTIONAL] Sysmon
     * [Sysmon Config](https://github.com/hunters-forge/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)
+* [OPTIONAL] Command and Control (c2) options:
+    * `empire`
+    * `covenant`
+    * `caldera`
+    * `metasploit`
+    * `shad0w`

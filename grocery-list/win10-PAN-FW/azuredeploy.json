@@ -2,6 +2,37 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "adminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Admin username for all virtual machines."
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the all Virtual machines. The password must be at least 8 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter"
+            }
+        },
+        "firewallSubscription": {
+            "type": "string",
+            "allowedValues": [
+                "byol",
+                "bundle1",
+                "bundle2"
+            ],
+            "metadata": {
+                "description": "Firewall License Model. Reference: https://knowledgebase.paloaltonetworks.com/KCSArticleDetail?id=kA10g000000ClDACA0"
+            },
+            "defaultValue": "bundle2"
+        },
+        "allowedIPAddresses": {
+            "type": "string",
+            "metadata": {
+                "description": "The sourceAddressPrefixes allowed to connect to this deployment"
+            },
+            "defaultValue": "*"
+        },
         "workspaceName": {
             "type": "string",
             "metadata": {
@@ -39,47 +70,6 @@
                 "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
             }
         },
-        "setSecurityCollectionTier": {
-            "type": "string",
-            "allowedValues": [
-                "All",
-                "Recommended",
-                "Minimal",
-                "None"
-            ],
-            "defaultValue": "Minimal",
-            "metadata": {
-                "description": "Tier for gathering Windows Security Events."
-            }
-        },
-        "numberOfWorkstations": {
-            "type": "int",
-            "defaultValue": 1,
-            "minValue": 1,
-            "maxValue": 100,
-            "metadata": {
-                "description": "Number of VMs to deploy"
-            }
-        },
-        "vmNamePrefix": {
-            "type": "string",
-            "defaultValue": "WORKSTATION",
-            "metadata": {
-                "description": "Prefix for the name of your virtual machine. Template will add a number starting from 5."
-            }
-        },
-        "adminUsername": {
-            "type": "string",
-            "metadata": {
-                "description": "Username for the Virtual Machine."
-            }
-        },
-        "adminPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Password for the Virtual Machine."
-            }
-        },
         "windowsDesktopSKU": {
             "type": "string",
             "defaultValue": "19h2-pro",
@@ -91,27 +81,6 @@
             ],
             "metadata": {
                 "description": "The Windows version for the Desktop VM. This will pick a fully patched image of this given Windows version."
-            }
-        },
-        "windowsServerSKU": {
-            "type": "string",
-            "defaultValue": "2019-Datacenter",
-            "allowedValues": [
-                "2019-Datacenter"
-            ],
-            "metadata": {
-                "description": "The Windows version for the Server VM. This will pick a fully patched image of this given Windows version."
-            }
-        },
-        "ubuntuSKU": {
-            "type": "string",
-            "defaultValue": "18.04-LTS",
-            "allowedValues": [
-                "18.04-LTS",
-                "19.04"
-            ],
-            "metadata": {
-                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
             }
         },
         "vmSize": {
@@ -129,10 +98,15 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
-        "domainFQDN": {
+        "firewallVMSize": {
             "type": "string",
+            "defaultValue": "Standard_D3_v2",
+            "allowedValues": [
+                "Standard_D3_v2",
+                "Standard_D4_v2"
+            ],
             "metadata": {
-                "description": "The FQDN of the Active Directory Domain to be created"
+                "description": "This is the size of PAN's firewall VM"
             }
         },
         "enableSysmon": {
@@ -144,8 +118,9 @@
         },
         "c2Framework": {
             "type": "string",
-            "defaultValue": "empire",
+            "defaultValue": "None",
             "allowedValues": [
+                "None",
                 "empire",
                 "covenant",
                 "caldera",
@@ -156,12 +131,19 @@
                 "description": "C2 framework to deploy"
             }
         },
-        "allowedIPAddresses": {
+        "workspaceId": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
-                "description": "The sourceAddressPrefixes allowed to connect to this deployment"
-            },
-            "defaultValue": "*"
+                "description": "Your own log analytics workspace ID"
+            }
+        },
+        "workspaceKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own log analytics workspace keys"
+            }
         },
         "location": {
             "type": "string",
@@ -176,6 +158,7 @@
     },
     "resources": [
         {
+            "condition": "[and(empty(parameters('workspaceId')),empty(parameters('workspaceKey')))]",
             "name": "deployAzureSentinel2Go",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
@@ -197,36 +180,12 @@
                     },
                     "immediatePurgeDataOn30Days": {
                         "value": "[parameters('immediatePurgeDataOn30Days')]"
-                    },
-                    "enableDataConnectorsKind": {
-                        "value": ["SecurityInsightsSecurityEventCollectionConfiguration"]
-                    }, 
-                    "setSecurityCollectionTier": {
-                        "value": "[parameters('setSecurityCollectionTier')]"
-                    },
-                    "enableWinEventProviders": {
-                        "value": [
-                            "System",
-                            "Microsoft-Windows-Sysmon/Operational",
-                            "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational",
-                            "Microsoft-Windows-Bits-Client/Operational",
-                            "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational",
-                            "Directory Service",
-                            "Microsoft-Windows-DNS-Client/Operational",
-                            "Microsoft-Windows-Windows Firewall With Advanced Security/Firewall",
-                            "Windows PowerShell",
-                            "Microsoft-Windows-PowerShell/Operational",
-                            "Microsoft-Windows-WMI-Activity/Operational"
-                        ]
-                    },
-                    "enableLAFunctions": {
-                        "value": ["Sysmon"]
                     }
                 }
             }
         },
         {
-            "name": "deployWinAD",
+            "name": "deployWin10PANFW",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
             "dependsOn": [
@@ -235,7 +194,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/Win10-DC/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/Win10-PAN-FW/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -245,41 +204,32 @@
                     "adminPassword": {
                         "value": "[parameters('adminPassword')]"
                     },
-                    "numberOfWorkstations": {
-                        "value": "[parameters('numberOfWorkstations')]"
+                    "allowedIPAddresses": {
+                        "value": "[parameters('allowedIPAddresses')]"
                     },
-                    "vmNamePrefix": {
-                        "value": "[parameters('vmNamePrefix')]"
+                    "enableCEFCollector": {
+                        "value": true
                     },
                     "windowsDesktopSKU": {
                         "value": "[parameters('windowsDesktopSKU')]"
                     },
-                    "windowsServerSKU": {
-                        "value": "[parameters('windowsServerSKU')]"
-                    },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
-                    "domainFQDN": {
-                        "value": "[parameters('domainFQDN')]"
+                    "firewallVMSize": {
+                        "value": "[parameters('firewallVMSize')]"
                     },
-                    "allowedIPAddresses": {
-                        "value": "[parameters('allowedIPAddresses')]"
-                    },
-                    "enableMonitoringAgent": {
-                        "value": true
-                    },
-                    "enableAntimalware": {
-                        "value": true
+                    "firewallSubscription": {
+                        "value": "[parameters('firewallSubscription')]"
                     },
                     "enableSysmon": {
                         "value": "[parameters('enableSysmon')]"
                     },
                     "workspaceId": {
-                        "value": "[reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value]"
+                        "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
                     },
                     "workspaceKey": {
-                        "value": "[reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value]"
+                        "value": "[if(empty(parameters('workspaceKey')), reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, parameters('workspaceKey'))]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -288,6 +238,7 @@
             }
         },
         {
+            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
             "name": "deployC2",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
@@ -310,9 +261,6 @@
                     "vmName": {
                         "value": "C2001"
                     },
-                    "ubuntuSKU": {
-                        "value": "[parameters('ubuntuSKU')]"
-                    },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
@@ -326,12 +274,13 @@
             }
         },
         {
+            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
             "name": "vnet-c2/peering-to-remote-vnet-win",
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2019-11-01",
             "dependsOn": [
                 "deployC2",
-                "deployWinAD"
+                "deployWin10PANFW"
             ],
             "location": "[parameters('location')]",
             "properties": {
@@ -340,17 +289,18 @@
                 "allowGatewayTransit": false,
                 "useRemoteGateways": false,
                 "remoteVirtualNetwork": {
-                    "id": "[reference('deployWinAD').outputs.virtualNetworkId.value]"
+                    "id": "[reference('deployWin10PANFW').outputs.virtualNetworkId.value]"
                 }
             }
         },
         {
+            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
             "name": "vnet-win/peering-to-remote-vnet-c2",
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2019-11-01",
             "dependsOn": [
                 "deployC2",
-                "deployWinAD"
+                "deployWin10PANFW"
             ],
             "location": "[parameters('location')]",
             "properties": {
@@ -359,7 +309,7 @@
                 "allowGatewayTransit": false,
                 "useRemoteGateways": false,
                 "remoteVirtualNetwork": {
-                    "id": "[reference('deployC2').outputs.virtualNetworkId.value]"
+                    "id": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkId.value, 'Resource not deployed')]"
                 }
             }
         }
