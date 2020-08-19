@@ -15,15 +15,6 @@
             },
             "minLength": 8
         },
-        "numberOfWorkstations": {
-            "type": "int",
-            "defaultValue": 1,
-            "minValue": 1,
-            "maxValue": 10,
-            "metadata": {
-                "description": "Number of Windows 10 virtual machines to deploy"
-            }
-        },
         "allowedIPAddresses": {
             "type": "string",
             "metadata": {
@@ -79,6 +70,29 @@
             "defaultValue": "Minimal",
             "metadata": {
                 "description": "Tier for gathering Windows Security Events."
+            }
+        },
+        "workspaceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own log analytics workspace ID"
+            }
+        },
+        "workspaceKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own log analytics workspace keys"
+            }
+        },
+        "numberOfWorkstations": {
+            "type": "int",
+            "defaultValue": 1,
+            "minValue": 1,
+            "maxValue": 10,
+            "metadata": {
+                "description": "Number of Windows 10 virtual machines to deploy"
             }
         },
         "vmNamePrefix": {
@@ -147,20 +161,6 @@
             ],
             "metadata": {
                 "description": "C2 framework to deploy"
-            }
-        },
-        "workspaceId": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Your own log analytics workspace ID"
-            }
-        },
-        "workspaceKey": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Your own log analytics workspace keys"
             }
         },
         "location": {

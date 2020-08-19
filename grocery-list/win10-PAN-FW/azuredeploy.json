@@ -15,6 +15,13 @@
             },
             "minLength": 8
         },
+        "allowedIPAddresses": {
+            "type": "string",
+            "metadata": {
+                "description": "The sourceAddressPrefixes allowed to connect to this deployment"
+            },
+            "defaultValue": "*"
+        },
         "firewallSubscription": {
             "type": "string",
             "allowedValues": [
@@ -27,15 +34,20 @@
             },
             "defaultValue": "bundle2"
         },
-        "allowedIPAddresses": {
+        "firewallVMSize": {
             "type": "string",
+            "defaultValue": "Standard_D3_v2",
+            "allowedValues": [
+                "Standard_D3_v2",
+                "Standard_D4_v2"
+            ],
             "metadata": {
-                "description": "The sourceAddressPrefixes allowed to connect to this deployment"
-            },
-            "defaultValue": "*"
+                "description": "This is the size of PAN's firewall VM"
+            }
         },
         "workspaceName": {
             "type": "string",
+            "defaultValue": "AzSen2Go",
             "metadata": {
                 "description": "Name for the Log Analytics workspace used to aggregate data"
             }
@@ -84,6 +96,20 @@
                 "description": "The Windows version for the Desktop VM. This will pick a fully patched image of this given Windows version."
             }
         },
+        "workspaceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own log analytics workspace ID"
+            }
+        },
+        "workspaceKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own log analytics workspace keys"
+            }
+        },
         "vmSize": {
             "type": "string",
             "defaultValue": "Standard_B2s",
@@ -97,17 +123,6 @@
             ],
             "metadata": {
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
-            }
-        },
-        "firewallVMSize": {
-            "type": "string",
-            "defaultValue": "Standard_D3_v2",
-            "allowedValues": [
-                "Standard_D3_v2",
-                "Standard_D4_v2"
-            ],
-            "metadata": {
-                "description": "This is the size of PAN's firewall VM"
             }
         },
         "enableMonitoringAgent": {
@@ -144,20 +159,6 @@
             ],
             "metadata": {
                 "description": "C2 framework to deploy"
-            }
-        },
-        "workspaceId": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Your own log analytics workspace ID"
-            }
-        },
-        "workspaceKey": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Your own log analytics workspace keys"
             }
         },
         "location": {
