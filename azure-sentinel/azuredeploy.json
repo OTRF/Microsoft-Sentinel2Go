@@ -289,7 +289,7 @@
         },
         {
             "condition": "[not(empty(parameters('collectSyslogFacilities')))]",
-            "name": "[concat(parameters('workspaceName'), '/syslogCollection')]",
+            "name": "[concat(variables('uniqueWorkspace'), '/syslogCollection')]",
             "type": "Microsoft.OperationalInsights/workspaces/dataSources",
             "apiVersion": "2015-11-01-preview",
             "dependsOn": [
