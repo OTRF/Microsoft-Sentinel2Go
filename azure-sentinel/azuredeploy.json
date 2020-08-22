@@ -288,6 +288,20 @@
             }
         },
         {
+            "condition": "[not(empty(parameters('collectSyslogFacilities')))]",
+            "name": "[concat(parameters('workspaceName'), '/syslogCollection')]",
+            "type": "Microsoft.OperationalInsights/workspaces/dataSources",
+            "apiVersion": "2015-11-01-preview",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+            ],
+            "location": "[parameters('location')]",
+            "kind": "LinuxSyslogCollection",
+            "properties": {
+                "state": "Enabled"
+            }
+        },
+        {
             "condition": "[not(empty(parameters('enableLAFunctions')))]",
             "name": "deployLAFunctions",
             "type": "Microsoft.Resources/deployments",
