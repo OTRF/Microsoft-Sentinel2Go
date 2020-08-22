@@ -80,11 +80,18 @@
                 "description": "Tier for gathering Windows Security Events."
             }
         },
-        "enableWinEventProviders": {
+        "collectWinEventProviders": {
             "type": "array",
             "defaultValue": [],
             "metadata": {
                 "description": "Do you want to configure your Log Analytics Workspace to collect Windows Event Logs from several pre-defined event providers?. Windows Security Auditing is not enabled through this option. It is enabled through the Data Connectors parameter."
+            }
+        },
+        "collectSyslogFacilities": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "Do you want to configure your Log Analytics Workspace to collect Syslog from specific facilities. Example: [ \"kern\", \"user\", \"daemon\", \"auth\", \"syslog\" ]"
             }
         },
         "postAnalyticRules": {
@@ -227,8 +234,8 @@
             }
         },
         {
-            "condition": "[not(empty(parameters('enableWinEventProviders')))]",
-            "name": "enableLAWinDataSources",
+            "condition": "[not(empty(parameters('collectWinEventProviders')))]",
+            "name": "collectWinDataSources",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
             "dependsOn": [
@@ -245,7 +252,34 @@
                         "value": "[variables('uniqueWorkspace')]"
                     },
                     "winEventProviders": {
-                        "value": "[parameters('enableWinEventProviders')]"
+                        "value": "[parameters('collectWinEventProviders')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[not(empty(parameters('collectSyslogFacilities')))]",
+            "name": "collectSyslogDataSources",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-05-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(parameters('_artifactsLocation'), concat('azure-sentinel/linkedtemplates/log-analytics/syslogDataSources.json', parameters('_artifactsLocationSasToken')))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[variables('uniqueWorkspace')]"
+                    },
+                    "syslogFacilities": {
+                        "value": "[parameters('collectSyslogFacilities')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
