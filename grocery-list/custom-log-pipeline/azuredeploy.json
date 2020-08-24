@@ -46,14 +46,7 @@
                 "description": "Username for the Virtual Machines (Windows, Linux)."
             }
         },
-        "adminPassword": {
-            "type": "securestring",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Password for all Virtual Machines (Windows , Linux). If you want to enable SSH key authentication for Linux virtual machines, make sure you set the 'linuxAuthenticationType' parameter to 'sshPublicKey' and provide the SSH Public Key string via the 'linuxAdminKey' parameter."
-            }
-        },
-        "linuxAuthenticationType": {
+        "authenticationType": {
             "type": "string",
             "defaultValue": "password",
             "allowedValues": [
@@ -64,11 +57,10 @@
                 "description": "Type of authentication to use on the Linux Virtual Machine. SSH key is recommended."
             }
         },
-        "linuxAdminKey": {
+        "adminPasswordOrKey": {
             "type": "securestring",
-            "defaultValue": "",
             "metadata": {
-                "description": "SSH Key to authenticate against Linux Virtual Machines. Provide the SSH rsa public key file as a string. Use \"ssh-keygen -t rsa -b 2048\" to generate your SSH key pairs."
+                "description": "SSH Key or password for the Linux Virtual Machine. SSH key is recommended. The password must be at least 8 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter."
             }
         },
         "vmSize": {
@@ -165,7 +157,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/LinuxVM/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/Linux/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -176,10 +168,10 @@
                         "value": "[parameters('adminUsername')]"
                     },
                     "authenticationType": {
-                        "value": "[parameters('linuxAuthenticationType')]"
+                        "value": "[parameters('authenticationType')]"
                     },
                     "adminPasswordOrKey": {
-                        "value": "[if(equals(parameters('linuxAuthenticationType'), 'password'), parameters('adminPassword'), parameters('linuxAdminKey'))]"
+                        "value": "[parameters('adminPasswordOrKey')]"
                     },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"

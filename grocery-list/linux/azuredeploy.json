@@ -71,19 +71,6 @@
                 "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
             }
         },
-        "setSecurityCollectionTier": {
-            "type": "string",
-            "allowedValues": [
-                "All",
-                "Recommended",
-                "Minimal",
-                "None"
-            ],
-            "defaultValue": "Minimal",
-            "metadata": {
-                "description": "Tier for gathering Windows Security Events."
-            }
-        },
         "workspaceId": {
             "type": "string",
             "defaultValue": "",
@@ -98,44 +85,73 @@
                 "description": "Your own log analytics workspace keys"
             }
         },
-        "numberOfWorkstations": {
+        "numberOfUbuntuVMs": {
             "type": "int",
             "defaultValue": 1,
-            "minValue": 1,
-            "maxValue": 10,
+            "minValue": 0,
+            "maxValue": 5,
             "metadata": {
-                "description": "Number of Windows 10 virtual machines to deploy"
-            }
-        },
-        "vmNamePrefix": {
-            "type": "string",
-            "defaultValue": "WORKSTATION",
-            "metadata": {
-                "description": "Prefix for the name of your virtual machine. Template will add a number starting from 5."
-            }
-        },
-        "windowsDesktopSKU": {
-            "type": "string",
-            "defaultValue": "19h2-pro",
-            "allowedValues": [
-                "19h1-pro",
-                "19h2-pro",
-                "rs4-pro",
-                "rs5-pro"
-            ],
-            "metadata": {
-                "description": "The Windows version for the Desktop VM. This will pick a fully patched image of this given Windows version."
+                "description": "Number of VMs to deploy"
             }
         },
         "ubuntuSKU": {
             "type": "string",
             "defaultValue": "18.04-LTS",
             "allowedValues": [
+                "12.04.5-LTS",
+                "14.04.5-LTS",
+                "16.04.0-LTS",
                 "18.04-LTS",
                 "19.04"
             ],
             "metadata": {
                 "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
+            }
+        },
+        "numberOfCentOSVMs": {
+            "type": "int",
+            "defaultValue": 0,
+            "minValue": 0,
+            "maxValue": 5,
+            "metadata": {
+                "description": "Number of VMs to deploy"
+            }
+        },
+        "centOSSKU": {
+            "type": "string",
+            "defaultValue": "7.4",
+            "allowedValues": [
+                "7.3",
+                "7.4",
+                "7.5",
+                "7.6",
+                "7.7"
+            ],
+            "metadata": {
+                "description": "The CentOS version for the VM. This will pick a fully patched image of this given Centos version."
+            }
+        },
+        "numberOfRedHatVMs": {
+            "type": "int",
+            "defaultValue": 0,
+            "minValue": 0,
+            "maxValue": 5,
+            "metadata": {
+                "description": "Number of VMs to deploy"
+            }
+        },
+        "redhatSKU": {
+            "type": "string",
+            "defaultValue": "7.7",
+            "allowedValues": [
+                "7.6",
+                "7.7",
+                "8",
+                "8.1",
+                "8.2"
+            ],
+            "metadata": {
+                "description": "The Red Hat version for the VM. This will pick a fully patched image of this given Red Hat version."
             }
         },
         "vmSize": {
@@ -151,13 +167,6 @@
             ],
             "metadata": {
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
-            }
-        },
-        "enableSysmon": {
-            "type": "bool",
-            "defaultValue": false,
-            "metadata": {
-                "description": "Do you want to install Sysmon on the endpoint?"
             }
         },
         "c2Framework": {
@@ -210,37 +219,23 @@
                     },
                     "immediatePurgeDataOn30Days": {
                         "value": "[parameters('immediatePurgeDataOn30Days')]"
-                    },
-                    "enableDataConnectorsKind": {
-                        "value": ["SecurityInsightsSecurityEventCollectionConfiguration"]
                     }, 
-                    "setSecurityCollectionTier": {
-                        "value": "[parameters('setSecurityCollectionTier')]"
-                    },
-                    "enableWinEventProviders": {
+                    "collectSyslogFacilities": {
                         "value": [
-                            "System",
-                            "Microsoft-Windows-Sysmon/Operational",
-                            "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational",
-                            "Microsoft-Windows-Bits-Client/Operational",
-                            "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational",
-                            "Directory Service",
-                            "Microsoft-Windows-DNS-Client/Operational",
-                            "Microsoft-Windows-Windows Firewall With Advanced Security/Firewall",
-                            "Windows PowerShell",
-                            "Microsoft-Windows-PowerShell/Operational",
-                            "Microsoft-Windows-WMI-Activity/Operational",
-                            "Microsoft-Windows-TaskScheduler/Operational"
+                            "auth",
+                            "authpriv",
+                            "cron",
+                            "daemon",
+                            "ftp",
+                            "kern",
+                            "user"
                         ]
-                    },
-                    "enableLAFunctions": {
-                        "value": ["Sysmon"]
                     }
                 }
             }
         },
         {
-            "name": "deployWin10VM",
+            "name": "deployLinuxVM",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-05-01",
             "dependsOn": [
@@ -249,7 +244,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/Win10/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/Linux/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -259,14 +254,23 @@
                     "adminPassword": {
                         "value": "[parameters('adminPassword')]"
                     },
-                    "numberOfWorkstations": {
-                        "value": "[parameters('numberOfWorkstations')]"
+                    "numberOfUbuntuVMs": {
+                        "value": "[parameters('numberOfUbuntuVMs')]"
                     },
-                    "vmNamePrefix": {
-                        "value": "[parameters('vmNamePrefix')]"
+                    "ubuntuSKU": {
+                        "value": "[parameters('ubuntuSKU')]"
                     },
-                    "windowsDesktopSKU": {
-                        "value": "[parameters('windowsDesktopSKU')]"
+                    "numberOfCentOSVMs": {
+                        "value": "[parameters('numberOfCentOSVMs')]"
+                    },
+                    "centOSSKU": {
+                        "value": "[parameters('centOSSKU')]"
+                    },
+                    "numberOfRedHatVMs": {
+                        "value": "[parameters('numberOfRedHatVMs')]"
+                    },
+                    "redhatSKU": {
+                        "value": "[parameters('redhatSKU')]"
                     },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
@@ -279,12 +283,6 @@
                     },
                     "enableMonitoringAgent": {
                         "value": true
-                    },
-                    "enableAntimalware": {
-                        "value": true
-                    },
-                    "enableSysmon": {
-                        "value": "[parameters('enableSysmon')]"
                     },
                     "workspaceId": {
                         "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
@@ -342,12 +340,12 @@
         },
         {
             "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
-            "name": "vnet-c2/peering-to-remote-vnet-win",
+            "name": "vnet-c2/peering-to-remote-vnet-linux",
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2019-11-01",
             "dependsOn": [
                 "deployC2",
-                "deployWin10VM"
+                "deployLinuxVM"
             ],
             "location": "[parameters('location')]",
             "properties": {
@@ -356,18 +354,18 @@
                 "allowGatewayTransit": false,
                 "useRemoteGateways": false,
                 "remoteVirtualNetwork": {
-                    "id": "[reference('deployWin10VM').outputs.virtualNetworkId.value]"
+                    "id": "[reference('deployLinuxVM').outputs.virtualNetworkId.value]"
                 }
             }
         },
         {
             "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
-            "name": "vnet-win/peering-to-remote-vnet-c2",
+            "name": "vnet-linux/peering-to-remote-vnet-c2",
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2019-11-01",
             "dependsOn": [
                 "deployC2",
-                "deployWin10VM"
+                "deployLinuxVM"
             ],
             "location": "[parameters('location')]",
             "properties": {
