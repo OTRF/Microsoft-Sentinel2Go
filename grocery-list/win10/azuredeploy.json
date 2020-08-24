@@ -217,7 +217,7 @@
                     "setSecurityCollectionTier": {
                         "value": "[parameters('setSecurityCollectionTier')]"
                     },
-                    "enableWinEventProviders": {
+                    "collectWinEventProviders": {
                         "value": [
                             "System",
                             "Microsoft-Windows-Sysmon/Operational",
