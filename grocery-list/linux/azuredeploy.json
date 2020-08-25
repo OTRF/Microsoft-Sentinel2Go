@@ -180,6 +180,13 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
+        "enableAuditdPlugin": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Do you want to enable an Auditd plugin that forwards audit events to OMS Agent for Linux. https://github.com/microsoft/OMS-Auditd-Plugin/tree/MSTIC-Research "
+            }
+        },
         "c2Framework": {
             "type": "string",
             "defaultValue": "None",
@@ -303,6 +310,9 @@
                     },
                     "workspaceKey": {
                         "value": "[if(empty(parameters('workspaceKey')), reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, parameters('workspaceKey'))]"
+                    },
+                    "enableAuditdPlugin": {
+                        "value": "[parameters('enableAuditdPlugin')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
