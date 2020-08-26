@@ -24,7 +24,7 @@
     * `Microsoft-Windows-PowerShell/Operational`
     * `Microsoft-Windows-WMI-Activity/Operational`
 * [OPTIONAL] Sysmon
-    * [Sysmon Config](https://github.com/hunters-forge/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)
+    * [Sysmon Config](https://github.com/OTRF/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)
 * [OPTIONAL] Command and Control (c2) options:
     * `empire`
     * `covenant`

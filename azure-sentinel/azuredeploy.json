@@ -98,7 +98,7 @@
             "type": "bool",
             "defaultValue": false,
             "metadata": {
-                "description": "If set to true, Analytic rules from the official Azure Sentinel GitHub Repository https://github.com/Azure/Azure-Sentinel/tree/master/Detections translated to JSON files in https://github.com/hunters-forge/Blacksmith/tree/azure/templates/azure/Sentinel2Go/azure-sentinel/analytic-rules are created in your Log Analytics workspace. Remember that several queries need specific data tables to be enabled in Log Analytics."
+                "description": "If set to true, Analytic rules from the official Azure Sentinel GitHub Repository https://github.com/Azure/Azure-Sentinel/tree/master/Detections translated to JSON files in https://github.com/OTRF/Blacksmith/tree/azure/templates/azure/Sentinel2Go/azure-sentinel/analytic-rules are created in your Log Analytics workspace. Remember that several queries need specific data tables to be enabled in Log Analytics."
             }
         },
         "userAssignedIdentityName": {

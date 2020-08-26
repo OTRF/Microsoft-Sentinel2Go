@@ -1,6 +1,6 @@
 # Azure Sentinel Data Connectors
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fhunters-forge%2FBlacksmith%2Fazure%2Ftemplates%2Fazure%2FSentinel2Go%2Flinkedtemplates%2Fdata-connectors%2FallConnectors.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2Fblacksmith%2Fmaster%2Ftemplates%2Fazure%2FSentinel2Go%2Flinkedtemplates%2Fdata-connectors%2FallConnectors.json" target="_blank">
     <img src="https://aka.ms/deploytoazurebutton"/>
 </a>
 <br/>

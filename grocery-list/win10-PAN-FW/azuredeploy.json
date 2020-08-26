@@ -170,7 +170,7 @@
         }
     },
     "variables": {
-        "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/hunters-forge/Blacksmith/master/"
+        "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/"
     },
     "resources": [
         {
