@@ -55,7 +55,7 @@ else
     apt install -y git unzip
 
     echo "Cloning Mordor repo.."
-    git clone https://github.com/hunters-forge/mordor.git /opt/mordor
+    git clone https://github.com/OTRF/mordor.git /opt/mordor
 
     if [[ $MORDOR_DATASETS == "SMALL_DATASETS" ]]; then
         echo "Decompressing every small mordor dataset.."

@@ -55,7 +55,7 @@ echo "Installing Git.."
 apt install -y git
 
 echo "Cloning Mordor repo.."
-git clone https://github.com/hunters-forge/mordor.git
+git clone https://github.com/OTRF/mordor.git
 
 echo "Decompressing every small mordor dataset.."
 cd mordor/datasets/small/
