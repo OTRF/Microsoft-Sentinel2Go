@@ -99,9 +99,8 @@
         },
         "deployCustomLogsPipeline": {
             "type": "string",
-            "defaultValue": "NoPipe",
+            "defaultValue": "Logstash",
             "allowedValues": [
-                "NoPipe",
                 "Logstash",
                 "Logstash-EventHub"
             ],
@@ -150,7 +149,6 @@
             }
         },
         {
-            "condition": "[contains(parameters('deployCustomLogsPipeline'), 'Logstash')]",
             "name": "deployLogstashVM",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
@@ -204,7 +202,6 @@
             }
         },
         {
-            "condition": "[contains(parameters('deployCustomLogsPipeline'), 'Logstash')]",
             "name": "customLogsPipeline",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
@@ -232,7 +229,7 @@
                         ]
                     },
                     "vmName": {
-                        "value": "[if(contains(parameters('deployCustomLogsPipeline'), 'Logstash'), reference('deployLogstashVM').outputs.vmName.value, json('null'))]"
+                        "value": "[reference('deployLogstashVM').outputs.vmName.value]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -267,7 +264,7 @@
                         ]
                     },
                     "vmName": {
-                        "value": "[if(contains(parameters('deployCustomLogsPipeline'), 'Logstash'), reference('deployLogstashVM').outputs.vmName.value, json('null'))]"
+                        "value": "[reference('deployLogstashVM').outputs.vmName.value]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
