@@ -229,7 +229,7 @@
                         ]
                     },
                     "vmName": {
-                        "value": "[reference('deployLogstashVM').outputs.vmName.value]"
+                        "value": "[reference('deployLogstashVM').outputs.allLinuxVMsDeployed[0].vmName.value]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -264,7 +264,7 @@
                         ]
                     },
                     "vmName": {
-                        "value": "[reference('deployLogstashVM').outputs.vmName.value]"
+                        "value": "[reference('deployLogstashVM').outputs.allLinuxVMsDeployed[0].vmName.value]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
