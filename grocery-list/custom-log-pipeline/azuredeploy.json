@@ -232,7 +232,7 @@
                         ]
                     },
                     "vmName": {
-                        "value": "[if(contains(parameters('deployCustomLogsPipeline'), 'Logstash'), reference('deployLogstashVM').outputs.vmName.value, 'Resource not deployed')]"
+                        "value": "[if(contains(parameters('deployCustomLogsPipeline'), 'Logstash'), reference('deployLogstashVM').outputs.vmName.value, json('null'))]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -267,7 +267,7 @@
                         ]
                     },
                     "vmName": {
-                        "value": "[if(contains(parameters('deployCustomLogsPipeline'), 'Logstash'), reference('deployLogstashVM').outputs.vmName.value, 'Resource not deployed')]"
+                        "value": "[if(contains(parameters('deployCustomLogsPipeline'), 'Logstash'), reference('deployLogstashVM').outputs.vmName.value, json('null'))]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
