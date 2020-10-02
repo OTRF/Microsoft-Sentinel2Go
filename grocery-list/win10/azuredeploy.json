@@ -255,7 +255,7 @@
                     "workspaceName": {
                         "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
                     },
-                     "setSecurityCollectionTier": {
+                     "securityCollectionTier": {
                         "value": "[parameters('setSecurityCollectionTier')]"
                     },
                     "location": {
