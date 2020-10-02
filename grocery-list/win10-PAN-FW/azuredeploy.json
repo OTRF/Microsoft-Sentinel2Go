@@ -2,6 +2,58 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "workspaceName": {
+            "type": "string",
+            "defaultValue": "AzSen2Go",
+            "metadata": {
+                "description": "Name for the Log Analytics workspace used to aggregate data. If this is a new LA workspace, the template will add a unique string to the name you choose. If you are using an existing LA workspace, the name will not change and will be passed as is to the resources in the template."
+            }
+        },
+        "workspaceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own existing log analytics workspace ID. Leave it empty if you are deploying a new LA workspace."
+            }
+        },
+        "workspaceKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own existing log analytics workspace key. Leave it empty if you are deploying a new LA workspace."
+            }
+        },
+        "pricingTier": {
+            "type": "string",
+            "allowedValues": [
+                "PerGB2018",
+                "Free",
+                "Standalone",
+                "PerNode",
+                "Standard",
+                "Premium"
+            ],
+            "defaultValue": "PerGB2018",
+            "metadata": {
+                "description": "Pricing tier: pergb2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers."
+            }
+        },
+        "dataRetention": {
+            "type": "int",
+            "defaultValue": 30,
+            "minValue": 7,
+            "maxValue": 730,
+            "metadata": {
+                "description": "Number of days of retention. Workspaces in the legacy Free pricing tier can only have 7 days."
+            }
+        },
+        "immediatePurgeDataOn30Days": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
+            }
+        },
         "adminUsername": {
             "type": "string",
             "metadata": {
@@ -45,44 +97,6 @@
                 "description": "This is the size of PAN's firewall VM"
             }
         },
-        "workspaceName": {
-            "type": "string",
-            "defaultValue": "AzSen2Go",
-            "metadata": {
-                "description": "Name for the Log Analytics workspace used to aggregate data"
-            }
-        },
-        "pricingTier": {
-            "type": "string",
-            "allowedValues": [
-                "PerGB2018",
-                "Free",
-                "Standalone",
-                "PerNode",
-                "Standard",
-                "Premium"
-            ],
-            "defaultValue": "PerGB2018",
-            "metadata": {
-                "description": "Pricing tier: pergb2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers."
-            }
-        },
-        "dataRetention": {
-            "type": "int",
-            "defaultValue": 30,
-            "minValue": 7,
-            "maxValue": 730,
-            "metadata": {
-                "description": "Number of days of retention. Workspaces in the legacy Free pricing tier can only have 7 days."
-            }
-        },
-        "immediatePurgeDataOn30Days": {
-            "type": "bool",
-            "defaultValue": true,
-            "metadata": {
-                "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
-            }
-        },
         "windowsDesktopSKU": {
             "type": "string",
             "defaultValue": "19h2-pro",
@@ -94,20 +108,6 @@
             ],
             "metadata": {
                 "description": "The Windows version for the Desktop VM. This will pick a fully patched image of this given Windows version."
-            }
-        },
-        "workspaceId": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Your own log analytics workspace ID"
-            }
-        },
-        "workspaceKey": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Your own log analytics workspace keys"
             }
         },
         "vmSize": {

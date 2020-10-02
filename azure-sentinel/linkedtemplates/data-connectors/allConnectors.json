@@ -31,7 +31,7 @@
         },
         "securityCollectionTier": {
             "type": "string",
-            "defaultValue": "None",
+            "defaultValue": "Minimal",
             "allowedValues": [
                 "All",
                 "Recommended",
@@ -54,7 +54,7 @@
         {
             "condition": "[contains(parameters('dataConnectorsKind'), 'AzureActivityLog')]",
             "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-            "apiVersion": "2015-11-01-preview",
+            "apiVersion": "2020-03-01-preview",
             "location": "[parameters('location')]",
             "name": "[concat(parameters('workspaceName'), '/', replace(parameters('subscriptionId'),'-', ''))]",
             "kind": "AzureActivityLog",
@@ -65,7 +65,7 @@
         {
             "condition": "[contains(parameters('dataConnectorsKind'), 'SecurityInsightsSecurityEventCollectionConfiguration')]",
             "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-            "apiVersion": "2015-11-01-preview",
+            "apiVersion": "2020-03-01-preview",
             "location": "[parameters('location')]",
             "name": "[concat(parameters('workspaceName'), '/SecurityInsightsSecurityEventCollectionConfiguration')]",
             "kind": "SecurityInsightsSecurityEventCollectionConfiguration",
@@ -106,6 +106,17 @@
             "properties": {
                 "workspaceResourceId": "[parameters('workspaceId')]",
                 "containedResources": []
+            }
+        },
+        {
+            "condition": "[contains(parameters('dataConnectorsKind'), 'LinuxSyslogCollection')]",
+            "type": "Microsoft.OperationalInsights/workspaces/dataSources",
+            "apiVersion": "2020-03-01-preview",
+            "location": "[parameters('location')]",
+            "name": "[concat(parameters('workspaceName'), '/syslogCollection')]",
+            "kind": "LinuxSyslogCollection",
+            "properties": {
+                "state": "Enabled"
             }
         }
     ]
