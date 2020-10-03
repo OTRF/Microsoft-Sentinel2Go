@@ -65,7 +65,7 @@
             "metadata": {
                 "description": "Password for the all Windows virtual machines. The password must be at least 8 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter"
             },
-            "minLength": 8
+            "minLength": 12
         },
         "remoteAccessMode": {
             "type": "string",

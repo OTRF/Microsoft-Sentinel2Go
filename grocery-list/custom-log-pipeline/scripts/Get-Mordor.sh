@@ -60,7 +60,8 @@ else
     if [[ $MORDOR_DATASETS == "SMALL_DATASETS" ]]; then
         echo "Decompressing every small mordor dataset.."
         cd /opt/mordor/datasets/small/
-        find . -type f -name "*.tar.gz" -print0 | xargs -0 -I{} tar xf {} -C /opt/logstash/datasets/
+        find . -type f -name "*.zip" | grep -i 'host' | while read filename; do unzip -o -d /opt/logstash/datasets/ $filename; done;
+        # find . -type f -name "*.tar.gz" -print0 | xargs -0 -I{} tar xf {} -C /opt/logstash/datasets/
     elif [[ $MORDOR_DATASETS == "LARGE_APT29" ]]; then
         echo "Decompressing only APT29 Dataset.."
         cd /opt/mordor/datasets/large/apt29
