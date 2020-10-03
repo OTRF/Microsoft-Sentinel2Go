@@ -220,8 +220,8 @@
         }
     },
     "variables": {
-        "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsLocation": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/"
+        "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/"
     },
     "resources": [
         {
@@ -264,7 +264,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsLocation'), 'azure-sentinel/linkedtemplates/data-connectors/securityEvents.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/data-connectors/securityEvents.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -291,7 +291,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri":  "[uri(variables('artifactsLocation'),'azure-sentinel/linkedtemplates/log-analytics/winDataSources.json')]",
+                    "uri":  "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/linkedtemplates/log-analytics/winDataSources.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -317,7 +317,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/Win10-DC/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Win10-DC/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -380,7 +380,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmithLocation'), 'templates/azure/C2/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/C2/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
