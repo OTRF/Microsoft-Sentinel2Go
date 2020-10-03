@@ -151,7 +151,7 @@
     },
     "resources": [
         {
-            "name": "deployAzSentinel",
+            "name": "deployAzureSentinel",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "properties": {
@@ -181,7 +181,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "dependsOn": [
-                "deployAzSentinel"
+                "deployAzureSentinel"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -191,7 +191,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzSentinel').outputs.workspaceName.value]"
+                        "value": "[reference('deployAzureSentinel').outputs.workspaceName.value]"
                     },
                      "securityCollectionTier": {
                         "value": "[parameters('setSecurityCollectionTier')]"
@@ -207,7 +207,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "dependsOn": [
-                "deployAzSentinel"
+                "deployAzureSentinel"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -217,7 +217,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzSentinel').outputs.workspaceName.value]"
+                        "value": "[reference('deployAzureSentinel').outputs.workspaceName.value]"
                     },
                     "winEventProviders": {
                         "value": "[parameters('collectWinEventProviders')]"
@@ -233,7 +233,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "dependsOn": [
-                "deployAzSentinel"
+                "deployAzureSentinel"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -267,10 +267,10 @@
                         "value": true
                     },
                     "workspaceId": {
-                        "value": "[reference('deployAzSentinel').outputs.workspaceIdOutput.value]"
+                        "value": "[reference('deployAzureSentinel').outputs.workspaceIdOutput.value]"
                     },
                     "workspaceKey": {
-                        "value": "[reference('deployAzSentinel').outputs.workspaceKeyOutput.value]"
+                        "value": "[reference('deployAzureSentinel').outputs.workspaceKeyOutput.value]"
                     },
                     "location": {
                         "value": "[parameters('location')]"

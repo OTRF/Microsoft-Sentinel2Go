@@ -21,7 +21,8 @@
                 "Microsoft-Windows-Windows Firewall With Advanced Security/Firewall",
                 "Windows PowerShell",
                 "Microsoft-Windows-PowerShell/Operational",
-                "Microsoft-Windows-WMI-Activity/Operational"
+                "Microsoft-Windows-WMI-Activity/Operational",
+                "Microsoft-Windows-TaskScheduler/Operational"
             ],
             "metadata": {
                 "description": "A list of Windows Event Providers that you would like to collect.  Windows Security Auditing is not enabled through this option. It is enabled through Azure Sentinel Data Connectors."
