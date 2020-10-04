@@ -232,7 +232,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri('https://raw.githubusercontent.com/OTRF/','Azure-Sentinel2Go/master/azure-sentinel/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
