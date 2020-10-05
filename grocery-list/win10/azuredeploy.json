@@ -82,8 +82,7 @@
             "type": "string",
             "metadata": {
                 "description": "The sourceAddressPrefixes allowed to connect to all the VMs in this deployment"
-            },
-            "defaultValue": "*"
+            }
         },
         "numberOfWorkstations": {
             "type": "int",
