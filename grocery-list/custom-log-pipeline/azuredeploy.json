@@ -41,7 +41,6 @@
         },
         "adminUsername": {
             "type": "string",
-            "defaultValue": "",
             "metadata": {
                 "description": "Username for the Virtual Machines (Windows, Linux)."
             }
@@ -82,16 +81,15 @@
             "type": "string",
             "metadata": {
                 "description": "The sourceAddressPrefixes allowed to connect to this deployment"
-            },
-            "defaultValue": "*"
+            }
         },
         "addMordorDatasets": {
             "type": "string",
             "defaultValue": "NoItems",
             "allowedValues": [
                 "NoItems",
-                "mordor-small-datasets(1.1GB)",
-                "mordor-large-apt29(2.0GB)"
+                "mordor-small-datasets",
+                "mordor-large-apt29"
             ],
             "metadata": {
                 "description": "Do you want to deploy additional resources and connect them to your current Azure Sentinel's workspace?"
@@ -238,7 +236,7 @@
             }
         },
         {
-            "condition": "[or(contains(parameters('addMordorDatasets'), 'mordor-small-datasets(1.1GB)'), contains(parameters('addMordorDatasets'), 'mordor-large-apt29(2.0GB)'))]",
+            "condition": "[or(contains(parameters('addMordorDatasets'), 'mordor-small-datasets'), contains(parameters('addMordorDatasets'), 'mordor-large-apt29'))]",
             "name": "importMordorDatasets",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
@@ -256,7 +254,7 @@
                         "value": "SetupLogstash"
                     },
                     "commandToExecute": {
-                        "value": "[concat('bash Get-Mordor.sh -d', ' ', if(contains(parameters('addMordorDatasets'), 'mordor-small-datasets(1.1GB)'),'SMALL_DATASETS', 'LARGE_APT29' ))]"
+                        "value": "[concat('bash Get-Mordor.sh -d', ' ', if(contains(parameters('addMordorDatasets'), 'mordor-small-datasets'),'SMALL_DATASETS', 'LARGE_APT29' ))]"
                     },
                     "fileUris": {
                         "value": [
