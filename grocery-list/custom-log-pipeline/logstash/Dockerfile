@@ -3,4 +3,4 @@
 
 FROM docker.elastic.co/logstash/logstash:7.5.2
 
-RUN logstash-plugin install logstash-output-azure_loganalytics
+RUN logstash-plugin install microsoft-logstash-output-azure-loganalytics
