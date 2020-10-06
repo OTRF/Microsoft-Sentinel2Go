@@ -9,7 +9,7 @@ Azure Sentinel2Go is an open source project developed to expedite the deployment
 
 # Getting Started
 
-There are a few things that you can do with this project. This project is intended for research purposes, so I highly recommend to create a new resource group in your subscription to not interfere with any other system in the same resource while deploying VMs needed for some of the features provided by this Azure Resource Manager (ARM) template.
+There are a few things that you can do with this project. This project is intended for research purposes, so I highly recommend to create a new resource group in your subscription to not interfere with any other system in the same resource while deploying VMs needed for some of the features provided by this Azure Resource Manager (ARM) template. Take a look at the different scenarios that you can deploy in the section below.
 
 # Grocery List - Deployment Options
 
@@ -28,7 +28,8 @@ A few deployments available through Azure Sentinel To-go!
 
 For more information about the development of this project, feel free to check out the following resources:
 
-* [Azure Sentinel To-Go (Part-1): A lab w/ Prerecorded Data 😈 & a Custom Logs Pipe via ARM Templates 🚀](https://techcommunity.microsoft.com/t5/azure-sentinel/azure-sentinel-to-go-sentinel-lab-w-prerecorded-data-amp-a/ba-p/1260191)
+* [Azure Sentinel To-Go (Part 1): A lab w/ Prerecorded Data 😈 & a Custom Logs Pipe via ARM Templates 🚀](https://techcommunity.microsoft.com/t5/azure-sentinel/azure-sentinel-to-go-sentinel-lab-w-prerecorded-data-amp-a/ba-p/1260191)
+* [Azure Sentinel To-Go (Part 2): Integrating a Basic Windows Lab 🧪 via ARM Templates 🚀](https://techcommunity.microsoft.com/t5/azure-sentinel/azure-sentinel-to-go-part2-integrating-a-basic-windows-lab-via/ba-p/1742165)
 
 # Author
 
