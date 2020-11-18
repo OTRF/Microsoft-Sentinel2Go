@@ -12,22 +12,10 @@
                 "description": "Name for the Log Analytics workspace used to aggregate data"
             }
         },
-        "exchangeState": {
+        "mdatpAlerts": {
             "type": "string",
             "metadata": {
-                "description": "Exchange state"
-            }
-        },
-        "sharePointState": {
-            "type": "string",
-            "metadata": {
-                "description": "SharePoint state"
-            }
-        },
-        "teamsState": {
-            "type": "string",
-            "metadata": {
-                "description": "Teams state"
+                "description": "MDATP alerts state"
             }
         },
         "tenantId": {
@@ -50,18 +38,12 @@
             "apiVersion": "2020-01-01",
             "location": "[parameters('location')]",
             "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',parameters('guidValue'))]",
-            "kind": "Office365",
+            "kind": "MicrosoftDefenderAdvancedThreatProtection",
             "properties": {
                 "tenantId": "[parameters('tenantId')]",
                 "dataTypes": {
-                    "exchange": {
-                        "state": "[parameters('exchangeState')]"
-                    },
-                    "sharePoint": {
-                        "state": "[parameters('sharePointState')]"
-                    },
-                    "teams": {
-                        "state": "[parameters('teamsState')]"
+                    "alerts": {
+                        "state": "[parameters('mdatpAlerts')]"
                     }
                 }
             }
