@@ -12,22 +12,16 @@
                 "description": "Name for the Log Analytics workspace used to aggregate data"
             }
         },
-        "exchangeState": {
+        "mcasAlerts": {
             "type": "string",
             "metadata": {
-                "description": "Exchange state"
+                "description": "MCAS alerts state"
             }
         },
-        "sharePointState": {
+        "mcasDiscoveryLogs": {
             "type": "string",
             "metadata": {
-                "description": "SharePoint state"
-            }
-        },
-        "teamsState": {
-            "type": "string",
-            "metadata": {
-                "description": "Teams state"
+                "description": "MCAS discovery logs"
             }
         },
         "tenantId": {
@@ -50,18 +44,15 @@
             "apiVersion": "2020-01-01",
             "location": "[parameters('location')]",
             "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',parameters('guidValue'))]",
-            "kind": "Office365",
+            "kind": "MicrosoftCloudAppSecurity",
             "properties": {
                 "tenantId": "[parameters('tenantId')]",
                 "dataTypes": {
-                    "exchange": {
-                        "state": "[parameters('exchangeState')]"
+                    "alerts": {
+                        "state": "[parameters('mcasAlerts')]"
                     },
-                    "sharePoint": {
-                        "state": "[parameters('sharePointState')]"
-                    },
-                    "teams": {
-                        "state": "[parameters('teamsState')]"
+                    "discoveryLogs": {
+                        "state": "[parameters('mcasDiscoveryLogs')]"
                     }
                 }
             }
