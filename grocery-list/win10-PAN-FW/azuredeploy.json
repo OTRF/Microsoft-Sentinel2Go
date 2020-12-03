@@ -170,7 +170,7 @@
     },
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/"
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/"
     },
     "resources": [
         {
@@ -336,6 +336,5 @@
             }
         }
     ],
-    "outputs": {
-    }
+    "outputs": {}
 }

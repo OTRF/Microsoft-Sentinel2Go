@@ -86,7 +86,7 @@
             "metadata": {
                 "description": "The location of resources"
             },
-            "defaultValue": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/"
+            "defaultValue": "https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/"
         },
         "_artifactsLocationSasToken": {
             "type": "securestring",
@@ -162,8 +162,8 @@
                         "value": "[variables('uniqueWorkspace')]"
                     },
                     "workspaceId": {
-                         "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
-                     },
+                        "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+                    },
                     "location": {
                         "value": "[parameters('location')]"
                     }
@@ -192,11 +192,11 @@
                         "value": "[variables('uniqueWorkspace')]"
                     },
                     "workspaceId": {
-                         "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
-                     },
-                     "subscriptionId": {
-                         "value": "[subscription().subscriptionId]"
-                     },
+                        "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+                    },
+                    "subscriptionId": {
+                        "value": "[subscription().subscriptionId]"
+                    },
                     "location": {
                         "value": "[parameters('location')]"
                     }
@@ -240,7 +240,7 @@
             "identity": {
                 "type": "userAssigned",
                 "userAssignedIdentities": {
-                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName'))]" : {}
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName'))]": {}
                 }
             },
             "properties": {
@@ -248,7 +248,7 @@
                 "azCliVersion": "2.0.80",
                 "arguments": "[concat('-r', ' ', resourceGroup().name, ' ', '-w', ' ', variables('uniqueWorkspace'))]",
                 "primaryScriptUri": "[concat(parameters('_artifactsLocation'), 'resources/scripts/Post-AnalyticRules.sh')]",
-                "supportingScriptUris":[],
+                "supportingScriptUris": [],
                 "timeout": "PT30M",
                 "cleanupPreference": "OnSuccess",
                 "retentionInterval": "P1D"

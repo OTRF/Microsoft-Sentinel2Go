@@ -116,7 +116,7 @@
     },
     "variables": {
         "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/",
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/",
         "customScriptTemplateUri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/customScript.json')]"
     },
     "resources": [
@@ -271,6 +271,5 @@
             }
         }
     ],
-    "outputs": {
-    }
+    "outputs": {}
 }

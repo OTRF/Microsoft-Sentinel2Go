@@ -1,6 +1,6 @@
 # Azure Sentinel + Win10 + Palo Alto Networks VM-Series Firewall
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10-PAN-FW%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fshawnadrockleonard%2FAzure-Sentinel2Go%2Fshawns%2Fdev%2Fgrocery-list%2Fwin10-PAN-FW%2Fazuredeploy.json)
 
 ## Grocery Items
 
