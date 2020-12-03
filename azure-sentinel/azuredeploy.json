@@ -126,7 +126,7 @@
             "name": "[concat('SecurityInsights','(', variables('uniqueWorkspace'),')')]",
             "type": "Microsoft.OperationsManagement/solutions",
             "apiVersion": "2015-11-01-preview",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
             ],
@@ -232,7 +232,7 @@
             "name": "azCLIPostAnalyticRules",
             "type": "Microsoft.Resources/deploymentScripts",
             "apiVersion": "2019-10-01-preview",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.OperationsManagement/solutions/', concat('SecurityInsights','(', variables('uniqueWorkspace'),')'))]"
             ],
