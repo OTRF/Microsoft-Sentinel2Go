@@ -226,7 +226,7 @@
         }
     },
     "variables": {
-        "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
+        "artifactsBlacksmith": "https://raw.githubusercontent.com/shawnadrockleonard/Blacksmith/shawns/dev/",
         "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/"
     },
     "resources": [
