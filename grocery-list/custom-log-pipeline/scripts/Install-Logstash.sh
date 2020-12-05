@@ -80,7 +80,7 @@ else
     echo "Downloading logstash files locally to be mounted to docker container"
     wget -O /opt/logstash/scripts/logstash-entrypoint.sh https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/grocery-list/custom-log-pipeline/logstash/scripts/logstash-entrypoint.sh
     
-    if [ -n $AZURE_ENVIRONMENT ] && [ $AZURE_ENVIRONMENT == "azureusgovernment" ]; then
+    if [[ -n $AZURE_ENVIRONMENT ]] && [[ "$AZURE_ENVIRONMENT" == "azureusgovernment" ]]; then
         wget -O /opt/logstash/pipeline/loganalytics-output.conf https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/grocery-list/custom-log-pipeline/logstash/pipeline/loganalytics-output-usgov.conf
     else
         wget -O /opt/logstash/pipeline/loganalytics-output.conf https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/grocery-list/custom-log-pipeline/logstash/pipeline/loganalytics-output.conf
