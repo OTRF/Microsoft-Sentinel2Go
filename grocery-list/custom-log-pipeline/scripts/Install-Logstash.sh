@@ -10,7 +10,7 @@ usage(){
     echo "   -i         Log Analytics workspace id"
     echo "   -k         Log Analytics workspace shared key"
     echo "   -u         Local user to update files ownership"
-    echo "   -a         Azure environment name"
+    echo "   -p         Azure environment name"
     echo "   -c         EventHub Connection String Primary"
     echo "   -e         EventHub name"
     echo
@@ -21,14 +21,14 @@ usage(){
 }
 
 # ************ Command Options **********************
-while getopts :i:k:u:c:e:h option
+while getopts :i:k:u:p:c:e:h option
 do
     case "${option}"
     in
         i) WORKSPACE_ID=$OPTARG;;
         k) WORKSPACE_KEY=$OPTARG;;
         u) LOCAL_USER=$OPTARG;;
-        a) AZURE_ENVIRONMENT=$OPTARG;;
+        p) AZURE_ENVIRONMENT=$OPTARG;;
         c) EVENTHUB_CONNECTIONSTRING=$OPTARG;;
         e) EVENTHUB_NAME=$OPTARG;;
         h) usage;;

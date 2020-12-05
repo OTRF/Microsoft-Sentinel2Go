@@ -255,11 +255,11 @@
                         "value": "SetupLogstash"
                     },
                     "commandToExecute": {
-                        "value": "[concat('bash Install-Logstash.sh', ' ', '-i', ' ', reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, ' ', '-k', ' ', reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, ' ', '-u', ' ', parameters('adminUsername'), ' ', '-a', ' ', variables('azureEnvironment'), if(contains(parameters('deployCustomLogsPipeline'), 'EventHub'), concat(' ', '-c', ' ', '\"', reference('deployEventHub').outputs.NamespaceConnectionString.value, '\"', ' ', '-e', ' ', reference('deployEventHub').outputs.EventHubName.value), ''))]"
+                        "value": "[concat('bash Install-Logstash.sh -i ', reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, ' ', '-k', ' ', reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, ' ', '-u', ' ', parameters('adminUsername'), ' ', '-p', ' ', variables('azureEnvironment'), if(contains(parameters('deployCustomLogsPipeline'), 'EventHub'), concat(' ', '-c', ' ', '\"', reference('deployEventHub').outputs.NamespaceConnectionString.value, '\"', ' ', '-e', ' ', reference('deployEventHub').outputs.EventHubName.value), ''))]"
                     },
                     "fileUris": {
                         "value": [
-                            "[uri(variables('artifactsAzureSentinel2Go'), concat('grocery-list/custom-log-pipeline/scripts/Install-Logstash.sh'))]"
+                            "[uri(variables('artifactsAzureSentinel2Go'), 'grocery-list/custom-log-pipeline/scripts/Install-Logstash.sh')]"
                         ]
                     },
                     "vmName": {
