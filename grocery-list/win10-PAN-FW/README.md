@@ -1,8 +1,8 @@
 # Azure Sentinel + Win10 + Palo Alto Networks VM-Series Firewall
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fshawnadrockleonard%2FAzure-Sentinel2Go%2Fshawns%2Fdev%2Fgrocery-list%2Fwin10-PAN-FW%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10-PAN-FW%2Fazuredeploy.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fshawnadrockleonard%2FAzure-Sentinel2Go%2Fshawns%2Fdev%2Fgrocery-list%2Fwin10-PAN-FW%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2Fwin10-PAN-FW%2Fazuredeploy.json)
 
 ## Grocery Items
 
@@ -18,7 +18,7 @@
 * CEF Data Connector Enabled
 * Palo Alto Networks Data Connector
 * [OPTIONAL] Sysmon
-    * [Sysmon Config](https://github.com/shawnadrockleonard/Blacksmith/blob/shawns/dev/resources/configs/sysmon/sysmon.xml)
+    * [Sysmon Config](https://github.com/OTRF/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)
 * [OPTIONAL] Command and Control (c2) options:
     * `empire`
     * `covenant`

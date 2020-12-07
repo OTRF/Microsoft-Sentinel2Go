@@ -49,7 +49,7 @@ else
     echo "Stopping Logstash.."
     docker stop logstash
     # Adding Logstash config
-    wget -O /opt/logstash/pipeline/json-file-input.conf https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/grocery-list/custom-log-pipeline/logstash/pipeline/json-file-input.conf
+    wget -O /opt/logstash/pipeline/json-file-input.conf https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/grocery-list/custom-log-pipeline/logstash/pipeline/json-file-input.conf
 
     echo "Installing Git.."
     apt install -y git unzip

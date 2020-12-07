@@ -70,7 +70,7 @@
         "postAnalyticRules": {
             "type": "bool",
             "metadata": {
-                "description": "If set to true, Analytic rules from the official Azure Sentinel GitHub Repository https://github.com/Azure/Azure-Sentinel/tree/master/Detections translated to JSON files in https://github.com/shawnadrockleonard/Azure-Sentinel2Go/tree/shawns/dev/azure-sentinel/analytic-rules are created in your Log Analytics workspace. Remember that several queries need specific data tables to be enabled in Log Analytics."
+                "description": "If set to true, Analytic rules from the official Azure Sentinel GitHub Repository https://github.com/Azure/Azure-Sentinel/tree/master/Detections translated to JSON files in https://github.com/OTRF/Azure-Sentinel2Go/tree/master/azure-sentinel/analytic-rules are created in your Log Analytics workspace. Remember that several queries need specific data tables to be enabled in Log Analytics."
             },
             "defaultValue": false
         },
@@ -86,7 +86,7 @@
             "metadata": {
                 "description": "The location of resources"
             },
-            "defaultValue": "https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/"
+            "defaultValue": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/"
         },
         "_artifactsLocationSasToken": {
             "type": "securestring",

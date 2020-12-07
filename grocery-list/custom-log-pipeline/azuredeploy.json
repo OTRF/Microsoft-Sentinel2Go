@@ -141,8 +141,8 @@
         }
     },
     "variables": {
-        "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/shawnadrockleonard/Blacksmith/shawns/dev/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/",
+        "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/",
         "customScriptTemplateUri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/customScript.json')]",
         "azureEnvironment": "[toLower(environment().name)]"
     },
