@@ -11,41 +11,23 @@
         "dataRetention": {
             "value": 30
         },
-        "enableDataPipeline": {
+        "immediatePurgeDataOn30Days": {
+            "value": true
+        },
+        "enableAdditionalLASolutions": {
+            "value": []
+        },
+        "enableDataConnectorsKind": {
+            "value": []
+        },
+        "enableLAFunctions": {
+            "value": []
+        },
+        "postAnalyticRules": {
             "value": false
         },
-        "adminUsername": {
-            "value": "GEN-UNIQUE"
-        },
-        "linuxAuthenticationType": {
-            "value": "password"
-        },
-        "linuxAdminPasswordOrKey": {
-            "value": "GEN-PASSWORD"
-        },
-        "ingestMordor": {
-            "value": false
-        },
-        "enableAzureConnectors": {
-            "value": false
-        },
-        "enableMDATPIntegration": {
-            "value": false
-        },
-        "enableALAWinEventLogs": {
-            "value": false
-        },
-        "enableSCWinSecurityLogs": {
-            "value": false
-        },
-        "securityCollectionTier": {
-            "value": "Minimal"
-        },
-        "deployWinVM": {
-            "value": false
-        },
-        "allowedIPAddresses": {
-            "value": "*"
+        "userAssignedIdentityName": {
+            "value": ""
         }
     }
 }

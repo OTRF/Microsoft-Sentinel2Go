@@ -198,11 +198,11 @@
             "metadata": {
                 "description": "Location for all resources."
             }
-        } 
+        }
     },
     "variables": {
-        "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/"
+        "artifactsBlacksmith": "https://raw.githubusercontent.com/shawnadrockleonard/Blacksmith/shawns/dev/",
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/"
     },
     "resources": [
         {
@@ -230,7 +230,9 @@
                         "value": "[parameters('immediatePurgeDataOn30Days')]"
                     },
                     "enableLAFunctions": {
-                        "value": ["Sysmon"]
+                        "value": [
+                            "Sysmon"
+                        ]
                     }
                 }
             }
@@ -252,7 +254,7 @@
                     "workspaceName": {
                         "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
                     },
-                     "securityCollectionTier": {
+                    "securityCollectionTier": {
                         "value": "[parameters('setSecurityCollectionTier')]"
                     },
                     "location": {
@@ -272,7 +274,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri":  "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/linkedtemplates/log-analytics/winDataSources.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/linkedtemplates/log-analytics/winDataSources.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -430,6 +432,5 @@
             }
         }
     ],
-    "outputs": {
-    }
+    "outputs": {}
 }

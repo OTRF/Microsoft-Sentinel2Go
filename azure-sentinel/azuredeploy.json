@@ -70,7 +70,7 @@
         "postAnalyticRules": {
             "type": "bool",
             "metadata": {
-                "description": "If set to true, Analytic rules from the official Azure Sentinel GitHub Repository https://github.com/Azure/Azure-Sentinel/tree/master/Detections translated to JSON files in https://github.com/OTRF/Blacksmith/tree/azure/templates/azure/Sentinel2Go/azure-sentinel/analytic-rules are created in your Log Analytics workspace. Remember that several queries need specific data tables to be enabled in Log Analytics."
+                "description": "If set to true, Analytic rules from the official Azure Sentinel GitHub Repository https://github.com/Azure/Azure-Sentinel/tree/master/Detections translated to JSON files in https://github.com/shawnadrockleonard/Azure-Sentinel2Go/tree/shawns/dev/azure-sentinel/analytic-rules are created in your Log Analytics workspace. Remember that several queries need specific data tables to be enabled in Log Analytics."
             },
             "defaultValue": false
         },
@@ -86,7 +86,7 @@
             "metadata": {
                 "description": "The location of resources"
             },
-            "defaultValue": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/"
+            "defaultValue": "https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/"
         },
         "_artifactsLocationSasToken": {
             "type": "securestring",
@@ -126,7 +126,7 @@
             "name": "[concat('SecurityInsights','(', variables('uniqueWorkspace'),')')]",
             "type": "Microsoft.OperationsManagement/solutions",
             "apiVersion": "2015-11-01-preview",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
             ],
@@ -162,8 +162,8 @@
                         "value": "[variables('uniqueWorkspace')]"
                     },
                     "workspaceId": {
-                         "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
-                     },
+                        "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+                    },
                     "location": {
                         "value": "[parameters('location')]"
                     }
@@ -192,11 +192,11 @@
                         "value": "[variables('uniqueWorkspace')]"
                     },
                     "workspaceId": {
-                         "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
-                     },
-                     "subscriptionId": {
-                         "value": "[subscription().subscriptionId]"
-                     },
+                        "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+                    },
+                    "subscriptionId": {
+                        "value": "[subscription().subscriptionId]"
+                    },
                     "location": {
                         "value": "[parameters('location')]"
                     }
@@ -232,7 +232,7 @@
             "name": "azCLIPostAnalyticRules",
             "type": "Microsoft.Resources/deploymentScripts",
             "apiVersion": "2019-10-01-preview",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.OperationsManagement/solutions/', concat('SecurityInsights','(', variables('uniqueWorkspace'),')'))]"
             ],
@@ -240,7 +240,7 @@
             "identity": {
                 "type": "userAssigned",
                 "userAssignedIdentities": {
-                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName'))]" : {}
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName'))]": {}
                 }
             },
             "properties": {
@@ -248,7 +248,7 @@
                 "azCliVersion": "2.0.80",
                 "arguments": "[concat('-r', ' ', resourceGroup().name, ' ', '-w', ' ', variables('uniqueWorkspace'))]",
                 "primaryScriptUri": "[concat(parameters('_artifactsLocation'), 'resources/scripts/Post-AnalyticRules.sh')]",
-                "supportingScriptUris":[],
+                "supportingScriptUris": [],
                 "timeout": "PT30M",
                 "cleanupPreference": "OnSuccess",
                 "retentionInterval": "P1D"

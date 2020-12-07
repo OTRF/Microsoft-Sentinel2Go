@@ -2,6 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "utcValue": {
+            "type": "string",
+            "metadata": {
+                "description": "Returns the current (UTC) datetime value in the specified format. If no format is provided, the ISO 8601 (yyyyMMddTHHmmssZ) format is used"
+            },
+            "defaultValue": "[utcNow()]"
+        },
         "workspaceName": {
             "type": "string",
             "metadata": {
@@ -77,11 +84,30 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
+        "remoteAccessMode": {
+            "type": "string",
+            "defaultValue": "AllowPublicIP",
+            "allowedValues": [
+                "AllowPublicIP",
+                "AzureBastionHost"
+            ],
+            "metadata": {
+                "description": "Do you want to restrict access to your environment by a Public IP or set up an Azure Bastion Host. If the former, make sure you add your public IP address to the variable 'allowedIPAddresses'"
+            }
+        },
         "allowedIPAddresses": {
             "type": "string",
             "metadata": {
                 "description": "The sourceAddressPrefixes allowed to connect to this deployment"
-            }
+            },
+            "defaultValue": "*"
+        },
+        "azureBastionSubnetRange": {
+            "type": "string",
+            "metadata": {
+                "description": "Address Range of the Azure Bastion service"
+            },
+            "defaultValue": "192.168.3.0/27"
         },
         "addMordorDatasets": {
             "type": "string",
@@ -115,9 +141,10 @@
         }
     },
     "variables": {
-        "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/",
-        "customScriptTemplateUri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/customScript.json')]"
+        "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/shawnadrockleonard/Blacksmith/shawns/dev/",
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/",
+        "customScriptTemplateUri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/customScript.json')]",
+        "azureEnvironment": "[toLower(environment().name)]"
     },
     "resources": [
         {
@@ -131,6 +158,9 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
+                    "utcValue": {
+                        "value": "[parameters('utcValue')]"
+                    },
                     "workspaceName": {
                         "value": "[parameters('workspaceName')]"
                     },
@@ -157,20 +187,26 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "vmSize": {
-                        "value": "[parameters('vmSize')]"
-                    },
                     "adminUsername": {
                         "value": "[parameters('adminUsername')]"
                     },
                     "authenticationType": {
                         "value": "[parameters('authenticationType')]"
                     },
+                    "vmSize": {
+                        "value": "[parameters('vmSize')]"
+                    },
                     "adminPasswordOrKey": {
                         "value": "[parameters('adminPasswordOrKey')]"
                     },
+                    "remoteAccessMode": {
+                        "value": "[parameters('remoteAccessMode')]"
+                    },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
+                    },
+                    "azureBastionSubnetRange": {
+                        "value": "[parameters('azureBastionSubnetRange')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -219,7 +255,7 @@
                         "value": "SetupLogstash"
                     },
                     "commandToExecute": {
-                        "value": "[concat('bash Install-Logstash.sh -i', ' ', reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, ' ', '-k', ' ', reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, ' ', '-u', ' ', parameters('adminUsername'), if(contains(parameters('deployCustomLogsPipeline'), 'EventHub'), concat(' ', '-c', ' ', '\"', reference('deployEventHub').outputs.NamespaceConnectionString.value, '\"', ' ', '-e', ' ', reference('deployEventHub').outputs.EventHubName.value), ''))]"
+                        "value": "[concat('bash Install-Logstash.sh -i ', reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, ' ', '-k', ' ', reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, ' ', '-u', ' ', parameters('adminUsername'), ' ', '-p', ' ', variables('azureEnvironment'), if(contains(parameters('deployCustomLogsPipeline'), 'EventHub'), concat(' ', '-c', ' ', '\"', reference('deployEventHub').outputs.NamespaceConnectionString.value, '\"', ' ', '-e', ' ', reference('deployEventHub').outputs.EventHubName.value), ''))]"
                     },
                     "fileUris": {
                         "value": [
@@ -271,6 +307,5 @@
             }
         }
     ],
-    "outputs": {
-    }
+    "outputs": {}
 }

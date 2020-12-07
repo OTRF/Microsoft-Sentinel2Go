@@ -10,6 +10,7 @@ usage(){
     echo "   -i         Log Analytics workspace id"
     echo "   -k         Log Analytics workspace shared key"
     echo "   -u         Local user to update files ownership"
+    echo "   -p         Azure environment name"
     echo "   -c         EventHub Connection String Primary"
     echo "   -e         EventHub name"
     echo
@@ -20,13 +21,14 @@ usage(){
 }
 
 # ************ Command Options **********************
-while getopts :i:k:u:c:e:h option
+while getopts :i:k:u:p:c:e:h option
 do
     case "${option}"
     in
         i) WORKSPACE_ID=$OPTARG;;
         k) WORKSPACE_KEY=$OPTARG;;
         u) LOCAL_USER=$OPTARG;;
+        p) AZURE_ENVIRONMENT=$OPTARG;;
         c) EVENTHUB_CONNECTIONSTRING=$OPTARG;;
         e) EVENTHUB_NAME=$OPTARG;;
         h) usage;;
@@ -76,14 +78,20 @@ else
     mkdir -p /opt/logstash/{scripts,pipeline,config,datasets}
 
     echo "Downloading logstash files locally to be mounted to docker container"
-    wget -O /opt/logstash/scripts/logstash-entrypoint.sh https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/grocery-list/custom-log-pipeline/logstash/scripts/logstash-entrypoint.sh
-    wget -O /opt/logstash/pipeline/loganalytics-output.conf https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/grocery-list/custom-log-pipeline/logstash/pipeline/loganalytics-output.conf
-    wget -O /opt/logstash/config/logstash.yml https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/grocery-list/custom-log-pipeline/logstash/config/logstash.yml
-    wget -O /opt/logstash/docker-compose.yml https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/grocery-list/custom-log-pipeline/logstash/docker-compose.yml
-    wget -O /opt/logstash/Dockerfile https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/grocery-list/custom-log-pipeline/logstash/Dockerfile
+    wget -O /opt/logstash/scripts/logstash-entrypoint.sh https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/grocery-list/custom-log-pipeline/logstash/scripts/logstash-entrypoint.sh
+    
+    if [[ -n $AZURE_ENVIRONMENT ]] && [[ "$AZURE_ENVIRONMENT" == "azureusgovernment" ]]; then
+        wget -O /opt/logstash/pipeline/loganalytics-output.conf https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/grocery-list/custom-log-pipeline/logstash/pipeline/loganalytics-output-usgov.conf
+    else
+        wget -O /opt/logstash/pipeline/loganalytics-output.conf https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/grocery-list/custom-log-pipeline/logstash/pipeline/loganalytics-output.conf
+    fi
+
+    wget -O /opt/logstash/config/logstash.yml https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/grocery-list/custom-log-pipeline/logstash/config/logstash.yml
+    wget -O /opt/logstash/docker-compose.yml https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/grocery-list/custom-log-pipeline/logstash/docker-compose.yml
+    wget -O /opt/logstash/Dockerfile https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/grocery-list/custom-log-pipeline/logstash/Dockerfile
 
     if [[ $EVENTHUB_CONNECTIONSTRING ]] && [[ $EVENTHUB_NAME ]]; then
-        wget -O /opt/logstash/pipeline/eventhub-input.conf https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/grocery-list/custom-log-pipeline/logstash/pipeline/eventhub-input.conf
+        wget -O /opt/logstash/pipeline/eventhub-input.conf https://raw.githubusercontent.com/shawnadrockleonard/Azure-Sentinel2Go/shawns/dev/grocery-list/custom-log-pipeline/logstash/pipeline/eventhub-input.conf
     fi
 
     chown -R $LOCAL_USER:$LOCAL_USER /opt/logstash/*
