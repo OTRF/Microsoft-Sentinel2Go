@@ -274,7 +274,56 @@
                 }
             }
         },
-
+        {
+            "name": "enableLinuxSyslogCollection",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "dependsOn": [
+                "deployAzureSentinel2Go"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/data-connectors/syslogCollection.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[reference('deployAzureSentinel2Go', '2020-06-01').outputs.workspaceName.value]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[not(empty(parameters('collectSyslogFacilities')))]",
+            "name": "collectSyslogDataSources",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-05-01",
+            "dependsOn": [
+                "deployAzureSentinel2Go"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/linkedtemplates/log-analytics/syslogDataSources.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[reference('deployAzureSentinel2Go', '2020-06-01').outputs.workspaceName.value]"
+                    },
+                    "syslogFacilities": {
+                        "value": "[parameters('collectSyslogFacilities')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
         {
             "name": "deployLinuxVM",
             "type": "Microsoft.Resources/deployments",
@@ -339,56 +388,6 @@
                     },
                     "enableAuditdPlugin": {
                         "value": "[parameters('enableAuditdPlugin')]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    }
-                }
-            }
-        },
-        {
-            "name": "enableLinuxSyslogCollection",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "dependsOn": [
-                "deployAzureSentinel2Go"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/data-connectors/syslogCollection.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[reference('deployAzureSentinel2Go', '2020-06-01').outputs.workspaceName.value]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    }
-                }
-            }
-        },
-        {
-            "condition": "[not(empty(parameters('collectSyslogFacilities')))]",
-            "name": "collectSyslogDataSources",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-05-01",
-            "dependsOn": [
-                "deployAzureSentinel2Go"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/linkedtemplates/log-analytics/syslogDataSources.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[reference('deployAzureSentinel2Go', '2020-06-01').outputs.workspaceName.value]"
-                    },
-                    "syslogFacilities": {
-                        "value": "[parameters('collectSyslogFacilities')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
