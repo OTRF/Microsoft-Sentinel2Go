@@ -15,8 +15,8 @@ There are a few things that you can do with this project. This project is intend
 
 A few deployments available through Azure Sentinel To-go!
 
-| Items | Deploy | Deploy US Gov
-| :---| :---|
+| Items | Deploy | Deploy US Gov |
+| :---| :---| :--- |
 | [Azure Sentinel](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/azure-sentinel) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fshawnadrockleonard%2FAzure-Sentinel2Go%2Fshawns%2Fdev%2Fazure-sentinel%2Fazuredeploy.json) | [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fshawnadrockleonard%2FAzure-Sentinel2Go%2Fshawns%2Fdev%2Fazure-sentinel%2Fazuredeploy.json) |
 | [Azure Sentinel + Custom Log Pipeline](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/custom-log-pipeline) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fshawnadrockleonard%2FAzure-Sentinel2Go%2Fshawns%2Fdev%2Fgrocery-list%2Fcustom-log-pipeline%2Fazuredeploy.json) | [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fshawnadrockleonard%2FAzure-Sentinel2Go%2Fshawns%2Fdev%2Fgrocery-list%2Fcustom-log-pipeline%2Fazuredeploy.json) |
 | [Azure Sentinel + Win10 Workstations](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/win10) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fshawnadrockleonard%2FAzure-Sentinel2Go%2Fshawns%2Fdev%2Fgrocery-list%2Fwin10%2Fazuredeploy.json) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fshawnadrockleonard%2FAzure-Sentinel2Go%2Fshawns%2Fdev%2Fgrocery-list%2Fwin10%2Fazuredeploy.json) |
