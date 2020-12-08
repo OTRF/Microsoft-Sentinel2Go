@@ -2,6 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "utcValue": {
+            "type": "string",
+            "metadata": {
+                "description": "Returns the current (UTC) datetime value in the specified format. If no format is provided, the ISO 8601 (yyyyMMddTHHmmssZ) format is used"
+            },
+            "defaultValue": "[utcNow()]"
+        },
         "workspaceName": {
             "type": "string",
             "defaultValue": "AzSen2Go",
@@ -94,6 +101,13 @@
                 "description": "The sourceAddressPrefixes allowed to connect to this deployment"
             },
             "defaultValue": "*"
+        },
+        "azureBastionSubnetRange": {
+            "type": "string",
+            "metadata": {
+                "description": "Address Range of the Azure Bastion service"
+            },
+            "defaultValue": "192.168.3.0/27"
         },
         "numberOfUbuntuVMs": {
             "type": "int",
@@ -242,6 +256,9 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
+                    "utcValue": {
+                        "value": "[parameters('utcValue')]"
+                    },
                     "workspaceName": {
                         "value": "[parameters('workspaceName')]"
                     },
@@ -260,7 +277,7 @@
         {
             "name": "enableLinuxSyslogCollection",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-05-01",
+            "apiVersion": "2020-06-01",
             "dependsOn": [
                 "deployAzureSentinel2Go"
             ],
@@ -272,7 +289,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
+                        "value": "[reference('deployAzureSentinel2Go', '2020-06-01').outputs.workspaceName.value]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -291,12 +308,12 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri":  "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/linkedtemplates/log-analytics/syslogDataSources.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/linkedtemplates/log-analytics/syslogDataSources.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
                     "workspaceName": {
-                        "valude": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
+                        "value": "[reference('deployAzureSentinel2Go', '2020-06-01').outputs.workspaceName.value]"
                     },
                     "syslogFacilities": {
                         "value": "[parameters('collectSyslogFacilities')]"
@@ -356,6 +373,9 @@
                     },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
+                    },
+                    "azureBastionSubnetRange": {
+                        "value": "[parameters('azureBastionSubnetRange')]"
                     },
                     "enableMonitoringAgent": {
                         "value": true
