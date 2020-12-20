@@ -138,13 +138,6 @@
                 "description": "Do you want to install Sysmon on the endpoint?"
             }
         },
-        "enableAntimalware": {
-            "type": "bool",
-            "defaultValue": false,
-            "metadata": {
-                "description": "Enable Antimalware extension to filter out some folders and file extensions from the Windows Defender service"
-            }
-        },
         "c2Framework": {
             "type": "string",
             "defaultValue": "None",
@@ -240,9 +233,6 @@
                     },
                     "enableMonitoringAgent": {
                         "value": "[parameters('enableMonitoringAgent')]"
-                    },
-                    "enableAntimalware": {
-                        "value": "[parameters('enableAntimalware')]"
                     },
                     "enableSysmon": {
                         "value": "[parameters('enableSysmon')]"

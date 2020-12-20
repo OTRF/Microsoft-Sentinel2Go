@@ -331,9 +331,6 @@
                     "enableMonitoringAgent": {
                         "value": true
                     },
-                    "enableAntimalware": {
-                        "value": true
-                    },
                     "enableSysmon": {
                         "value": "[parameters('enableSysmon')]"
                     },
