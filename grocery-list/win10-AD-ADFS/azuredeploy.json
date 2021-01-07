@@ -63,7 +63,7 @@
         "adminPassword": {
             "type": "securestring",
             "metadata": {
-                "description": "Password for the all Virtual machines. The password must be at least 8 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter"
+                "description": "Password for the all Virtual machines. The password must be at least 12 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter"
             },
             "minLength": 8
         },
@@ -77,7 +77,7 @@
             "type": "securestring",
             "minLength": 12,
             "metadata": {
-                "description": "Password for ADFS user account. The password must be at least 8 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter"
+                "description": "Password for ADFS user account. The password must be at least 12 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter"
             }
         },
         "remoteAccessMode": {
@@ -266,32 +266,14 @@
                         "value": [
                             "Sysmon"
                         ]
-                    }
-                }
-            }
-        },
-        {
-            "name": "enableSecurityEventDataConnector",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "dependsOn": [
-                "deployAzureSentinel2Go"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/data-connectors/securityEvents.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
                     },
-                    "securityCollectionTier": {
+                    "enableDataConnectorsKind": {
+                        "value": [
+                            "SecurityInsightsSecurityEventCollectionConfiguration"
+                        ]
+                    },
+                    "setSecurityCollectionTier": {
                         "value": "[parameters('setSecurityCollectionTier')]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
                     }
                 }
             }
