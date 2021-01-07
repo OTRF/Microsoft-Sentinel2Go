@@ -19,9 +19,10 @@ The current kind of Data Connectors deployed via ARM templates in this project a
 | [Azure Activity](https://docs.microsoft.com/en-us/azure/sentinel/connect-azure-activity) | AzureActivity | Data Source | AzureActivityLog |
 | [Azure Security Center](https://docs.microsoft.com/en-us/azure/sentinel/connect-azure-security-center) | SecurityAlert | Data Connector | AzureSecurityCenter |
 | [DNS (Preview)](https://docs.microsoft.com/en-us/azure/sentinel/connect-dns) | DnsEvents, DnsInventory | Solution | DnsAnalytics |
-| [Office 365](https://docs.microsoft.com/en-us/azure/sentinel/connect-office-365) |  OfficeActivity | Data Connector | Office365 |
 | [Security Events](https://docs.microsoft.com/en-us/azure/sentinel/connect-windows-security-events) | SecurityEvent | Data Source | SecurityInsightsSecurityEventCollectionConfiguration |
 | [Windows Firewall](https://docs.microsoft.com/en-us/azure/sentinel/connect-windows-firewall) | WindowsFirewall | Solution | WindowsFirewall |
+| [Office 365](https://docs.microsoft.com/en-us/azure/sentinel/connect-office-365) | OfficeActivity | Data Connector | Office365 |
+| [Azure AD](https://docs.microsoft.com/en-us/azure/sentinel/connect-azure-active-directory) | SigninLogs, AuditLogs | Data Connector | AzureActiveDirectory |
 
 # References
 
