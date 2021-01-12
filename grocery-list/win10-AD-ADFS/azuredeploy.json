@@ -158,7 +158,7 @@
             },
             "defaultValue": "azsentinel.local"
         },
-        "setSecurityCollectionTier": {
+        "SecurityCollectionTier": {
             "type": "string",
             "metadata": {
                 "description": "Tier for gathering Windows Security Events."
@@ -272,8 +272,8 @@
                             "SecurityInsightsSecurityEventCollectionConfiguration"
                         ]
                     },
-                    "setSecurityCollectionTier": {
-                        "value": "[parameters('setSecurityCollectionTier')]"
+                    "SecurityCollectionTier": {
+                        "value": "[parameters('SecurityCollectionTier')]"
                     }
                 }
             }
