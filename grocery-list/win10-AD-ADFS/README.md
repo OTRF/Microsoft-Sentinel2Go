@@ -37,16 +37,9 @@
 * Windows event providers enabled
     * `System`
     * `Microsoft-Windows-Sysmon/Operational`
-    * `Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational`
-    * `Microsoft-Windows-Bits-Client/Operational`
-    * `Microsoft-Windows-TerminalServices-LocalSessionManager/Operational`
     * `Directory Service`
-    * `Microsoft-Windows-DNS-Client/Operational`
-    * `Microsoft-Windows-Windows Firewall With Advanced Security/Firewall`
     * `Windows PowerShell`
     * `Microsoft-Windows-PowerShell/Operational`
-    * `Microsoft-Windows-WMI-Activity/Operational`
-    * `Microsoft-Windows-TaskScheduler/Operational`
     * `AD FS/Admin`
 * [OPTIONAL] Sysmon
     * [Sysmon Config](https://github.com/OTRF/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)
@@ -56,74 +49,3 @@
     * `caldera`
     * `metasploit`
     * `shad0w`
-
-## Enable Additional Telemetry [OPTIONAL]
-
-Assuming an adversary would try to read the ADFS DKM key from Active Directory (AD), I would recommend to create an Audit rule on the ADFS DKM container:
-
-* RDP to Domain Controller
-* Open PowerShell as Administrator
-* Import Active Directory module
-
-```PowerShell
-Import-Module ActiveDirectory
-```
-
-* Import `Set-AuditRule` from the GitHub project [Se-AuditRule](https://github.com/OTRF/Set-AuditRule)
-
-```PowerShell
-IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/OTRF/Set-AuditRule/master/Set-AuditRule.ps1')`
-```
-
-* Set an audit rule to monitor for any user reading the property attribute `thumbnailPhoto` from the DKM container
-
-```PowerShell
-Set-AuditRule -AdObjectPath 'AD:\CN=CryptoPolicy,CN=ADFS,CN=Microsoft,CN=Program Data,DC=azsentinel,DC=local' -WellKnownSidType WorldSid -Rights GenericRead -InheritanceFlags None -AuditFlags Success -AttributeGUID '8d3bca50-1d7e-11d0-a081-00aa006c33ed'
-````
-
-After that, you could read the DKM key as a byte array and convert it to a usable string from AD by running the following command:
-
-```PowerShell
-$key=(Get-ADObject -filter 'ObjectClass -eq "Contact" -and name -ne "CryptoPolicy"' -SearchBase "CN=ADFS,CN=Microsoft,CN=Program Data,DC=azsentinel,DC=local" -Properties thumbnailPhoto).thumbnailPhoto
-
-[System.BitConverter]::ToString($key)
-```
-
-**Results: Windows Security Event 4662**
-
-```xml
-- <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event"> 
-- <System> 
-<Provider Name="Microsoft-Windows-Security-Auditing" Guid="{54849625-5478-4994-a5ba-3e3b0328c30d}" /> 
-<EventID>4662</EventID> 
-<Version>0</Version> 
-<Level>0</Level> 
-<Task>14080</Task> 
-<Opcode>0</Opcode> 
-<Keywords>0x8020000000000000</Keywords> 
-<TimeCreated SystemTime="2020-12-20T07:53:41.092054600Z" /> 
-<EventRecordID>330446</EventRecordID> 
-<Correlation /> 
-<Execution ProcessID="708" ThreadID="836" /> 
-<Channel>Security</Channel> 
-<Computer>DC01.azsentinel.local</Computer> 
-<Security /> 
-</System> 
-- <EventData> 
-<Data Name="SubjectUserSid">S-1-5-21-1640822366-3528877384-3060188657-1103</Data> 
-<Data Name="SubjectUserName">adfsuser</Data> 
-<Data Name="SubjectDomainName">AZSENTINEL</Data> 
-<Data Name="SubjectLogonId">0x4235ba</Data> 
-<Data Name="ObjectServer">DS</Data> 
-<Data Name="ObjectType">%{5cb41ed0-0e4c-11d0-a286-00aa003049e2}</Data> 
-<Data Name="ObjectName">%{8cd0a7fa-b3c9-4572-85e5-9359c2783031}</Data> 
-<Data Name="OperationType">Object Access</Data> 
-<Data Name="HandleId">0x0</Data> 
-<Data Name="AccessList">%%7684</Data> 
-<Data Name="AccessMask">0x10</Data> 
-<Data Name="Properties">%%7684 {77b5b886-944a-11d1-aebd-0000f80367c1} {8d3bca50-1d7e-11d0-a081-00aa006c33ed} {5cb41ed0-0e4c-11d0-a286-00aa003049e2}</Data> 
-<Data Name="AdditionalInfo">-</Data> 
-<Data Name="AdditionalInfo2" /> 
-</EventData> 
-</Event>
-```

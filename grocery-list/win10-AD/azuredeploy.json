@@ -145,7 +145,7 @@
             },
             "defaultValue": "azsentinel.local"
         },
-        "setSecurityCollectionTier": {
+        "securityCollectionTier": {
             "type": "string",
             "metadata": {
                 "description": "Tier for gathering Windows Security Events."
@@ -274,7 +274,7 @@
                         "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
                     },
                     "securityCollectionTier": {
-                        "value": "[parameters('setSecurityCollectionTier')]"
+                        "value": "[parameters('securityCollectionTier')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"

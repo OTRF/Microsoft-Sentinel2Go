@@ -158,7 +158,7 @@
             },
             "defaultValue": "azsentinel.local"
         },
-        "SecurityCollectionTier": {
+        "securityCollectionTier": {
             "type": "string",
             "metadata": {
                 "description": "Tier for gathering Windows Security Events."
@@ -179,16 +179,9 @@
             "defaultValue": [
                 "System",
                 "Microsoft-Windows-Sysmon/Operational",
-                "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational",
-                "Microsoft-Windows-Bits-Client/Operational",
-                "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational",
                 "Directory Service",
-                "Microsoft-Windows-DNS-Client/Operational",
-                "Microsoft-Windows-Windows Firewall With Advanced Security/Firewall",
                 "Windows PowerShell",
                 "Microsoft-Windows-PowerShell/Operational",
-                "Microsoft-Windows-WMI-Activity/Operational",
-                "Microsoft-Windows-TaskScheduler/Operational",
                 "AD FS/Admin"
             ]
         },
@@ -272,8 +265,8 @@
                             "SecurityInsightsSecurityEventCollectionConfiguration"
                         ]
                     },
-                    "SecurityCollectionTier": {
-                        "value": "[parameters('SecurityCollectionTier')]"
+                    "securityCollectionTier": {
+                        "value": "[parameters('securityCollectionTier')]"
                     }
                 }
             }

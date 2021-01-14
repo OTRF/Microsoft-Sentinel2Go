@@ -128,7 +128,7 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
-        "setSecurityCollectionTier": {
+        "securityCollectionTier": {
             "type": "string",
             "metadata": {
                 "description": "Tier for gathering Windows Security Events."
@@ -255,7 +255,7 @@
                         "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
                     },
                     "securityCollectionTier": {
-                        "value": "[parameters('setSecurityCollectionTier')]"
+                        "value": "[parameters('securityCollectionTier')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
