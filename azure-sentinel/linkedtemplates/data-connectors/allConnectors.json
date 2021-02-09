@@ -58,6 +58,8 @@
     },
     "variables": {
         "o365Name": "[concat('o365', uniqueString(resourceGroup().id))]",
+        "officeATPName": "[concat('oatp', uniqueString(resourceGroup().id))]",
+        "threatIntelligenceName": "[concat('ti', uniqueString(resourceGroup().id))]",
         "mdatpName": "[concat('mdatp', uniqueString(resourceGroup().id))]",
         "aatpName": "[concat('aatp', uniqueString(resourceGroup().id))]",
         "ascName": "[concat('asc', uniqueString(resourceGroup().id))]",
@@ -150,6 +152,38 @@
                         "state": "enabled"
                     },
                     "teams": {
+                        "state": "enabled"
+                    }
+                }
+            }
+        },
+		{
+			"condition": "[contains(parameters('dataConnectorsKind'), 'OfficeATP')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+            "apiVersion": "2019-01-01-preview",
+            "location": "[parameters('location')]",
+            "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',variables('officeATPName'))]",
+            "kind": "OfficeATP",
+            "properties": {
+                "tenantId": "[parameters('tenantId')]",
+                "dataTypes": {
+                    "alerts": {
+                        "state": "enabled"
+                    }
+                }
+            }
+        },
+        {
+			"condition": "[contains(parameters('dataConnectorsKind'), 'ThreatIntelligence')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+            "apiVersion": "2019-01-01-preview",
+            "location": "[parameters('location')]",
+            "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',variables('threatIntelligenceName'))]",
+            "kind": "ThreatIntelligence",
+            "properties": {
+                "tenantId": "[parameters('tenantId')]",
+                "dataTypes": {
+                    "indicators": {
                         "state": "enabled"
                     }
                 }
