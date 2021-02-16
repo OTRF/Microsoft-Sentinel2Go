@@ -65,9 +65,6 @@
             "metadata": {
                 "description": "List of functions to enable in your Log Analytics Workspace. Available: Sysmon"
             },
-            "allowedValues": [
-                "Sysmon"
-            ],
             "defaultValue": []
         },
         "securityCollectionTier": {
