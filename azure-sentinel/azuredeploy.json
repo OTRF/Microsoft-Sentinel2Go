@@ -65,6 +65,9 @@
             "metadata": {
                 "description": "List of functions to enable in your Log Analytics Workspace. Available: Sysmon"
             },
+            "allowedValues": [
+                "Sysmon"
+            ],
             "defaultValue": []
         },
         "securityCollectionTier": {
@@ -286,6 +289,10 @@
         "workspaceKeyOutput": {
             "type": "string",
             "value": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace')), '2015-11-01-preview').primarySharedKey]"
+        },
+        "workspaceResourceIdOutput": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
         }
     }
 }
