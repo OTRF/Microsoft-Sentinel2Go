@@ -32,7 +32,7 @@
     * Azure Active Directory (AAD) Connect installed
 * Windows 10 Workstations (Max. 10)
 * Windows [Microsoft Monitoring Agent](https://docs.microsoft.com/en-us/services-hub/health/mma-setup) installed
-    * It connects to the Microsoft Log Analytics workspace define in the template.
+    * It connects to the Azure Sentinel Log Analytics workspace defined in the template.
 * SecurityEvents data connector enabled
 * Windows event channels enabled
     * `System`
