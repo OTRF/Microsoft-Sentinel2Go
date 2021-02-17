@@ -34,7 +34,7 @@
 * Windows [Microsoft Monitoring Agent](https://docs.microsoft.com/en-us/services-hub/health/mma-setup) installed
     * It connects to the Microsoft Log Analytics workspace define in the template.
 * SecurityEvents data connector enabled
-* Windows event providers enabled
+* Windows event channels enabled
     * `System`
     * `Microsoft-Windows-Sysmon/Operational`
     * `Directory Service`
