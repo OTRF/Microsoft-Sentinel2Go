@@ -252,32 +252,14 @@
                         "value": [
                             "Sysmon"
                         ]
-                    }
-                }
-            }
-        },
-        {
-            "name": "enableSecurityEventDataConnector",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "dependsOn": [
-                "deployAzureSentinel2Go"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/data-connectors/securityEvents.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
+                    },
+                    "enableDataConnectorsKind": {
+                        "value": [
+                            "SecurityInsightsSecurityEventCollectionConfiguration"
+                        ]
                     },
                     "securityCollectionTier": {
                         "value": "[parameters('securityCollectionTier')]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
                     }
                 }
             }
