@@ -123,7 +123,7 @@
         {
             "name": "[variables('uniqueWorkspace')]",
             "type": "Microsoft.OperationalInsights/workspaces",
-            "apiVersion": "2015-11-01-preview",
+            "apiVersion": "2020-08-01",
             "location": "[parameters('location')]",
             "properties": {
                 "retentionInDays": "[parameters('dataRetention')]",
@@ -157,7 +157,7 @@
             "condition": "[not(empty(parameters('enableAdditionalLASolutions')))]",
             "name": "enableAdditionalLASolutions",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-05-01",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
                 "[resourceId('Microsoft.OperationsManagement/solutions/', concat('SecurityInsights','(', variables('uniqueWorkspace'),')'))]"
             ],
@@ -187,7 +187,7 @@
             "condition": "[not(empty(parameters('enableDataConnectorsKind')))]",
             "name": "enableDataConnectorsKind",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-05-01",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
                 "[resourceId('Microsoft.OperationsManagement/solutions/', concat('SecurityInsights','(', variables('uniqueWorkspace'),')'))]"
             ],
@@ -226,7 +226,7 @@
             "condition": "[not(empty(parameters('enableLAFunctions')))]",
             "name": "deployLAFunctions",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-05-01",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
                 "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
             ],
