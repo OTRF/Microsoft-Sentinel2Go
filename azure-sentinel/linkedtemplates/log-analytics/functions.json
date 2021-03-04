@@ -19,7 +19,7 @@
     "resources": [
         {
             "condition": "[contains(parameters('enableLAFunctions'),'Sysmon')]",
-            "apiVersion": "2015-03-20",
+            "apiVersion": "2020-08-01",
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "name": "[concat(parameters('workspaceName'), '/', 'SysmonFunction')]",
             "properties": {
