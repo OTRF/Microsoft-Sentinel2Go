@@ -1,0 +1,48 @@
+{
+    "id": "SentinelExportSettings-<WORKSPACENAME>",
+    "workspaceProperties": {
+        "workspaceResourceId": "/subscriptions/<SUBSCRIPTIONID/resourceGroups/<RESOURCEGROUP>/providers/Microsoft.OperationalInsights/workspaces/<WORKSPACENAME>"
+    },
+    "logs": [
+        {
+            "category": "AdvancedHunting-DeviceInfo",
+            "enabled": true
+        },
+        {
+            "category": "AdvancedHunting-DeviceNetworkInfo",
+            "enabled": true
+        },
+        {
+            "category": "AdvancedHunting-DeviceProcessEvents",
+            "enabled": true
+        },
+        {
+            "category": "AdvancedHunting-DeviceNetworkEvents",
+            "enabled": true
+        },
+        {
+            "category": "AdvancedHunting-DeviceFileEvents",
+            "enabled": true
+        },
+        {
+            "category": "AdvancedHunting-DeviceRegistryEvents",
+            "enabled": true
+        },
+        {
+            "category": "AdvancedHunting-DeviceLogonEvents",
+            "enabled": true
+        },
+        {
+            "category": "AdvancedHunting-DeviceImageLoadEvents",
+            "enabled": true
+        },
+        {
+            "category": "AdvancedHunting-DeviceEvents",
+            "enabled": true
+        },
+        {
+            "category": "AdvancedHunting-DeviceFileCertificateInfo",
+            "enabled": true
+        }
+    ]
+}

@@ -127,7 +127,7 @@
         {
             "condition": "[contains(parameters('dataConnectorsKind'), 'LinuxSyslogCollection')]",
             "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-            "apiVersion": "2020-03-01-preview",
+            "apiVersion": "2020-08-01",
             "location": "[parameters('location')]",
             "name": "[concat(parameters('workspaceName'), '/syslogCollection')]",
             "kind": "LinuxSyslogCollection",
@@ -160,7 +160,7 @@
 		{
 			"condition": "[contains(parameters('dataConnectorsKind'), 'OfficeATP')]",
             "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
-            "apiVersion": "2019-01-01-preview",
+            "apiVersion": "2020-01-01",
             "location": "[parameters('location')]",
             "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',variables('officeATPName'))]",
             "kind": "OfficeATP",
@@ -176,7 +176,7 @@
         {
 			"condition": "[contains(parameters('dataConnectorsKind'), 'ThreatIntelligence')]",
             "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
-            "apiVersion": "2019-01-01-preview",
+            "apiVersion": "2020-01-01",
             "location": "[parameters('location')]",
             "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',variables('threatIntelligenceName'))]",
             "kind": "ThreatIntelligence",
