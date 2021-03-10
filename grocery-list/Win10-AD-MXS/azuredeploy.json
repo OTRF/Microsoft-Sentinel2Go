@@ -194,6 +194,7 @@
             },
             "defaultValue": [
                 "System",
+                "Application",
                 "Microsoft-Windows-Sysmon/Operational",
                 "Directory Service",
                 "Windows PowerShell",
