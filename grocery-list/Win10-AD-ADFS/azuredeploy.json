@@ -185,13 +185,6 @@
                 "AD FS/Admin"
             ]
         },
-        "enableSysmon": {
-            "type": "bool",
-            "defaultValue": false,
-            "metadata": {
-                "description": "Do you want to install Sysmon on the endpoint?"
-            }
-        },
         "c2Framework": {
             "type": "string",
             "defaultValue": "None",
@@ -217,6 +210,20 @@
             "metadata": {
                 "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
             }
+        },
+        "enableSysmon": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Do you want to install Sysmon on the endpoint?"
+            }
+        },
+        "enableAADConnect": {
+            "type": "bool",
+            "metadata": {
+                "description": "Do you want to want download the AADConnect installer and get it ready to set up after the deployment?"
+            },
+            "defaultValue": false
         },
         "location": {
             "type": "string",
@@ -353,6 +360,9 @@
                     },
                     "enableSysmon": {
                         "value": "[parameters('enableSysmon')]"
+                    },
+                    "enableAADConnect": {
+                        "value": "[parameters('enableAADConnect')]"
                     },
                     "workspaceId": {
                         "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
