@@ -81,7 +81,7 @@
         "allowedIPAddresses": {
             "type": "string",
             "metadata": {
-                "description": "The sourceAddressPrefixes allowed to connect to this deployment"
+                "description": "The sourceAddressPrefixes allowed to connect to this deployment. For example, your Home Public IP Address. If you choose the AzureBastionHost option in the 'remoteAccessMode' parameter, set this value to a wildcard * "
             }
         },
         "numberOfWorkstations": {
@@ -197,35 +197,8 @@
                 "Application",
                 "Microsoft-Windows-Sysmon/Operational",
                 "Directory Service",
-                "Windows PowerShell",
-                "Microsoft-Windows-PowerShell/Operational",
                 "MSExchange Management"
             ]
-        },
-        "c2Framework": {
-            "type": "string",
-            "defaultValue": "None",
-            "allowedValues": [
-                "None",
-                "empire",
-                "covenant",
-                "caldera",
-                "metasploit"
-            ],
-            "metadata": {
-                "description": "C2 framework to deploy"
-            }
-        },
-        "ubuntuSKU": {
-            "type": "string",
-            "defaultValue": "18.04-LTS",
-            "allowedValues": [
-                "18.04-LTS",
-                "19.04"
-            ],
-            "metadata": {
-                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
-            }
         },
         "enableSysmon": {
             "type": "bool",
@@ -412,85 +385,6 @@
                     "location": {
                         "value": "[parameters('location')]"
                     }
-                }
-            }
-        },
-        {
-            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
-            "name": "deployC2",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/C2/azuredeploy.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "adminUsername": {
-                        "value": "[parameters('adminUsername')]"
-                    },
-                    "authenticationType": {
-                        "value": "password"
-                    },
-                    "adminPasswordOrKey": {
-                        "value": "[parameters('adminPassword')]"
-                    },
-                    "vmName": {
-                        "value": "C2001"
-                    },
-                    "ubuntuSKU": {
-                        "value": "[parameters('ubuntuSKU')]"
-                    },
-                    "vmSize": {
-                        "value": "[parameters('vmSize')]"
-                    },
-                    "allowedIPAddresses": {
-                        "value": "[parameters('allowedIPAddresses')]"
-                    },
-                    "c2Framework": {
-                        "value": "[parameters('c2Framework')]"
-                    }
-                }
-            }
-        },
-        {
-            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
-            "name": "vnet-c2/peering-to-remote-vnet-win",
-            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "apiVersion": "2019-11-01",
-            "dependsOn": [
-                "deployC2",
-                "deployWinADMXS"
-            ],
-            "location": "[parameters('location')]",
-            "properties": {
-                "allowVirtualNetworkAccess": true,
-                "allowForwardedTraffic": false,
-                "allowGatewayTransit": false,
-                "useRemoteGateways": false,
-                "remoteVirtualNetwork": {
-                    "id": "[reference('deployWinADMXS').outputs.virtualNetworkId.value]"
-                }
-            }
-        },
-        {
-            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
-            "name": "vnet-win/peering-to-remote-vnet-c2",
-            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "apiVersion": "2019-11-01",
-            "dependsOn": [
-                "deployC2",
-                "deployWinADMXS"
-            ],
-            "location": "[parameters('location')]",
-            "properties": {
-                "allowVirtualNetworkAccess": true,
-                "allowForwardedTraffic": false,
-                "allowGatewayTransit": false,
-                "useRemoteGateways": false,
-                "remoteVirtualNetwork": {
-                    "id": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkId.value, 'Resource not deployed')]"
                 }
             }
         }
