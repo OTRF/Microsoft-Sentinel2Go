@@ -39,7 +39,7 @@
     "resources": [
         {
             "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-            "apiVersion": "2020-03-01-preview",
+            "apiVersion": "2020-08-01",
             "location": "[parameters('location')]",
             "name": "[concat(parameters('workspaceName'), '/winEvent', copyindex())]",
             "copy": {

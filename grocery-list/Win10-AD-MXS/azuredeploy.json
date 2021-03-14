@@ -155,7 +155,7 @@
         },
         "mxsRelease": {
             "type": "string",
-            "defaultValue": "MXS2016-x64-CU19-KB4588884",
+            "defaultValue": "MXS2016-x64-CU12-KB4471392",
             "allowedValues": [
                 "MXS2016-x64-CU19-KB4588884",
                 "MXS2016-x64-CU18-KB4571788",
@@ -164,7 +164,7 @@
                 "MXS2016-x64-CU15-KB4522150",
                 "MXS2016-x64-CU14-KB4514140",
                 "MXS2016-x64-CU13-KB4488406",
-                "MXA2016-x64-CU12-KB4471392"
+                "MXS2016-x64-CU12-KB4471392"
             ]
         },
         "domainFQDN": {
@@ -314,6 +314,29 @@
                     },
                     "winEventProviders": {
                         "value": "[parameters('collectWinEventProviders')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "collectIISLogs",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "dependsOn": [
+                "deployAzureSentinel2Go"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/linkedtemplates/log-analytics/iisLogsDataSource.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
