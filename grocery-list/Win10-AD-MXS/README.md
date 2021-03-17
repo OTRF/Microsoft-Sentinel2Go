@@ -74,8 +74,8 @@ You can also add mailboxes for users in your domain. In the image above, I added
 
 ![](../../images/win10-ad-mxs_04_owa_inbox.png)
 
-![](../../images/win10-ad-mxs_04_owa_inbox.png)
+![](../../images/win10-ad-mxs_05_owa_new_message.png)
 
 * Wait for 2 minutes and refresh your inbox messages. You should see a new message as shown in the image below:
 
-![](../../images/win10-ad-mxs_05_owa_message_received.png)
+![](../../images/win10-ad-mxs_06_owa_message_received.png)
