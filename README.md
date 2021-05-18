@@ -3,13 +3,13 @@
 [![Open_Threat_Research Community](https://img.shields.io/badge/Open_Threat_Research-Community-brightgreen.svg)](https://twitter.com/OTR_Community)
 [![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 
-<img src="images/logo.png" alt="Azure Sentinel To-Go!" width="650"/>
+<img src="resources/images/logo.png" alt="Azure Sentinel To-Go!" width="650"/>
 
 Azure Sentinel2Go is an open source project developed to expedite the deployment of an Azure Sentinel lab along with other Azure resources and a data ingestion pipeline to consume pre-recorded datasets for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Mordor project](https://mordordatasets.com/) right at deployment time.
 
 # Getting Started
 
-There are a few things that you can do with this project. This project is intended for research purposes, so I highly recommend to create a new resource group in your subscription to not interfere with any other system in the same resource while deploying VMs needed for some of the features provided by this Azure Resource Manager (ARM) template. Take a look at the different scenarios that you can deploy in the section below.
+There are a few things that you can do with this project. This project is intended for research purposes, so I highly recommend to create a new resource group in your subscription to not interfere with any other system in the same resource group. Take a look at the different scenarios that you can deploy in the section below.
 
 # Grocery List - Deployment Options
 

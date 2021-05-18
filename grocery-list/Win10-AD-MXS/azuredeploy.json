@@ -256,9 +256,9 @@
                             "Sysmon"
                         ]
                     },
-                    "enableDataConnectorsKind": {
+                    "dataConnectors": {
                         "value": [
-                            "SecurityInsightsSecurityEventCollectionConfiguration"
+                            "SecurityEvents"
                         ]
                     },
                     "securityCollectionTier": {

@@ -55,9 +55,9 @@
 * Access (Azure Bastion Host or RDP session) MXS01 Server with admin credentials
 * Browse to `https://localhost/ecp/?ExchClientVer=15`. When prompted with an error page for the website's security certificate, click Continue to this website.
 
-![](../../images/win10-ad-mxs_01_exchange_admin_center_login.png)
+![](../../resources/images/win10-ad-mxs_01_exchange_admin_center_login.png)
 
-![](../../images/win10-ad-mxs_02_exchange_admin_center_portal.png)
+![](../../resources/images/win10-ad-mxs_02_exchange_admin_center_portal.png)
 
 You can also add mailboxes for users in your domain. In the image above, I added one for the account `pgustavo@azsentinel.local`
 
@@ -67,15 +67,15 @@ You can also add mailboxes for users in your domain. In the image above, I added
 * Browse to `https://localhost/owa`. When prompted with an error page for the website's security certificate, click Continue to this website.
 * On the Outlook sign-in page, use the `blacksmith\<admin>` account name with its password (You defined that in the ARM template)
 
-![](../../images/win10-ad-mxs_03_owa_login.png)
+![](../../resources/images/win10-ad-mxs_03_owa_login.png)
 
 * When prompted to specify the language and time zone, select the appropriate value for each, and then click Save. This is an important step to access mailbox and account programmatically.
 * Click on Inbox > New. In To, type `<admin name>` and then click Search Directory. For Subject and messagee, type anything. Then, click Send.
 
-![](../../images/win10-ad-mxs_04_owa_inbox.png)
+![](../../resources/images/win10-ad-mxs_04_owa_inbox.png)
 
-![](../../images/win10-ad-mxs_05_owa_new_message.png)
+![](../../resources/images/win10-ad-mxs_05_owa_new_message.png)
 
 * Wait for 2 minutes and refresh your inbox messages. You should see a new message as shown in the image below:
 
-![](../../images/win10-ad-mxs_06_owa_message_received.png)
+![](../../resources/images/win10-ad-mxs_06_owa_message_received.png)
