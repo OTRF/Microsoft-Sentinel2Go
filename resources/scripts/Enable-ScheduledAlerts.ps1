@@ -6,7 +6,7 @@
 param(
     [Parameter(Mandatory=$true)][string]$ResourceGroup,
     [Parameter(Mandatory=$true)][string]$Workspace,
-    [Parameter(Mandatory=$true)][string[]]$dataConnectors,
+    [Parameter(Mandatory=$true)][string[]]$DataConnectors,
     [Parameter(Mandatory=$false)][string[]]$Alerts
 )
 

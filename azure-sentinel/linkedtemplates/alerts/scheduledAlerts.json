@@ -28,7 +28,7 @@
     "functions": [],
     "variables": {
         "identityName": "[concat('userIdentity',uniqueString(resourceGroup().id))]",
-        "initialArguments": "[concat('-Workspace ', parameters('workspaceName'), ' -ResourceGroup ', resourceGroup().name, ' -Connectors ', replace(replace(string(parameters('dataConnectors')), '[', ''), ']', ''))]",
+        "initialArguments": "[concat('-Workspace ', parameters('workspaceName'), ' -ResourceGroup ', resourceGroup().name, ' -DataConnectors ', replace(replace(string(parameters('dataConnectors')), '[', ''), ']', ''))]",
         "alertArguments": "[if(empty(parameters('specificScheduledAlerts')), variables('initialArguments'), concat(variables('initialArguments'), ' -Alerts ', replace(replace(string(parameters('specificScheduledAlerts')), '[', ''), ']', '')))]"
     },
     "resources": [
