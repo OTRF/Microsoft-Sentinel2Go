@@ -28,8 +28,8 @@
     "functions": [],
     "variables": {
         "identityName": "[concat('userIdentity',uniqueString(resourceGroup().id))]",
-        "initialArguments": "[concat('-Workspace ', parameters('workspaceName'), ' -ResourceGroup ', resourceGroup().name, ' -Connectors ', parameters('dataConnectors'))]",
-        "alertArguments": "[if(empty(parameters('specificScheduledAlerts')), variables('initialArguments'), concat(variables('initialArguments'),createArray(' -Alerts ', parameters('specificScheduledAlerts'))))]"
+        "initialArguments": "[concat(createArray('-Workspace ', parameters('workspaceName'), ' -ResourceGroup ', resourceGroup().name, ' -Connectors '), parameters('dataConnectors'))]",
+        "alertArguments": "[if(empty(parameters('specificScheduledAlerts')), variables('initialArguments'), concat(variables('initialArguments'),createArray(createArray(' -Alerts '), parameters('specificScheduledAlerts'))))]"
     },
     "resources": [
         {
