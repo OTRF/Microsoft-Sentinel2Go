@@ -6,8 +6,8 @@
 param(
     [Parameter(Mandatory=$true)][string]$ResourceGroup,
     [Parameter(Mandatory=$true)][string]$Workspace,
-    [Parameter(Mandatory=$true)][array]$dataConnectors,
-    [Parameter(Mandatory=$false)][array]$Alerts
+    [Parameter(Mandatory=$true)][string[]]$dataConnectors,
+    [Parameter(Mandatory=$false)][string[]]$Alerts
 )
 
 $context = Get-AzContext
