@@ -29,7 +29,7 @@
     "variables": {
         "identityName": "[concat('userIdentity',uniqueString(resourceGroup().id))]",
         "initialArguments": "[concat('-Workspace ', parameters('workspaceName'), ' -ResourceGroup ', resourceGroup().name, ' -Connectors ', parameters('dataConnectors'))]",
-        "alertArguments": "[if(empty(parameters('specificScheduledAlerts')), variables('initialArguments'), concat(variables('initialArguments'),' -Alerts ', parameters('specificScheduledAlerts')))]"
+        "alertArguments": "[if(empty(parameters('specificScheduledAlerts')), variables('initialArguments'), concat(variables('initialArguments'),createArray(' -Alerts ', parameters('specificScheduledAlerts'))))]"
     },
     "resources": [
         {
