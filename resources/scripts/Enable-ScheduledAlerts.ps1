@@ -37,7 +37,7 @@ catch {
 
 # Check for specific rules
 if ($Alerts) {
-    $alertRulesTemplates = $alertRulesTemplates | Where-Object {$_.properties.displayName -in $Alerts}
+    $alertRulesTemplates = $alertRulesTemplates | Where-Object {"$($_.properties.displayName)".replace(" ","_") -in $Alerts}
     if ($alertRulesTemplates.length -eq 0) { Write-Error "Alert templates for rules $Alerts do not exist" -ErrorAction Stop }
 }
 
