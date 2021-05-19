@@ -281,7 +281,7 @@
             }
         },
         {
-            "condition": "[contains(parameters('dataConnectors'), 'AzureActiveDirectory')]",
+            "condition": "[contains(parameters('dataConnectors'), 'AzureActiveDirectoryIdentityProtection')]",
             "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
             "apiVersion": "2020-01-01",
             "location": "[parameters('location')]",
