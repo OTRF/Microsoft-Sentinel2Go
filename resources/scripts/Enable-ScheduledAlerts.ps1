@@ -20,8 +20,6 @@ if(!$context){
 $SubscriptionId = $context.Subscription.Id
 
 Write-host "[+] Connected to Azure with subscription: $($context.Subscription)"
-Write-host "[+] Current Azure Context:"
-Write-host "$context"
 
 $baseUri = "/subscriptions/${SubscriptionId}/resourceGroups/${ResourceGroup}/providers/Microsoft.OperationalInsights/workspaces/${Workspace}"
 $templatesUri = "$baseUri/providers/Microsoft.SecurityInsights/alertRuleTemplates?api-version=2019-01-01-preview"
@@ -79,25 +77,38 @@ foreach ($item in $alertRulesTemplates) {
                     $alertBody | Add-Member -NotePropertyName kind -NotePropertyValue $item.kind -Force
                     $alertBody | Add-Member -NotePropertyName properties -NotePropertyValue $properties
 
-                    try{
-                        $response = Invoke-AzRestMethod -Path $alertUriGuid -Method PUT -Payload ($alertBody | ConvertTo-Json -Depth 3)
-                        $responseObject = $response | ConvertTo-Json | ConvertFrom-Json
-                        $responseCode = $response.StatusCode
-                        if ($responseCode -eq 201 -or $responseCode -eq 200) {
-                            $responseDescription = Switch ($responseCode) {
-                                200 { "Alert Rule: OK, Operation successfully completed" }
-                                201 { 'Alert Rule: Created' }
+                    $stopLoop = $false
+                    [int]$retryCount = 0
+                    do {
+                        try{
+                            $response = Invoke-AzRestMethod -Path $alertUriGuid -Method PUT -Payload ($alertBody | ConvertTo-Json -Depth 3)
+                            $responseObject = $response | ConvertTo-Json | ConvertFrom-Json
+                            $responseCode = $response.StatusCode
+                            if ($responseCode -eq 201 -or $responseCode -eq 200) {
+                                $responseDescription = Switch ($responseCode) {
+                                    200 { "Alert Rule: OK, Operation successfully completed" }
+                                    201 { 'Alert Rule: Created' }
+                                }
+                                write-verbose "[+] $responseDescription"
+                                write-verbose $responseObject
+                                $return += $alertName
+                                $stopLoop = $true
                             }
-                            write-verbose "[+] $responseDescription"
-                            write-verbose $responseObject
-                            $return += $alertName
+                            else { throw ($responseObject) }
                         }
-                        else { throw ($responseObject) }
-                    }
-                    catch {
-                        Write-Verbose $_
-                        Write-Error "Unable to create alert rule with error message: $($_.Exception.Message)" -ErrorAction Stop
-                    }
+                        catch {
+                            if ($retryCount -gt 5){
+                                Write-Verbose $_
+                                Write-Error "Unable to create alert rule with error message: $($_.Exception.Message)" -ErrorAction Stop
+                                $stopLoop = $true
+                            }
+                            else {
+                                Write-host "[*] Cound not create alert rule, retrying in 15 seconds.."
+                                Start-Sleep -seconds 15
+                                $retryCount = $retryCount + 1
+                            }
+                        }
+                    while ($stopLoop -eq $false)
                 }
             }
         }
