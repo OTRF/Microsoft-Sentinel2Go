@@ -108,6 +108,7 @@ foreach ($item in $alertRulesTemplates) {
                                 $retryCount = $retryCount + 1
                             }
                         }
+                    }
                     while ($stopLoop -eq $false)
                 }
             }
