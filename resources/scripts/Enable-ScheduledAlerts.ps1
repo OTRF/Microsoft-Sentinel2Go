@@ -20,6 +20,8 @@ if(!$context){
 $SubscriptionId = $context.Subscription.Id
 
 Write-host "[+] Connected to Azure with subscription: $($context.Subscription)"
+Write-host "[+] Current Azure Context:"
+Write-host "$context"
 
 $baseUri = "/subscriptions/${SubscriptionId}/resourceGroups/${ResourceGroup}/providers/Microsoft.OperationalInsights/workspaces/${Workspace}"
 $templatesUri = "$baseUri/providers/Microsoft.SecurityInsights/alertRuleTemplates?api-version=2019-01-01-preview"
