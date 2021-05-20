@@ -89,7 +89,7 @@ foreach ($item in $alertRulesTemplates) {
                                     200 { "Alert Rule: OK, Operation successfully completed" }
                                     201 { 'Alert Rule: Created' }
                                 }
-                                write-host "  [+] $alertName $responseDescription"
+                                write-host " [+] $alertName $responseDescription"
                                 write-verbose $responseObject
                                 $return += $alertName
                                 $stopLoop = $true
