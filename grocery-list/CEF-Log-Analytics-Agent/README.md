@@ -10,9 +10,25 @@
     * If so, set the `workspaceId` and `workspaceKey` parameters of your own workspace.
 * CEF Server (`Ubuntu`)
     * [Linux CEF Installer + OMS Agent for Linux](https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/DataConnectors/CEF/cef_installer.py)
-    * [cef_simulator.py](https://github.com/OTRF/Blacksmith/blob/master/templates/azure/CEF-Log-Analytics-Agent/scripts/cef_simulator.py) script that sends a sample event to the CEF server in order to enable the [CEF data connector](https://docs.microsoft.com/en-us/azure/sentinel/connect-common-event-format).
+    * [cef_simulator.py](https://github.com/OTRF/Blacksmith/blob/master/templates/azure/CEF-Log-Analytics-Agent/scripts/cef_simulator.py) script to send CEF sample data to the CEF server.
+
+## CEF Data Connector
+A sample CEF event is sent to the CEF server at deployment time to activate the [CEF data connector](https://docs.microsoft.com/en-us/azure/sentinel/connect-common-event-format).
+After 1-2 minutes, you should see one event in the [CommonSecurityLog](https://docs.microsoft.com/en-us/azure/azure-monitor/reference/tables/commonsecuritylog) table as shown in the image below:
+
+![](../../resources/images/cef-log-analytics-agent_01_azure_sentinel.PNG)
+
+You can check if the `CEF data connector` is enabled by going to `Data Connectors` under `Configuration`
+
+![](../../resources/images/cef-log-analytics-agent_02_cef_data_connector.PNG)
+
+Go to `Logs` and explore the `CommonSecurityLog` table. You will see the sample CEF event:
+
+![](../../resources/images/cef-log-analytics-agent_03_sample_cef_event.PNG)
 
 ## CEF Simulator
+
+You can also use the [cef_simulator.py](https://github.com/OTRF/Blacksmith/blob/master/templates/azure/CEF-Log-Analytics-Agent/scripts/cef_simulator.py) script already available in the CEF server to send custom CEF events to the CEF Server.
 
 1. SSH to CEF VM
 
@@ -111,11 +127,11 @@ cat cef_simulator.py
 05/26/2021 08:39:49 AM Executing the following command: ['logger', '-p', 'local4.warn', '-t', 'CEF:', '0|Palo Alto Networks|PAN-OS|9.1.0-h3|Morto RDP Request Traffic(13274)|THREAT|2|rt=May 26 2021 08:39:49  deviceExternalId=RANDOMID src=1.2.3.4 dst=10.0.0.1 sourceTranslatedAddress=10.0.0.1 destinationTranslatedAddress=1.2.3.4 cs1Label=Rule cs1=RDP Inbound suser= duser= app=ms-rdp cs3Label=Virtual System cs3=vsys1 cs4Label=Source Zone cs4=Untrust cs5Label=Destination Zone cs5=Trust deviceInboundInterface=ethernet1/1 deviceOutboundInterface=ethernet1/2 cs6Label=LogProfile cs6=default cn1Label=SessionID cn1=86053 cnt=1 spt=2687 dpt=3389 sourceTranslatedPort=51475 destinationTranslatedPort=3389 flexString1Label=Flags flexString1=0x402000 proto=tcp act=alert request="" cs2Label=URL Category cs2=any flexString2Label=Direction flexString2=client-to-server PanOSActionFlags=0x2000000000000000 externalId=2316 cat=Morto RDP Request Traffic(13274) fileId=0 PanOSDGl1=0 PanOSDGl2=0 PanOSDGl3=0 PanOSDGl4=0 PanOSVsysName= dvchost=pannwfusiondemo PanOSSrcUUID= PanOSDstUUID= PanOSTunnelID=0 PanOSMonitorTag= PanOSParent SessionID=0 PanOSParentStartTime= PanOSTunnelType=N/A PanOSThreatCategory=net-worm PanOSContentVer=AppThreat-8224-5855 PanOSAssocID=0 PanOSPPID=4294967295 PanOSHTTPHeader="personal-sites-and-blogs,high-risk" PanOSURLCatList="personal-sites-and-blogs,high-risk" PanOSRuleUUID=c60266c3-fcfd-4f99-b921-54d5aaae7a54 PanOSHTTP2Con=0|data1=example', '-P', '514', '-n', '127.0.0.1']..
 ```
 
-9. Validate event made it to Azure Sentinel by going to Logs and running the following KQL query
+9. Check if the CEF event made it to Azure Sentinel by going to `Logs` and running the following KQL query against the `CommonSecurityLog` table:
 
 ```
 CommonSecurityLog 
 | where DeviceEventClassID == 'Morto RDP Request Traffic(13274)'
 ```
 
-![](../../resources/images/cef-log-analytics-agent_01_custom_cef_event.PNG)
+![](../../resources/images/cef-log-analytics-agent_04_custom_cef_event.PNG)
