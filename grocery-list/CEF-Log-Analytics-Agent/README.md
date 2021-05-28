@@ -30,18 +30,23 @@ Go to `Logs` and explore the `CommonSecurityLog` table. You will see the sample 
 
 You can also use the [cef_simulator.py](https://github.com/OTRF/Blacksmith/blob/master/templates/azure/CEF-Log-Analytics-Agent/scripts/cef_simulator.py) script already available in the CEF server to send custom CEF events to the CEF Server.
 
-1. SSH to CEF VM
+1. SSH or use Azure Bastion Host to access the CEF VM
 
+**SSH**
 ```
 ssh <username>@<public IP Address>
 ```
 
-2. Switch to admin user
+Switch to admin user
 
 ```
 <username>@CEF-SYSLOG:~$ sudo su
 root@CEF-SYSLOG:/home/<username>#
 ```
+
+**Azure Bastion**
+
+![](../../resources/images/cef-log-analytics-agent_04_cef_azure_bastion.png)
 
 3. Change directory to `/var/lib/waagent/custom-script/download/0`
 
@@ -134,4 +139,4 @@ CommonSecurityLog
 | where DeviceEventClassID == 'Morto RDP Request Traffic(13274)'
 ```
 
-![](../../resources/images/cef-log-analytics-agent_04_custom_cef_event.PNG)
+![](../../resources/images/cef-log-analytics-agent_05_custom_cef_event.PNG)
