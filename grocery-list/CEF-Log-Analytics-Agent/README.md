@@ -60,7 +60,13 @@ cd /var/lib/waagent/custom-script/download/0
 0|Palo Alto Networks|PAN-OS|9.1.0-h3|Morto RDP Request Traffic(13274)|THREAT|2|rt=DATETIME deviceExternalId=RANDOMID src=SRCTESTIP dst=DSTTESTIP sourceTranslatedAddress=DSTTESTIP destinationTranslatedAddress=SRCTESTIP cs1Label=Rule cs1=RDP Inbound suser= duser= app=ms-rdp cs3Label=Virtual System cs3=vsys1 cs4Label=Source Zone cs4=Untrust cs5Label=Destination Zone cs5=Trust deviceInboundInterface=ethernet1/1 deviceOutboundInterface=ethernet1/2 cs6Label=LogProfile cs6=default cn1Label=SessionID cn1=86053 cnt=1 spt=2687 dpt=3389 sourceTranslatedPort=51475 destinationTranslatedPort=3389 flexString1Label=Flags flexString1=0x402000 proto=tcp act=alert request="" cs2Label=URL Category cs2=any flexString2Label=Direction flexString2=client-to-server PanOSActionFlags=0x2000000000000000 externalId=2316 cat=Morto RDP Request Traffic(13274) fileId=0 PanOSDGl1=0 PanOSDGl2=0 PanOSDGl3=0 PanOSDGl4=0 PanOSVsysName= dvchost=pannwfusiondemo PanOSSrcUUID= PanOSDstUUID= PanOSTunnelID=0 PanOSMonitorTag= PanOSParent SessionID=0 PanOSParentStartTime= PanOSTunnelType=N/A PanOSThreatCategory=net-worm PanOSContentVer=AppThreat-8224-5855 PanOSAssocID=0 PanOSPPID=4294967295 PanOSHTTPHeader="personal-sites-and-blogs,high-risk" PanOSURLCatList="personal-sites-and-blogs,high-risk" PanOSRuleUUID=c60266c3-fcfd-4f99-b921-54d5aaae7a54 PanOSHTTP2Con=0
 ```
 
-5. Create a CEF Sample Yaml file and add the custom message to the `event` field as shown below. For this example, save the file as `paloAltoMortoRDPRequest.yaml`.
+5. Create a CEF Sample Yaml file and add the custom message to the `event` field as shown below. For this example, we can use `nano` to create a file and name it `paloAltoMortoRDPRequest.yaml`.
+
+```bash
+nano paloAltoMortoRDPRequest.yaml
+```
+
+6. Copy and paste the following strings to the contents of the new file:
 
 ```Yaml
 name: PAN Morto RDP Request
@@ -71,14 +77,20 @@ priority:
 event: 0|Palo Alto Networks|PAN-OS|9.1.0-h3|Morto RDP Request Traffic(13274)|THREAT|2|rt=DATETIME deviceExternalId=RANDOMID src=SRCTESTIP dst=DSTTESTIP sourceTranslatedAddress=DSTTESTIP destinationTranslatedAddress=SRCTESTIP cs1Label=Rule cs1=RDP Inbound suser= duser= app=ms-rdp cs3Label=Virtual System cs3=vsys1 cs4Label=Source Zone cs4=Untrust cs5Label=Destination Zone cs5=Trust deviceInboundInterface=ethernet1/1 deviceOutboundInterface=ethernet1/2 cs6Label=LogProfile cs6=default cn1Label=SessionID cn1=86053 cnt=1 spt=2687 dpt=3389 sourceTranslatedPort=51475 destinationTranslatedPort=3389 flexString1Label=Flags flexString1=0x402000 proto=tcp act=alert request="" cs2Label=URL Category cs2=any flexString2Label=Direction flexString2=client-to-server PanOSActionFlags=0x2000000000000000 externalId=2316 cat=Morto RDP Request Traffic(13274) fileId=0 PanOSDGl1=0 PanOSDGl2=0 PanOSDGl3=0 PanOSDGl4=0 PanOSVsysName= dvchost=pannwfusiondemo PanOSSrcUUID= PanOSDstUUID= PanOSTunnelID=0 PanOSMonitorTag= PanOSParent SessionID=0 PanOSParentStartTime= PanOSTunnelType=N/A PanOSThreatCategory=net-worm PanOSContentVer=AppThreat-8224-5855 PanOSAssocID=0 PanOSPPID=4294967295 PanOSHTTPHeader="personal-sites-and-blogs,high-risk" PanOSURLCatList="personal-sites-and-blogs,high-risk" PanOSRuleUUID=c60266c3-fcfd-4f99-b921-54d5aaae7a54 PanOSHTTP2Con=0
 ```
 
-6. Create another YAML file to replace values in the CEF message. For this example, save the file as `cef_replace.yaml`
+7. Create another YAML file to replace values in the CEF message. For this example, use `nano` again and save the file as `cef_replace.yaml`
+
+```bash
+nano paloAltoMortoRDPRequest.yaml
+```
+
+8. Copy the following text and paste it in the contents of the file
 
 ```Yaml
 SRCTESTIP: 1.2.3.4
 DSTTESTIP: 10.0.0.1
 ```
 
-7. Run `cef_simulator.py` with the following parameters to send the CEF sample message to the CEF server (`127.0.0.1:514`)
+8. Run `cef_simulator.py` with the following parameters to send the CEF sample message to the CEF server (`127.0.0.1:514`)
 
 ```bash
 python3 cef_simulator.py -e paloAltoMortoRDPRequest.yaml -r cef_replace.yaml --debug
@@ -109,7 +121,7 @@ Sending event: PAN Morto RDP Request
 
 ```
 
-8. Inspect the logs. A file named `cef_simulator_debug.log` is created in the same location as the `cef_simulator.py` script.
+9. Inspect the logs. A file named `cef_simulator_debug.log` is created in the same location as the `cef_simulator.py` script.
 
 ```bash
 cat cef_simulator.py
@@ -132,7 +144,7 @@ cat cef_simulator.py
 05/26/2021 08:39:49 AM Executing the following command: ['logger', '-p', 'local4.warn', '-t', 'CEF:', '0|Palo Alto Networks|PAN-OS|9.1.0-h3|Morto RDP Request Traffic(13274)|THREAT|2|rt=May 26 2021 08:39:49  deviceExternalId=RANDOMID src=1.2.3.4 dst=10.0.0.1 sourceTranslatedAddress=10.0.0.1 destinationTranslatedAddress=1.2.3.4 cs1Label=Rule cs1=RDP Inbound suser= duser= app=ms-rdp cs3Label=Virtual System cs3=vsys1 cs4Label=Source Zone cs4=Untrust cs5Label=Destination Zone cs5=Trust deviceInboundInterface=ethernet1/1 deviceOutboundInterface=ethernet1/2 cs6Label=LogProfile cs6=default cn1Label=SessionID cn1=86053 cnt=1 spt=2687 dpt=3389 sourceTranslatedPort=51475 destinationTranslatedPort=3389 flexString1Label=Flags flexString1=0x402000 proto=tcp act=alert request="" cs2Label=URL Category cs2=any flexString2Label=Direction flexString2=client-to-server PanOSActionFlags=0x2000000000000000 externalId=2316 cat=Morto RDP Request Traffic(13274) fileId=0 PanOSDGl1=0 PanOSDGl2=0 PanOSDGl3=0 PanOSDGl4=0 PanOSVsysName= dvchost=pannwfusiondemo PanOSSrcUUID= PanOSDstUUID= PanOSTunnelID=0 PanOSMonitorTag= PanOSParent SessionID=0 PanOSParentStartTime= PanOSTunnelType=N/A PanOSThreatCategory=net-worm PanOSContentVer=AppThreat-8224-5855 PanOSAssocID=0 PanOSPPID=4294967295 PanOSHTTPHeader="personal-sites-and-blogs,high-risk" PanOSURLCatList="personal-sites-and-blogs,high-risk" PanOSRuleUUID=c60266c3-fcfd-4f99-b921-54d5aaae7a54 PanOSHTTP2Con=0|data1=example', '-P', '514', '-n', '127.0.0.1']..
 ```
 
-9. Check if the CEF event made it to Azure Sentinel by going to `Logs` and running the following KQL query against the `CommonSecurityLog` table:
+10. Check if the CEF event made it to Azure Sentinel by going to `Logs` and running the following KQL query against the `CommonSecurityLog` table:
 
 ```
 CommonSecurityLog 
