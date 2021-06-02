@@ -37,16 +37,16 @@ You can also use the [cef_simulator.py](https://github.com/OTRF/Blacksmith/blob/
 ssh <username>@<public IP Address>
 ```
 
+**Azure Bastion**
+
+![](../../resources/images/cef-log-analytics-agent_04_cef_azure_bastion.png)
+
 Switch to admin user
 
 ```
 <username>@CEF-SYSLOG:~$ sudo su
 root@CEF-SYSLOG:/home/<username>#
 ```
-
-**Azure Bastion**
-
-![](../../resources/images/cef-log-analytics-agent_04_cef_azure_bastion.png)
 
 3. Change directory to `/var/lib/waagent/custom-script/download/0`
 
