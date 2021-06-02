@@ -124,7 +124,7 @@ Sending event: PAN Morto RDP Request
 9. Inspect the logs. A file named `cef_simulator_debug.log` is created in the same location as the `cef_simulator.py` script.
 
 ```bash
-cat cef_simulator.py
+cat cef_simulator_debug.log
 ```
 
 ```
