@@ -80,7 +80,7 @@ event: 0|Palo Alto Networks|PAN-OS|9.1.0-h3|Morto RDP Request Traffic(13274)|THR
 7. Create another YAML file to replace values in the CEF message. For this example, use `nano` again and save the file as `cef_replace.yaml`
 
 ```bash
-nano paloAltoMortoRDPRequest.yaml
+nano cef_replace.yaml
 ```
 
 8. Copy the following text and paste it in the contents of the file
