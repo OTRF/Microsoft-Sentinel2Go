@@ -185,3 +185,9 @@ Security!*[System[(EventID=4625 or EventID=4648)]]
 Security!*[System[(EventID=4726)]]
 Security!*[System[(EventID=4720)]]
 ```
+
+## Compress XML Files
+
+```PowerShell
+Compress-Archive -Path *.xml -CompressionLevel Fastest -DestinationPath ossem-attack.zip
+```
