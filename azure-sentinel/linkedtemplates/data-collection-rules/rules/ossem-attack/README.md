@@ -124,10 +124,9 @@ foreach ($ds in $allMappings.Keys){
 
 ## Test XML Query 
 
-### Read user-account.xml Example
+### Read user-account.xml File
 
 ```PowerShell
-
 [xml]$Account = get-content .\user-account.xml
 $Account.InnerXml
 ```
@@ -173,9 +172,12 @@ $Account.InnerXml
 Get-WinEvent -FilterXml $Account
 ```
 
-## Export XPath Query for Windows Security Events Connector
+## Export XPath Queries for `Windows Security Events` Data Connector
+
+### Quick Test
 
 ```PowerShell
+[xml]$Account = get-content .\user-account.xml
 $Account.QueryList.Query | ForEach-Object {-join ($_.Select.Path, '!', $_.Select.'#text') }
 ```
 
@@ -186,8 +188,36 @@ Security!*[System[(EventID=4726)]]
 Security!*[System[(EventID=4720)]]
 ```
 
-## Compress XML Files
+### Export Data Sources JSON File
 
 ```PowerShell
-Compress-Archive -Path *.xml -CompressionLevel Fastest -DestinationPath ossem-attack.zip
+$allFiles = Get-ChildItem -Path *.xml
+
+$AllDataSources = @()
+$DataSource = [ordered]@{}
+# Name of Data Source
+$DataSource['Name'] = "eventLogsDataSource"
+# Transfer Period
+$DataSource['scheduledTransferPeriod'] = "PT1M"
+# Streams
+$DataSource['streams'] = @(
+    "Microsoft-SecurityEvent"
+)
+# Process XPath Queries
+$DataSource['xPathQueries'] = @()
+foreach ($file in $allFiles){
+    [xml]$XmlQuery = Get-Content -path $file
+    $queries = $xmlQuery.QueryList.Query
+    ForEach ($query in $queries){
+        $QueryString = "$(-join ($query.Select.Path, '!', $query.Select.'#text'))"
+        if ("$QueryString" -notin $DataSource['xPathQueries']){
+            $DataSource['xPathQueries'] += $QueryString
+        } 
+    }
+}
+$AllDataSources += $DataSource
+
+@{
+    windowsEventLogs = $AllDataSources
+} | Convertto-Json -Depth 4 | Set-Content "ossem-attack.json" -Encoding UTF8
 ```

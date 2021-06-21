@@ -135,30 +135,6 @@
                 "description": "Do you want to install Sysmon on the endpoint?"
             }
         },
-        "c2Framework": {
-            "type": "string",
-            "defaultValue": "None",
-            "allowedValues": [
-                "None",
-                "empire",
-                "covenant",
-                "metasploit"
-            ],
-            "metadata": {
-                "description": "C2 framework to deploy"
-            }
-        },
-        "ubuntuSKU": {
-            "type": "string",
-            "defaultValue": "18.04-LTS",
-            "allowedValues": [
-                "18.04-LTS",
-                "19.04"
-            ],
-            "metadata": {
-                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
-            }
-        },
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]",
@@ -170,31 +146,8 @@
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/",
-        "ruleName": "WindowsDCR",
-        "dataSources": {
-            "windowsEventLogs": [
-                {
-                    "name": "eventLogsDataSource",
-                    "scheduledTransferPeriod": "PT5M",
-                    "streams": [
-                        "Microsoft-SecurityEvent"
-                    ],
-                    "xPathQueries": [
-                        "Security!*[System[(EventID=4624)]]"
-                    ]
-                }
-            ]
-        },
-        "dataFlows": [
-            {
-                "streams": [
-                    "Microsoft-SecurityEvent"
-                ],
-                "destinations": [
-                    "SecurityEvent"
-                ]
-            }
-        ]
+        "dataCollectionRuleName": "WindowsDCR",
+        "dataSourcesFileUrl": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/templates/azure/Data-Collection-Rules/ossem-attack.json"
     },
     "resources": [
         {
@@ -239,34 +192,21 @@
             "properties": {
                  "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Data-Collection-Rules/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Data-Collection-Rules/azuredeploy-api.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "ruleName": {
-                        "value": "[variables('ruleName')]"
+                    "workspaceId": {
+                        "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
                     },
-                    "dataSources": {
-                        "value": "[variables('dataSources')]"
+                    "workspaceResourceId": {
+                        "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
                     },
-                    "destinations": {
-                        "value": {
-                            "logAnalytics": [
-                                {
-                                    "name": "SecurityEvent",
-                                    "workspaceId": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]",
-                                    "workspaceResourceId": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
-                                }
-                            ]
-                        }
+                    "dataCollectionRuleName": {
+                        "value": "[variables('dataCollectionRuleName')]"
                     },
-                    "dataFlows": {
-                        "value": "[variables('dataFlows')]"
-                    },
-                    "tagsArray": {
-                        "value": {
-                            "createdBy": "Sentinel"
-                        }
+                    "dataSourcesFileUrl": {
+                        "value": "[variables('dataSourcesFileUrl')]"
                     }
                 }
             }
@@ -275,9 +215,6 @@
             "name": "deployWin10VM",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
-            "dependsOn": [
-                "deployAzureSentinel2Go"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -303,26 +240,44 @@
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
+                    "managedIdentity": {
+                        "value": "SystemAssigned"
+                    },
                     "remoteAccessMode": {
                         "value": "[parameters('remoteAccessMode')]"
                     },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
                     },
-                    "enableMonitoringAgent": {
-                        "value": "Azure Monitor Agent"
-                    },
                     "enableSysmon": {
                         "value": "[parameters('enableSysmon')]"
                     },
-                    "workspaceId": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
-                    },
-                    "workspaceKey": {
-                        "value": "[if(empty(parameters('workspaceKey')), reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, parameters('workspaceKey'))]"
-                    },
                     "location": {
                         "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+                {
+            "name": "installAzureMonitorAgent",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployAzureSentinel2Go",
+                "deployWin10VM"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Azure-Monitor-Agents/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWin10VM').outputs.allWinVMsDeployed.value]"
+                    },
+                    "monitorAgent": {
+                        "value": "Azure Monitor Agent"
                     }
                 }
             }
@@ -333,7 +288,7 @@
             "apiVersion": "2020-10-01",
             "dependsOn": [
                 "createDataCollectionRules",
-                "deployWin10VM"
+                "installAzureMonitorAgent"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -346,93 +301,11 @@
                         "value": "[reference('deployWin10VM').outputs.allWinVMsDeployed.value]"
                     },
                     "dataCollectionRuleId": {
-                        "value": "[reference('createDataCollectionRules').outputs.workspaceIdOutput.value]"
+                        "value": "[reference('createDataCollectionRules').outputs.dataCollectionRuleId.value]"
                     },
                     "dataCollectionRuleName": {
-                        "value": "[variables('ruleName')]"
+                        "value": "[variables('dataCollectionRuleName')]"
                     }
-                }
-            }
-        },
-        {
-            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
-            "name": "deployC2",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/C2/azuredeploy.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "adminUsername": {
-                        "value": "[parameters('adminUsername')]"
-                    },
-                    "authenticationType": {
-                        "value": "password"
-                    },
-                    "adminPasswordOrKey": {
-                        "value": "[parameters('adminPassword')]"
-                    },
-                    "vmName": {
-                        "value": "C2001"
-                    },
-                    "ubuntuSKU": {
-                        "value": "[parameters('ubuntuSKU')]"
-                    },
-                    "vmSize": {
-                        "value": "[parameters('vmSize')]"
-                    },
-                    "remoteAccessMode": {
-                        "value": "[parameters('remoteAccessMode')]"
-                    },
-                    "allowedIPAddresses": {
-                        "value": "[parameters('allowedIPAddresses')]"
-                    },
-                    "c2Framework": {
-                        "value": "[parameters('c2Framework')]"
-                    }
-                }
-            }
-        },
-        {
-            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
-            "name": "vnet-c2/peering-to-remote-vnet-win",
-            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "apiVersion": "2019-11-01",
-            "dependsOn": [
-                "deployC2",
-                "deployWin10VM"
-            ],
-            "location": "[parameters('location')]",
-            "properties": {
-                "allowVirtualNetworkAccess": true,
-                "allowForwardedTraffic": false,
-                "allowGatewayTransit": false,
-                "useRemoteGateways": false,
-                "remoteVirtualNetwork": {
-                    "id": "[reference('deployWin10VM').outputs.virtualNetworkId.value]"
-                }
-            }
-        },
-        {
-            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
-            "name": "vnet-win/peering-to-remote-vnet-c2",
-            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "apiVersion": "2019-11-01",
-            "dependsOn": [
-                "deployC2",
-                "deployWin10VM"
-            ],
-            "location": "[parameters('location')]",
-            "properties": {
-                "allowVirtualNetworkAccess": true,
-                "allowForwardedTraffic": false,
-                "allowGatewayTransit": false,
-                "useRemoteGateways": false,
-                "remoteVirtualNetwork": {
-                    "id": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkId.value, 'Resource not deployed')]"
                 }
             }
         }

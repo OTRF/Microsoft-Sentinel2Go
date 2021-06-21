@@ -20,10 +20,10 @@
                 "description": "Name for the data collection rule"
             }
         },
-        "xPathQueries": {
-            "type": "array",
+        "dataSourcesFileUrl": {
+            "type": "string",
             "metadata": {
-                "description": "XPathQueries: [\"Security!\"]. Reference: https://docs.microsoft.com/en-us/azure/templates/microsoft.insights/datacollectionrules?tabs=json#windowseventlogdatasource-object"
+                "description": "URL to download a Data Collection Rules Data Sources File (JSON File)."
             }
         },
         "location": {
@@ -41,8 +41,8 @@
     "functions": [],
     "variables": {
         "identityName": "[concat('userIdentity',uniqueString(resourceGroup().id))]",
-        "XPathQueries": "[replace(replace(string(parameters('XPathQueries')), '[', ''), ']', '')]",
-        "scriptArguments": "[concat('-WorkspaceId ', parameters('WorkspaceId'), '-WorkspaceResourceId ', parameters('WorkspaceResourceId'),' -ResourceGroup ', resourceGroup().name, ' -DataCollectionRuleName ', parameters('DataCollectionRuleName'), ' -XPathQueries ', variables('xPathQueries'), ' -Location ', parameters('location'))]"
+        "DataSourceFile": "[last(split(parameters('dataSourcesFileUrl'),'/'))]",
+        "scriptArguments": "[concat('-WorkspaceId ', parameters('WorkspaceId'), ' -WorkspaceResourceId ', parameters('WorkspaceResourceId'),' -ResourceGroup ', resourceGroup().name, ' -DataCollectionRuleName ', parameters('DataCollectionRuleName'), ' -DataSourcesFile ', variables('DataSourceFile'), ' -Location ', parameters('location'), ' -verbose')]"
     },
     "resources": [
         {
@@ -104,7 +104,9 @@
                 "azPowerShellVersion": "3.0",
                 "arguments": "[variables('scriptArguments')]",
                 "primaryScriptUri": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/templates/azure/Data-Collection-Rules/Create-DataCollectionRules.ps1",
-                "supportingScriptUris": [],
+                "supportingScriptUris": [
+                    "[parameters('dataSourcesFileUrl')]"
+                ],
                 "timeout": "PT30M",
                 "cleanupPreference": "OnSuccess",
                 "retentionInterval": "P1D"

@@ -8,10 +8,13 @@ param(
     [Parameter(Mandatory=$true)][string]$WorkspaceId,
     [Parameter(Mandatory=$true)][string]$WorkspaceResourceId,
     [Parameter(Mandatory=$true)][string]$ResourceGroup,
+    [Parameter(Mandatory=$false)][ValidateSet('Windows','Linux')][string]$Kind = 'Windows',
     [Parameter(Mandatory=$true)][string]$DataCollectionRuleName,
-    [Parameter(Mandatory=$true)][string[]]$XPathQueries,
+    [Parameter(Mandatory=$false)][string]$DestinationLogAnalyticsName = 'SecurityEvent',
+    [Parameter(Mandatory=$false)][string[]]$DataFlowsStreams = @('Microsoft-SecurityEvent'),
+    [Parameter(Mandatory=$false)][object]$DataSourcesObject,
+    [Parameter(Mandatory=$false)][string]$DataSourcesFile,
     [Parameter(Mandatory=$true)][string]$Location
-
 )
 
 $context = Get-AzContext
@@ -24,33 +27,37 @@ if(!$context){
 $SubscriptionId = $context.Subscription.Id
 
 Write-host "[+] Connected to Azure with subscription: $($context.Subscription)"
+Write-host "[+] Processing XPath Queries.."
+if ($DataSourcesFile){
+    if (($DataSourcesFile -as [System.URI]).AbsoluteURI) {
+        Write-host "[+] Downloading Data Sources File.."
+        # Set Current Directory (PS Session Only)
+        [Environment]::CurrentDirectory=(Get-Location -PSProvider FileSystem).ProviderPath
+        # Initializing Web Client
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        $OutputFile = Split-Path $XPathQueriesUrl -leaf
+        # Download Queries
+        $wc = new-object System.Net.WebClient
+        $wc.DownloadFile($XPathQueriesUrl, $OutputFile)
+        $DataSourcesFile = $OutputFile
+    }
+    $DataSourcesObject = Get-content -Path .\$DataSourcesFile | ConvertFrom-Json
+}
+
 Write-host "[+] Data Collection Rule: $DataCollectionRuleName"
 $ApiUri = "/subscriptions/${SubscriptionId}/resourceGroups/${ResourceGroup}/providers/Microsoft.Insights/dataCollectionRules/${DataCollectionRuleName}?api-version=2019-11-01-preview"
 $RuleBody = @{
     location = $location
-    kind = "Windows"
+    kind = "$kind"
     tags = @{
         createdBy = "Sentinel"
     }
     properties = @{
-        datasources = @{
-            windowsEventLogs = @(
-                @{
-                    name = "eventLogsDataSource"
-                    scheduledTransferPeriod = "PT1M"
-                    streams = @(
-                        "Microsoft-SecurityEvent"
-                    )
-                    xPathQueries = @(
-                        $XPathQueries
-                    )
-                }
-            )
-        }
+        datasources = $DataSourcesObject
         destinations = @{
             logAnalytics = @(
                 @{
-                    name = "SecurityEvent"
+                    name = "$DestinationLogAnalyticsName"
                     workspaceId = $WorkspaceId
                     workspaceResourceId = $WorkspaceResourceId
                 }
@@ -58,11 +65,9 @@ $RuleBody = @{
         }
         dataFlows = @(
             @{
-                streams = @(
-                    "Microsoft-SecurityEvent"
-                )
+                streams = $DataFlowsStreams
                 destinations = @(
-                    "SecurityEvent"
+                    "$DestinationLogAnalyticsName"
                 )
             }
         )
