@@ -146,7 +146,7 @@
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/",
-        "ruleName": "WindowsDCR",
+        "dataCollectionRuleName": "WindowsDCR",
         "dataSources": {
             "windowsEventLogs": [
                 {
@@ -210,12 +210,12 @@
             "properties": {
                  "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Data-Collection-Rules/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Data-Collection-Rules/azuredeploy-arm.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
                     "ruleName": {
-                        "value": "[variables('ruleName')]"
+                        "value": "[variables('dataCollectionRuleName')]"
                     },
                     "dataSources": {
                         "value": "[variables('dataSources')]"
@@ -246,9 +246,6 @@
             "name": "deployWin10VM",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
-            "dependsOn": [
-                "deployAzureSentinel2Go"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -274,26 +271,44 @@
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
+                    "managedIdentity": {
+                        "value": "SystemAssigned"
+                    },
                     "remoteAccessMode": {
                         "value": "[parameters('remoteAccessMode')]"
                     },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
                     },
-                    "enableMonitoringAgent": {
-                        "value": "Azure Monitor Agent"
-                    },
                     "enableSysmon": {
                         "value": "[parameters('enableSysmon')]"
                     },
-                    "workspaceId": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
-                    },
-                    "workspaceKey": {
-                        "value": "[if(empty(parameters('workspaceKey')), reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, parameters('workspaceKey'))]"
-                    },
                     "location": {
                         "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "installAzureMonitorAgent",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployAzureSentinel2Go",
+                "deployWin10VM"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Azure-Monitor-Agents/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWin10VM').outputs.allWinVMsDeployed.value]"
+                    },
+                    "monitorAgent": {
+                        "value": "Azure Monitor Agent"
                     }
                 }
             }
@@ -304,7 +319,7 @@
             "apiVersion": "2020-10-01",
             "dependsOn": [
                 "createDataCollectionRules",
-                "deployWin10VM"
+                "installAzureMonitorAgent"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -317,10 +332,10 @@
                         "value": "[reference('deployWin10VM').outputs.allWinVMsDeployed.value]"
                     },
                     "dataCollectionRuleId": {
-                        "value": "[reference('createDataCollectionRules').outputs.workspaceIdOutput.value]"
+                        "value": "[reference('createDataCollectionRules').outputs.dataCollectionRuleId.value]"
                     },
                     "dataCollectionRuleName": {
-                        "value": "[variables('ruleName')]"
+                        "value": "[variables('dataCollectionRuleName')]"
                     }
                 }
             }
