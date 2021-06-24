@@ -147,7 +147,7 @@
         {
             "condition": "[or(parameters('connectM365Incidents'), contains(parameters('dataConnectors'), 'MicrosoftThreatProtection'))]",
             "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
-            "apiVersion": "2020-01-01",
+            "apiVersion": "2019-01-01-preview",
             "location": "[parameters('location')]",
             "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',variables('m365DefenderName'))]",
             "kind": "MicrosoftThreatProtection",
@@ -185,7 +185,7 @@
 		{
 			"condition": "[or(contains(parameters('dataConnectors'), 'OfficeATP'), contains(parameters('dataConnectors'), 'MicrosoftThreatProtection'))]",
             "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
-            "apiVersion": "2020-01-01",
+            "apiVersion": "2019-01-01-preview",
             "location": "[parameters('location')]",
             "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',variables('officeATPName'))]",
             "kind": "OfficeATP",
@@ -217,7 +217,7 @@
         {
             "condition": "[or(contains(parameters('dataConnectors'), 'MicrosoftDefenderAdvancedThreatProtection'), contains(parameters('dataConnectors'), 'MicrosoftThreatProtection'))]",
             "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
-            "apiVersion": "2020-01-01",
+            "apiVersion": "2019-01-01-preview",
             "location": "[parameters('location')]",
             "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',variables('mdatpName'))]",
             "kind": "MicrosoftDefenderAdvancedThreatProtection",
