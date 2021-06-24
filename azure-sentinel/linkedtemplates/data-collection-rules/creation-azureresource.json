@@ -1,0 +1,60 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ruleName": {
+            "type": "String",
+            "metadata": {
+                "description": "Specifies the name of the data collection rule to create."
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "Specifies the location in which to create the data collection rule."
+            },
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "dataSources": {
+            "type": "Object",
+            "metadata": {
+                "description": "The specification of data sources."
+            }
+        },
+        "dataFlows": {
+            "type": "Array",
+            "metadata": {
+                "description": "The specification of data flows."
+            }
+        },
+        "destinations": {
+            "type": "Object",
+            "metadata": {
+                "description": "The specification of destinations."
+            }
+        },
+        "tagsArray": {
+            "type": "Object"
+        }
+    },
+    "resources": [
+        {
+            "type": "microsoft.insights/dataCollectionRules",
+            "apiVersion": "2019-11-01-preview",
+            "name": "[parameters('ruleName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tagsArray')]",
+            "properties": {
+                "dataSources": "[parameters('dataSources')]",
+                "destinations": "[parameters('destinations')]",
+                "dataFlows": "[parameters('dataFlows')]"
+            }
+        }
+    ],
+    "outputs": {
+        "dataCollectionRuleId": {
+            "type": "String",
+            "value": "[resourceId('microsoft.insights/dataCollectionRules', parameters('ruleName'))]"
+        }
+    }
+}

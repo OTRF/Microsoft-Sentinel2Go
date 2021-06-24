@@ -1,0 +1,49 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines": {
+            "type": "array",
+            "metadata": {
+                "description": "List of endpoints to associate data collection rules to"
+            }
+        },
+        "dataCollectionRuleId": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource ID of the data collection rule that will be associated to the VMs deployed."
+            }
+        },
+        "dataCollectionRuleName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the data collection rule associated with the VMs deployed"
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "Location for all resources."
+            },
+            "defaultValue": "[resourceGroup().location]"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "name": "[concat(parameters('virtualMachines')[copyIndex('vmDCRCopy')].vmName, '/microsoft.insights/', parameters('dataCollectionRuleName'))]",
+            "type": "Microsoft.Compute/virtualMachines/providers/dataCollectionRuleAssociations",
+            "apiVersion": "2019-11-01-preview",
+            "location": "[parameters('location')]",
+            "copy": {
+                "name": "vmDCRCopy",
+                "count": "[length(parameters('virtualMachines'))]"
+            },
+            "properties": {
+                "description": "Association of data collection rule. Deleting this association will break the data collection for this virtual machine.",
+                "dataCollectionRuleId": "[parameters('dataCollectionRuleId')]"
+            }
+        }
+    ],
+    "outputs": {}
+}
