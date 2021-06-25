@@ -6,22 +6,35 @@
 
 ## Download Event Mappings
 
+Set Current Directory (PS Session Only)
+
 ```PowerShell
-# Set Current Directory (PS Session Only)
 [Environment]::CurrentDirectory=(Get-Location -PSProvider FileSystem).ProviderPath
+```
 
+Set variable to point to OSSEM DM relationships mapped to ATT&CK file
+
+```PowerShell
 $uri = "https://raw.githubusercontent.com/OTRF/OSSEM-DM/main/use-cases/mitre_attack/techniques_to_events_mapping.json"
+```
 
-# Initializing Web Client
+Initializing Web Client
+
+```PowerShell
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $wc = new-object System.Net.WebClient
 $wc.DownloadFile($uri, "techniques_to_events_mapping.json")
 ```
 
-## Read File as an Array
+## Read JSON file
 
 ```PowerShell
 $mappings = Get-Content .\techniques_to_events_mapping.json | ConvertFrom-Json
+```
+
+You can do a quick test by selecting the first object in the array.
+
+```PowerShell
 $mappings[0] 
 ```
 
@@ -48,7 +61,7 @@ log_provider            : Microsoft-Windows-Sysmon
 
 ## Create XML Query Files
 
-### Extract Events
+### Extract Security Events
 
 ```PowerShell
 $allMappings = @{}
@@ -64,6 +77,9 @@ foreach ($item in $mappings) {
             $eventObject = @{
                 EventID = "$($item.event_id)"
                 EventName = "$($item.event_name)"
+            }
+            if ($item.filter_in.ToString() -ne 'NaN'){
+                $eventObject += @{Filters = $item.filter_in}
             }
             $allMappings[$item.data_source][$item.data_component] += $eventObject
         }
@@ -94,15 +110,45 @@ foreach ($ds in $allMappings.Keys){
             $xmlWriter.WriteComment("ATT&CK Data Component - $dc")
             # Create query strings
             $query = ""
+            $leftover = @()
             foreach ($event in $allMappings[$ds][$dc]){
                 $xmlWriter.WriteComment("$($Event.EventID) - $($Event.EventName)")
-                $query = -join ($query, " EventID=$($Event.EventID) ")
-                if (!($allMappings[$ds][$dc][-1]['EventID'] -eq $($Event.EventID))){
-                    $query = -join ($query, "or")
+                if ($Event.Filters){
+                    $leftover += $Event
+                }
+                else {
+                    $query = -join ($query, " EventID=$($Event.EventID) ")
+                    if (!($allMappings[$ds][$dc][-1]['EventID'] -eq $($Event.EventID))){
+                        $query = -join ($query, "or")
+                    }
                 }
             }
-            $query = $query.Trim()
-            $query = -join ("*[System[(", $query, ")]]")
+            if ($allMappings[$ds][$dc].Count -ne $leftover.Count){
+                $query = $query.Trim()
+                $query = -join ("*[System[(", $query, ")]]")
+                if ($leftover.Count -ne 0){
+                    $query = -join ($query, ' or ')
+                }
+            }
+            # Process leftover
+            if ($leftover){
+                foreach ($l in $leftover){
+                    $query = -join ($query, "(*[System[EventID=$($l.EventID)]] and (")
+                    foreach ($f in $l.Filters) {
+                        $key = $f | get-member -MemberType NoteProperty | select -expandproperty Name
+                        $query = -join ($query, "(*[EventData[Data[@Name='$($key)']='$($f.$key)'")
+                        if (!($l.Filters[-1] -eq $($f))){
+                            $query = -join ($query, "]] or ")
+                        }
+                        else {
+                            $query = -join ($query, "]])))")
+                        }
+                    }
+                    if (!($leftover[-1] -eq $($l))){
+                        $query = -join ($query, " or ")
+                    }
+                }
+            }
             # Create Select (query) Element
             $xmlWriter.WriteStartElement("Select")
                 $xmlWriter.WriteAttributeString("Path", "Security")
@@ -124,44 +170,33 @@ foreach ($ds in $allMappings.Keys){
 
 ## Test XML Query 
 
-### Read user-account.xml File
+### windows-registry.xml File
 
 ```PowerShell
-[xml]$Account = get-content .\user-account.xml
-$Account.InnerXml
+[xml]$registry = Get-Content .\windows-registry.xml
+$registry.innerXml
 ```
 
 ```xml
 <?xml version="1.0" encoding="utf-16"?>
 <QueryList>
-  <!--ATT&CK Data Source - user account-->
+  <!--ATT&CK Data Source - windows registry-->
   <Query Id="0" Path="Security">
-    <!--ATT&CK Data Component - user account modification-->
-    <!--4725 - A user account was disabled.-->
-    <!--4722 - A user account was enabled.-->
-    <!--4717 - System security access was granted to an account.-->
-    <!--4740 - A user account was locked out.-->
-    <!--4738 - A user account was changed.-->
-    <!--4781 - The name of an account was changed.-->
-    <!--4718 - System security access was removed from an account.-->
-    <!--4767 - A user account was unlocked.-->
-    <Select Path="Security">*[System[(EventID=4725 or EventID=4722 or EventID=4717 or EventID=4740 or EventID=4738 or EventID=4781 or EventID=4718 or EventID=4767)]]</Select>
+    <!--ATT&CK Data Component - windows registry key deletion-->
+    <!--4660 - An object was deleted.-->
+    <Select Path="Security">*[System[(EventID=4660)]]</Select>
   </Query>
   <Query Id="1" Path="Security">
-    <!--ATT&CK Data Component - user account authentication-->
-    <!--4625 - An account failed to log on.-->
-    <!--4648 - A logon was attempted using explicit credentials.-->
-    <Select Path="Security">*[System[(EventID=4625 or EventID=4648)]]</Select>
+    <!--ATT&CK Data Component - windows registry key modification-->
+    <!--4670 - Permissions on an object were changed.-->
+    <!--4657 - A registry value was modified.-->
+    <Select Path="Security">*[System[(EventID=4670 or EventID=4657)]]</Select>
   </Query>
   <Query Id="2" Path="Security">
-    <!--ATT&CK Data Component - user account deletion-->
-    <!--4726 - A user account was deleted.-->
-    <Select Path="Security">*[System[(EventID=4726)]]</Select>
-  </Query>
-  <Query Id="3" Path="Security">
-    <!--ATT&CK Data Component - user account creation-->
-    <!--4720 - A user account was created.-->
-    <Select Path="Security">*[System[(EventID=4720)]]</Select>
+    <!--ATT&CK Data Component - windows registry key access-->
+    <!--4656 - A handle to an object was requested.-->
+    <!--4663 - An attempt was made to access an object.-->
+    <Select Path="Security">(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Key']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Key']])))</Select>
   </Query>
 </QueryList>
 ```
@@ -169,7 +204,7 @@ $Account.InnerXml
 ### Run XML Query
 
 ```PowerShell
-Get-WinEvent -FilterXml $Account
+Get-WinEvent -FilterXml $registry
 ```
 
 ## Export XPath Queries for `Windows Security Events` Data Connector
@@ -177,15 +212,14 @@ Get-WinEvent -FilterXml $Account
 ### Quick Test
 
 ```PowerShell
-[xml]$Account = get-content .\user-account.xml
-$Account.QueryList.Query | ForEach-Object {-join ($_.Select.Path, '!', $_.Select.'#text') }
+[xml]$registry = Get-Content .\windows-registry.xml
+$registry.QueryList.Query | ForEach-Object {-join ($_.Select.Path, '!', $_.Select.'#text') }
 ```
 
 ```
-Security!*[System[(EventID=4725 or EventID=4722 or EventID=4717 or EventID=4740 or EventID=4738 or EventID=4781 or EventID=4718 or EventID=4767)]]
-Security!*[System[(EventID=4625 or EventID=4648)]]
-Security!*[System[(EventID=4726)]]
-Security!*[System[(EventID=4720)]]
+Security!*[System[(EventID=4660)]]
+Security!*[System[(EventID=4670 or EventID=4657)]]
+Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Key']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Key']])))
 ```
 
 ### Export Data Sources JSON File
@@ -219,5 +253,46 @@ $AllDataSources += $DataSource
 
 @{
     windowsEventLogs = $AllDataSources
-} | Convertto-Json -Depth 4 | Set-Content "ossem-attack.json" -Encoding UTF8
+} | Convertto-Json -Depth 4 | ForEach-Object { [System.Text.RegularExpressions.Regex]::Unescape($_) } | Set-Content "ossem-attack.json"
+```
+
+## Azure Sentinel - Windows Security Events Connector - XPath Queries
+
+```json
+{
+    "windowsEventLogs":  [
+                             {
+                                 "Name":  "eventLogsDataSource",
+                                 "scheduledTransferPeriod":  "PT1M",
+                                 "streams":  [
+                                                 "Microsoft-SecurityEvent"
+                                             ],
+                                 "xPathQueries":  [
+                                                      "Security!*[System[(EventID=5136 or EventID=5139)]]",
+                                                      "Security!*[System[(EventID=5137)]]",
+                                                      "Security!*[System[(EventID=5141)]]",
+                                                      "Security!*[System[(EventID=4662 or EventID=4661)]]",
+                                                      "Security!*[System[(EventID=4768 or EventID=4769)]]",
+                                                      "Security!*[System[(EventID=4688)]]",
+                                                      "Security!*[System[(EventID=4660)]]",
+                                                      "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='File']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='File']]))) or (*[System[EventID=4661]] and ((*[EventData[Data[@Name='ObjectType']='SAM']])))",
+                                                      "Security!*[System[(EventID=4670)]]",
+                                                      "Security!*[System[(EventID=4624 or EventID=4778 or EventID=4964)]]",
+                                                      "Security!*[System[(EventID=5140 or EventID=5145)]]",
+                                                      "Security!*[System[(EventID=5154 or EventID=5159 or EventID=5155 or EventID=5158 or EventID=5156 or EventID=5157 or EventID=5031)]]",
+                                                      "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Process']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Process']])))",
+                                                      "Security!*[System[(EventID=4689)]]",
+                                                      "Security!*[System[(EventID=4698)]]",
+                                                      "Security!*[System[(EventID=4701 or EventID=4700 or EventID=4702)]]",
+                                                      "Security!*[System[(EventID=4697)]]",
+                                                      "Security!*[System[(EventID=4725 or EventID=4722 or EventID=4717 or EventID=4740 or EventID=4738 or EventID=4781 or EventID=4767 or EventID=4718)]]",
+                                                      "Security!*[System[(EventID=4624 or EventID=4625 or EventID=4648)]]",
+                                                      "Security!*[System[(EventID=4726)]]",
+                                                      "Security!*[System[(EventID=4720)]]",
+                                                      "Security!*[System[(EventID=4670 or EventID=4657)]]",
+                                                      "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Key']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Key']])))"
+                                                  ]
+                             }
+                         ]
+}
 ```
