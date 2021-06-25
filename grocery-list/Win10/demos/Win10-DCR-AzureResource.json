@@ -210,7 +210,7 @@
             "properties": {
                  "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Data-Collection-Rules/azuredeploy-arm.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/data-collection-rules/creation-azureresource.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -324,7 +324,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Data-Collection-Rule-Association/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/data-collection-rules/association.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
