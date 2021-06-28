@@ -115,7 +115,7 @@
                         "filterPlaceholder": "Filter items ...",
                         "multiselect": true,
                         "selectAll": true,
-                        "defaultValue": "Make a selection",
+                        "defaultValue": "AzureActivityLog",
                         "toolTip": "Select Providers",
                         "constraints": {
                             "allowedValues": [
@@ -226,6 +226,17 @@
                 "label": "Rules and Alerts",
                 "elements": [
                     {
+                        "name": "enableScheduledAlerts",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Enable Scheduled alert rules for selected connectors?",
+                        "toolTip": "Select to enable scheduled analytics rules for selected connectors",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": "Enables Scheduled rules matching any of the selected connectors"
+                        },
+                        "visible": true
+                    },
+                    {
                         "name": "enableLAFunctions",
                         "type": "Microsoft.Common.DropDown",
                         "label": "Log Analytics Functions",
@@ -245,17 +256,6 @@
                             "required": false
                         },
                         "visible": "[if(contains(steps('solutionType').selectSolution,'AZS'), true, false)]"
-                    },
-                    {
-                        "name": "enableScheduledAlerts",
-                        "type": "Microsoft.Common.CheckBox",
-                        "label": "Enable Scheduled alert rules for selected connectors?",
-                        "toolTip": "Select to enable scheduled analytics rules for selected connectors",
-                        "constraints": {
-                            "required": false,
-                            "validationMessage": "Enables Scheduled rules matching any of the selected connectors"
-                        },
-                        "visible": true
                     }
                 ]
             }
@@ -263,7 +263,7 @@
         "outputs": {
             "workspaceName": "[steps('basics').workspaceName]",
             "pricingTier": "[steps('basics').pricingTier]",
-            "dataRetention": "[if(steps('basic').pricingTier, 'Free'), 7, steps('basics').dataRetention]",
+            "dataRetention": "[if(equals(steps('basics').pricingTier, 'Free'), 7, steps('basics').dataRetention)]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
             "dataConnectors": "[steps('dataConnectors').enableDataConnectors]",
             "securityCollectionTier": "[steps('dataConnectors').securityCollectionTier]",
