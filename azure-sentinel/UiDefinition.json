@@ -299,7 +299,7 @@
                 ]
             },
             {
-                "name": "enableLAFunctions",
+                "name": "functions",
                 "label": "Rules and Alerts",
                 "elements": [
                     {
@@ -344,8 +344,8 @@
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
             "dataConnectors": "[steps('dataConnectors').enableDataConnectors]",
             "securityCollectionTier": "[steps('dataConnectors').securityCollectionTier]",
-            "enableScheduledAlerts": "[steps('dataConnectors').enableScheduledAlerts]",
-            "enableLAFunctions": "[steps('dataConnectors').enableLAFunctions]"
+            "enableScheduledAlerts": "[steps('functions').enableScheduledAlerts]",
+            "enableLAFunctions": "[steps('functions').enableLAFunctions]"
         }
     }
 }
