@@ -58,14 +58,6 @@
                         {
                             "label": "PerNode",
                             "value": "PerNode"
-                        },
-                        {
-                            "label": "Standard",
-                            "value": "Standard"
-                        },
-                        {
-                            "label": "Premium",
-                            "value": "Premium"
                         }
                     ],
                     "required": true
@@ -136,7 +128,7 @@
                                     "value": "AzureActiveDirectoryIdentityProtection"
                                 },
                                 {
-                                    "label": "Azure ATP",
+                                    "label": "Azure ATP (license required!)",
                                     "value": "MicrosoftDefenderAdvancedThreatProtection"
                                 },
                                 {
@@ -160,7 +152,7 @@
                                     "value": "LinuxSyslogCollection"
                                 },
                                 {
-                                    "label": "Microsoft Threat Protection",
+                                    "label": "Microsoft Threat Protection (license required!)",
                                     "value": "MicrosoftThreatProtection"
                                 },
                                 {
@@ -271,7 +263,7 @@
         "outputs": {
             "workspaceName": "[steps('basics').workspaceName]",
             "pricingTier": "[steps('basics').pricingTier]",
-            "dataRetention": "[steps('basics').dataRetention]",
+            "dataRetention": "[if(steps('basic').pricingTier, 'Free'), 7, steps('basics').dataRetention]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
             "dataConnectors": "[steps('dataConnectors').enableDataConnectors]",
             "securityCollectionTier": "[steps('dataConnectors').securityCollectionTier]",
