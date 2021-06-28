@@ -91,83 +91,14 @@
                 "type": "Microsoft.Common.CheckBox",
                 "label": "Immediate Purge Data On 30 Days",
                 "toolTip": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days.",
-                "defaultValue": true,
                 "constraints": {
-                    "required": true,
+                    "required": false,
                     "validationMessage": "Please select"
                 },
                 "visible": "[if(contains(steps('dataConnectors').enableDataConnectors,'MicrosoftThreatProtection'), true, false)]"
             }
         ],
         "steps": [
-            {
-                "name": "solutionType",
-                "label": "Solution Type",
-                "elements": [
-                    {
-                        "name": "selectSolution",
-                        "type": "Microsoft.Common.DropDown",
-                        "label": "Select a solution",
-                        "defaultValue": "Azure Sentinel",
-                        "toolTip": "",
-                        "constraints": {
-                            "allowedValues": [
-                                {
-                                    "label": "Azure Sentinel",
-                                    "value": "AZS"
-                                },
-                                {
-                                    "label": "Azure Sentinel + Custom Log Pipeline",
-                                    "value": "AZS-CLP"
-                                },
-                                {
-                                    "label": "Azure Sentinel + Win10 Workstations",
-                                    "value": "AZS-Win10"
-                                },
-                                {
-                                    "label": "Azure Sentinel + Win10 + AD",
-                                    "value": "AZS-Win10-AD"
-                                },
-                                {
-                                    "label": "Azure Sentinel + Win10 + AD + ADFS",
-                                    "value": "AZS-Win10-AD-ADFS"
-                                },
-                                {
-                                    "label": "Azure Sentinel + Win10 + AD + MXS",
-                                    "value": "AZS-Win10-AD-MXS"
-                                },
-                                {
-                                    "label": "Azure Sentinel + Win10 + Palo Alto Networks VM-Series Firewall",
-                                    "value": "AZS-Win10-PA"
-                                },
-                                {
-                                    "label": "Azure Sentinel + Linux (Ubuntu, CentOS, RHEL)",
-                                    "value": "AZS-RHEL"
-                                },
-                                {
-                                    "label": "Azure Sentinel + CEF Server (Ubuntu)",
-                                    "value": "AZS-CEF"
-                                }
-
-
-                            ],
-                            "required": false
-                        },
-                        "visible": true
-                    },
-                    {
-                        "name": "enableScheduledAlerts",
-                        "type": "Microsoft.Common.CheckBox",
-                        "label": "Enable Scheduled alert rules for selected connectors?",
-                        "toolTip": "Select to enable scheduled analytics rules for selected connectors",
-                        "constraints": {
-                            "required": false,
-                            "validationMessage": "Enables Scheduled rules matching any of the selected connectors"
-                        },
-                        "visible": true
-                    }
-                ]
-            },
             {
                 "name": "dataConnectors",
                 "label": "Data connectors",
