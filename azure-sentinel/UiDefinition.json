@@ -96,7 +96,7 @@
                     "required": true,
                     "validationMessage": "Please select"
                 },
-                "visible": "[if(contains(steps('dataConnectors').enableDataConnectorsKind,'MicrosoftThreatProtection'), true, false)]"
+                "visible": "[if(contains(steps('dataConnectors').enableDataConnectors,'MicrosoftThreatProtection'), true, false)]"
             }
         ],
         "steps": [
