@@ -6,7 +6,7 @@
         "config": {
             "isWizard": true,
             "basics": {
-                "description": "<img width=450 src=\"https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/resources/images/logo.png\">\n\n**#Azure Sentinel2Go** is an open source project developed to expedite the deployment of an Azure Sentinel lab along with other Azure resources and a data ingestion pipeline to consume pre-recorded datasets for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Mordor project](https://mordordatasets.com/) right at deployment time.\n\n**Data Connectors:** 14, **Functions:** 1\n\n[Learn more about Sentinel2Go](https://techcommunity.microsoft.com/t5/azure-sentinel/azure-sentinel-to-go-part1-a-lab-w-prerecorded-data-amp-a-custom/ba-p/1260191) | [Learn more about Mordor](https://mordordatasets.com/introduction)",
+                "description": "<img width=450 src=\"https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/resources/images/logo.png\">\n\n**Azure Sentinel2Go** is an open source project developed to expedite the deployment of an Azure Sentinel lab along with other Azure resources and a data ingestion pipeline to consume pre-recorded datasets for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Mordor project](https://mordordatasets.com/) right at deployment time.\n\n**Data Connectors:** 14, **Functions:** 1\n\n[Learn more about Sentinel2Go](https://techcommunity.microsoft.com/t5/azure-sentinel/azure-sentinel-to-go-part1-a-lab-w-prerecorded-data-amp-a-custom/ba-p/1260191) | [Learn more about Mordor](https://mordordatasets.com/introduction)",
                 "location": {
                     "label": "Location",
                     "toolTip": "Location for all resources",
@@ -29,7 +29,7 @@
                     "regex": "^[A-Za-z0-9][A-Za-z0-9-]+[A-Za-z0-9]$",
                     "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
                 },
-                "visible": "[bool(steps('basics').newWorkspace)]"
+                "visible": true
             },
             {
                 "name": "pricingTier",
@@ -100,6 +100,74 @@
             }
         ],
         "steps": [
+            {
+                "name": "solutionType",
+                "label": "Solution Type",
+                "elements": [
+                    {
+                        "name": "selectSolution",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Select a solution",
+                        "defaultValue": "Azure Sentinel",
+                        "toolTip": "",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "Azure Sentinel",
+                                    "value": "AZS"
+                                },
+                                {
+                                    "label": "Azure Sentinel + Custom Log Pipeline",
+                                    "value": "AZS-CLP"
+                                },
+                                {
+                                    "label": "Azure Sentinel + Win10 Workstations",
+                                    "value": "AZS-Win10"
+                                },
+                                {
+                                    "label": "Azure Sentinel + Win10 + AD",
+                                    "value": "AZS-Win10-AD"
+                                },
+                                {
+                                    "label": "Azure Sentinel + Win10 + AD + ADFS",
+                                    "value": "AZS-Win10-AD-ADFS"
+                                },
+                                {
+                                    "label": "Azure Sentinel + Win10 + AD + MXS",
+                                    "value": "AZS-Win10-AD-MXS"
+                                },
+                                {
+                                    "label": "Azure Sentinel + Win10 + Palo Alto Networks VM-Series Firewall",
+                                    "value": "AZS-Win10-PA"
+                                },
+                                {
+                                    "label": "Azure Sentinel + Linux (Ubuntu, CentOS, RHEL)",
+                                    "value": "AZS-RHEL"
+                                },
+                                {
+                                    "label": "Azure Sentinel + CEF Server (Ubuntu)",
+                                    "value": "AZS-CEF"
+                                }
+
+
+                            ],
+                            "required": false
+                        },
+                        "visible": true
+                    },
+                    {
+                        "name": "enableScheduledAlerts",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Enable Scheduled alert rules for selected connectors?",
+                        "toolTip": "Select to enable scheduled analytics rules for selected connectors",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": "Enables Scheduled rules matching any of the selected connectors"
+                        },
+                        "visible": true
+                    }
+                ]
+            },
             {
                 "name": "dataConnectors",
                 "label": "Data connectors",
@@ -253,7 +321,7 @@
                             ],
                             "required": false
                         },
-                        "visible": true
+                        "visible": "[if(contains(steps('solutionType').selectSolution,'AZS'), true, false)]"
                     },
                     {
                         "name": "enableScheduledAlerts",
