@@ -123,7 +123,7 @@
                 "rs5-pro"
             ],
             "metadata": {
-                "description": "The Windows version for the Desktop VM. This will pick a fully patched image of this given Windows version."
+                "description": "The Sku for the Desktop VM."
             }
         },
         "windowsServerSKU": {
@@ -133,7 +133,31 @@
                 "2019-Datacenter"
             ],
             "metadata": {
-                "description": "The Windows version for the Server VM. This will pick a fully patched image of this given Windows version."
+                "description": "The Sku for the Server VM."
+            }
+        },
+        "windowsServerVersion": {
+            "type": "string",
+            "defaultValue": "latest",
+            "allowedValues": [
+                "17763.1282.2006061952",
+                "17763.1339.2007101755",
+                "17763.1397.2008070242",
+                "17763.1457.2009030514",
+                "17763.1518.2010132039",
+                "17763.1577.2011031610",
+                "17763.1579.2011180054",
+                "17763.1637.2012040632",
+                "17763.1697.2101090203",
+                "17763.1757.2102060435",
+                "17763.1817.2103030313",
+                "17763.1879.2104091832",
+                "17763.1935.2105080716",
+                "17763.1999.2106060321",
+                "latest"
+            ],
+            "metadata": {
+                "description": "The specific version for the Server VM."
             }
         },
         "vmSize": {
@@ -342,6 +366,9 @@
                     },
                     "windowsServerSKU": {
                         "value": "[parameters('windowsServerSKU')]"
+                    },
+                    "windowsServerVersion": {
+                        "value": "[parameters('windowsServerVersion')]"
                     },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
