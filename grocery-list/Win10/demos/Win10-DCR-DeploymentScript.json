@@ -269,7 +269,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Azure-Monitor-Agents/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Azure-Monitor-Agents/windows.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
