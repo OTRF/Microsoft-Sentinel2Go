@@ -5,13 +5,13 @@
 
 <img src="resources/images/logo.png" alt="Azure Sentinel To-Go!" width="650"/>
 
-Azure Sentinel2Go is an open source project developed to expedite the deployment of an Azure Sentinel lab along with other Azure resources and a data ingestion pipeline to consume pre-recorded datasets for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Mordor project](https://mordordatasets.com/) right at deployment time.
+Azure Sentinel2Go is an open source project developed to expedite the deployment of an Azure Sentinel lab along with other Azure resources and a data ingestion pipeline to consume pre-recorded datasets for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Security Datasets](https://securitydatasets.com/) right at deployment time.
 
-# Getting Started
+## Getting Started
 
 There are a few things that you can do with this project. This project is intended for research purposes, so I highly recommend to create a new resource group in your subscription to not interfere with any other system in the same resource group. Take a look at the different scenarios that you can deploy in the section below.
 
-# Grocery List - Deployment Options
+## Grocery List - Deployment Options
 
 A few deployments available through Azure Sentinel To-go!
 
@@ -27,13 +27,13 @@ A few deployments available through Azure Sentinel To-go!
 | [Azure Sentinel + Linux (Ubuntu,CentOS,RHEL)](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/Linux) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FLinux%2Fazuredeploy.json) | [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FLinux%2Fazuredeploy.json) |
 | [Azure Sentinel + CEF Server (Ubuntu)](https://github.com/OTRF/Azure-Sentinel2Go/tree/master/grocery-list/CEF-Log-Analytics-Agent) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FCEF-Log-Analytics-Agent%2Fazuredeploy.json) | [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FCEF-Log-Analytics-Agent%2Fazuredeploy.json) |
 
-# Media
+## Media
 
 For more information about the development of this project, feel free to check out the following resources:
 
 * [Azure Sentinel To-Go (Part 1): A lab w/ Prerecorded Data 😈 & a Custom Logs Pipe via ARM Templates 🚀](https://techcommunity.microsoft.com/t5/azure-sentinel/azure-sentinel-to-go-sentinel-lab-w-prerecorded-data-amp-a/ba-p/1260191)
 * [Azure Sentinel To-Go (Part 2): Integrating a Basic Windows Lab 🧪 via ARM Templates 🚀](https://techcommunity.microsoft.com/t5/azure-sentinel/azure-sentinel-to-go-part2-integrating-a-basic-windows-lab-via/ba-p/1742165)
 
-# Author
+## Author
 
 * Roberto Rodriguez ([@Cyb3rWard0g](https://twitter.com/Cyb3rWard0g))
