@@ -271,7 +271,7 @@
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
-                    "managedIdentity": {
+                    "identityType": {
                         "value": "SystemAssigned"
                     },
                     "remoteAccessMode": {
