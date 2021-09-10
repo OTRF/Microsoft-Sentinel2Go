@@ -97,6 +97,19 @@
                 "description": "The sourceAddressPrefixes allowed to connect to this deployment"
             }
         },
+        "pfxCertName": {
+            "type": "string",
+            "defaultValue": "ADFS.pfx",
+            "metadata": {
+                "description": "Name of the SSL certificate .pfx file to set an ADFS farm with. Example: ADFS.pfx"
+            }
+        },
+        "pfxCertPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password to export and import PFX certificate. If it is a trusted CA signed certificate, the password will be used to import the certificate."
+            }
+        },
         "numberOfWorkstations": {
             "type": "int",
             "defaultValue": 1,
@@ -354,6 +367,12 @@
                     },
                     "adfsPassword": {
                         "value": "[parameters('adfsPassword')]"
+                    },
+                    "pfxCertName": {
+                        "value": "[parameters('pfxCertName')]"
+                    },
+                    "pfxCertPassword": {
+                        "value": "[parameters('pfxCertPassword')]"
                     },
                     "numberOfWorkstations": {
                         "value": "[parameters('numberOfWorkstations')]"
