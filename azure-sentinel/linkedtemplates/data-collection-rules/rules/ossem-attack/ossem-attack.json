@@ -1,0 +1,36 @@
+{
+    "windowsEventLogs":  [
+                             {
+                                 "Name":  "eventLogsDataSource",
+                                 "scheduledTransferPeriod":  "PT1M",
+                                 "streams":  [
+                                                 "Microsoft-SecurityEvent"
+                                             ],
+                                 "xPathQueries":  [
+                                                      "Security!*[System[(EventID=5136 or EventID=5139)]]",
+                                                      "Security!*[System[(EventID=5137)]]",
+                                                      "Security!*[System[(EventID=5141)]]",
+                                                      "Security!*[System[(EventID=4662 or EventID=4661)]]",
+                                                      "Security!*[System[(EventID=4768 or EventID=4769)]]",
+                                                      "Security!*[System[(EventID=4688)]]",
+                                                      "Security!*[System[(EventID=4660)]]",
+                                                      "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='File']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='File']]))) or (*[System[EventID=4661]] and ((*[EventData[Data[@Name='ObjectType']='SAM']])))",
+                                                      "Security!*[System[(EventID=4670)]]",
+                                                      "Security!*[System[(EventID=4624 or EventID=4778 or EventID=4964)]]",
+                                                      "Security!*[System[(EventID=5140 or EventID=5145)]]",
+                                                      "Security!*[System[(EventID=5154 or EventID=5159 or EventID=5155 or EventID=5158 or EventID=5156 or EventID=5157 or EventID=5031)]]",
+                                                      "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Process']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Process']])))",
+                                                      "Security!*[System[(EventID=4689)]]",
+                                                      "Security!*[System[(EventID=4698)]]",
+                                                      "Security!*[System[(EventID=4701 or EventID=4700 or EventID=4702)]]",
+                                                      "Security!*[System[(EventID=4697)]]",
+                                                      "Security!*[System[(EventID=4725 or EventID=4722 or EventID=4717 or EventID=4740 or EventID=4738 or EventID=4781 or EventID=4767 or EventID=4718)]]",
+                                                      "Security!*[System[(EventID=4624 or EventID=4625 or EventID=4648)]]",
+                                                      "Security!*[System[(EventID=4726)]]",
+                                                      "Security!*[System[(EventID=4720)]]",
+                                                      "Security!*[System[(EventID=4670 or EventID=4657)]]",
+                                                      "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Key']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Key']])))"
+                                                  ]
+                             }
+                         ]
+}
