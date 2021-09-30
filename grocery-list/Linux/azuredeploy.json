@@ -207,7 +207,7 @@
                 "user"
             ]
         },
-        "instalOMSAuditdPlugin": {
+        "installOMSAuditdPlugin": {
             "type": "bool",
             "defaultValue": false,
             "metadata": {
@@ -385,7 +385,7 @@
                         "value": true
                     },
                     "installOMSAuditdPlugin": {
-                        "value": "[parameters('instalOMSAuditdPlugin')]"
+                        "value": "[parameters('installOMSAuditdPlugin')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
