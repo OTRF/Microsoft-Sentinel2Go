@@ -73,17 +73,6 @@
                     "required": true
                 },
                 "visible": "[if(contains(steps('basics').pricingTier, 'Free'), false, true)]"
-            },
-            {
-                "name": "immediatePurgeDataOn30Days",
-                "type": "Microsoft.Common.CheckBox",
-                "label": "Immediate Purge Data On 30 Days",
-                "toolTip": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days.",
-                "constraints": {
-                    "required": false,
-                    "validationMessage": "Please select"
-                },
-                "visible": true
             }
         ],
         "steps": [
