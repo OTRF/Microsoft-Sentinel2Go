@@ -285,7 +285,7 @@
             }
         ],
         "outputs": {
-             "workspaceName": "[steps('basics').workspaceName]",
+            "workspaceName": "[steps('basics').workspaceName]",
             "pricingTier": "[steps('basics').pricingTier]",
             "dataRetention": "[if(equals(steps('basics').pricingTier, 'Free'), 7, steps('basics').dataRetention)]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
