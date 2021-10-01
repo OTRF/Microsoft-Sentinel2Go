@@ -188,6 +188,67 @@
                         "visible": true
                     }
                 ]
+            },
+            {
+                "name": "networking",
+                "label": "Networking",
+                "elements": [
+                    {
+                        "name": "networkingInfo",
+                        "type": "Microsoft.Common.TextBlock",
+                        "visible": true,
+                        "options": {
+                            "text": "There are two controls tailored towards gathering network requirements. They are the Public IP Address and Virtual Network combos seen below.",
+                            "link": {
+                                "label": "",
+                                "uri": ""
+                            }
+                        }
+                    },
+                    {
+                        "name": "sectionNetworking",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Remote Access",
+                        "elements": [
+                            {
+                                "name": "remoteAccessMethod",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "Select an access method",
+                                "defaultValue": "Azure Bastion Host",
+                                "toolTip": "Do you want to restrict access to your environment by a Public IP or set up an Azure Bastion Host. If the former, make sure you add your public IP address to the variable 'allowedIPAddresses'",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "Public IP",
+                                            "value": "AllowPublicIP"
+                                        },
+                                        {
+                                            "label": "Azure Bastion Host",
+                                            "value": "AzureBastionHost"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            },
+                            {
+                                "name": "allowedIPAddresses",
+                                "type": "Microsoft.Common.TextBox",
+                                "label": "Allowed IP Addresses",
+                                "placeholder": "",
+                                "defaultValue": "",
+                                "toolTip": "The sourceAddressPrefixes allowed to connect to this deployment.",
+                                "constraints": {
+                                    "required": true,
+                                    "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(\\d|[1-2]\\d|3[0-2]))?$", 
+                                    "validationMessage": "Please enter a valid CIDR."
+                                },
+                                "visible": "[steps('networking').sectionNetworking.remoteAccessMethod, 'AllowPublicIP'), true, false)]"
+                            }
+                        ],
+                        "visible": true
+                    }
+                ]
             }
         ],
         "outputs": {
