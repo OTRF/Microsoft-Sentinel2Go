@@ -227,7 +227,7 @@
                                     "regex": "", 
                                     "validationMessage": "Please enter a valid CIDR."
                                 },
-                                "visible": [if(equals(steps('networkParameters').remoteAccessMethod, 'AllowPublicIP'), true, false]
+                                "visible": "[if(equals(steps('networkParameters').remoteAccessMethod, 'AllowPublicIP'), true, false]"
                             }
                 ]
             },
