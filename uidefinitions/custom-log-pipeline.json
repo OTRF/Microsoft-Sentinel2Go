@@ -87,7 +87,7 @@
                     "required": false,
                     "validationMessage": "Please select"
                 },
-                "visible": "[if(contains(steps('dataConnectors').enableDataConnectors,'MicrosoftThreatProtection'), true, false)]"
+                "visible": true
             }
         ],
         "steps": [
