@@ -86,113 +86,11 @@
                 "visible": "[if(steps('basics').dataRetention, > 30), true, false)]"
             }
         ],
-        "steps": [
-            {
-                "name": "vmParameters",
-                "label": "VM Parameters",
-                "elements": [
-                    {
-                        "name": "vmSection",
-                        "type": "Microsoft.Common.Section",
-                        "label": "Customize your VM",
-                        "elements": [
-                            {
-                                "name": "vmSize",
-                                "type": "Microsoft.Compute.SizeSelector",
-                                "label": "Size",
-                                "toolTip": "",
-                                "recommendedSizes": [
-                                    "Standard_D1",
-                                    "Standard_D2",
-                                    "Standard_D3",
-                                    "Standard_B1s"
-                                ],
-                                "constraints": {
-                                    "allowedSizes": []
-                                },
-                                "options": {
-                                    "hideDiskTypeFilter": false
-                                },
-                                "osPlatform": "Windows",
-                                "imageReference": {
-                                    "publisher": "MicrosoftWindowsServer",
-                                    "offer": "WindowsServer",
-                                    "sku": "2012-R2-Datacenter"
-                                },
-                                "count": 1,
-                                "visible": true
-                            }
-                        ],
-                        "visible": true
-                    },
-                    {
-                        "name": "adminUsername",
-                        "type": "Microsoft.Compute.UserNameTextBox",
-                        "label": "Admin Username",
-                        "defaultValue": "",
-                        "toolTip": "",
-                        "constraints": {
-                            "required": true,
-                            "regex": "^[a-z0-9A-Z]{1,30}$",
-                            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
-                        },
-                        "osPlatform": "Windows",
-                        "visible": true
-                    },
-                    {
-                        "name": "vmCredentials",
-                        "type": "Microsoft.Compute.CredentialsCombo",
-                        "label": {
-                            "password": "Password Or Key",
-                            "confirmPassword": "Confirm password or key"
-                        },
-                        "toolTip": {
-                            "password": ""
-                        },
-                        "constraints": {
-                            "required": true,
-                            "customPasswordRegex": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[\\w~@#$%^&*+=|{}:;!.?\\()\\[\\]-]{8,}$",
-                            "customValidationMessage": "SSH Key or password for the Linux Virtual Machine. SSH key is recommended. The password must be at least 8 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter."
-                        },
-                        "options": {
-                            "hideConfirmation": false
-                        },
-                        "osPlatform": "Windows",
-                        "visible": true
-                    },
-                    {
-                        "name": "authenticationType",
-                        "type": "Microsoft.Common.DropDown",
-                        "label": "Select an authentication method",
-                        "defaultValue": "password",
-                        "toolTip": "Type of authentication to use on the Linux Virtual Machine. SSH key is recommended.",
-                        "constraints": {
-                            "allowedValues": [
-                                {
-                                    "label": "password",
-                                    "value": "password"
-                                },
-                                {
-                                    "label": "sshPublicKey",
-                                    "value": "sshPublicKey"
-                                }
-                            ],
-                            "required": true
-                        },
-                        "visible": true
-                    }
-                ]
-            }            
-        ],
         "outputs": {
             "workspaceName": "[steps('basics').workspaceName]",
             "pricingTier": "[steps('basics').pricingTier]",
             "dataRetention": "[if(equals(steps('basics').pricingTier, 'Free'), 7, steps('basics').dataRetention)]",
-            "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
-            "vmSize": "[steps('vmParameters').vmSection.vmSize]",
-            "adminUsername": "[steps('vmParameters').adminUsername]",
-            "adminPasswordOrKey": "[steps('vmParameters').vmCredentials]",
-            "authenticationType": "[steps('vmParameters').authenticationType]"
+            "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]"
         }
     }
 }
