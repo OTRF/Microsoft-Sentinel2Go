@@ -87,6 +87,7 @@
                     "required": false,
                     "validationMessage": "Please select"
                 },
+	        "defaultValue": true,
                 "visible": true
             }
         ],
@@ -222,11 +223,11 @@
                                 "defaultValue": "",
                                 "toolTip": "The sourceAddressPrefixes allowed to connect to this deployment.",
                                 "constraints": {
-                                    "required": true,
+                                    "required": false,
                                     "regex": "", 
                                     "validationMessage": "Please enter a valid CIDR."
                                 },
-                                "visible": true
+                                "visible": [if(equals(steps('networkParameters').remoteAccessMethod, 'AllowPublicIP'), true, false]
                             }
                 ]
             },
@@ -238,7 +239,7 @@
                         "name": "addMordorDatasets",
                         "type": "Microsoft.Common.DropDown",
                         "label": "Data ingestion",
-                        "defaultValue": "NoItems",
+                        "defaultValue": "No Items",
                         "toolTip": "Do you want to deploy additional resources and connect them to your current Azure Sentinel's workspace?",
                         "constraints": {
                             "allowedValues": [
