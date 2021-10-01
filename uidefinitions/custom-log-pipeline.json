@@ -194,6 +194,11 @@
                 "label": "Networking",
                 "elements": [
                     {
+                        "name": "sectionNetworking",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Remote Access",
+                        "elements": [
+                            {
                         "name": "networkingInfo",
                         "type": "Microsoft.Common.TextBlock",
                         "visible": true,
@@ -205,11 +210,6 @@
                             }
                         }
                     },
-                    {
-                        "name": "sectionNetworking",
-                        "type": "Microsoft.Common.Section",
-                        "label": "Remote Access",
-                        "elements": [
                             {
                                 "name": "remoteAccessMethod",
                                 "type": "Microsoft.Common.DropDown",
