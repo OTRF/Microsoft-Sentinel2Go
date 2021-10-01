@@ -35,6 +35,10 @@
                 "name": "pricingTier",
                 "type": "Microsoft.Common.DropDown",
                 "label": "Select a pricing tier",
+                "filter": true,
+                "filterPlaceholder": "Filter items ...",
+                "multiselect": false,
+                "selectAll": false,
                 "defaultValue": "Make a selection",
                 "toolTip": "Pricing tier: pergb2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers.",
                 "constraints": {
@@ -83,14 +87,188 @@
                     "required": false,
                     "validationMessage": "Please select"
                 },
-                "visible": "[if(steps('basics').dataRetention, > 30), true, false)]"
+                "visible": "[if(contains(steps('dataConnectors').enableDataConnectors,'MicrosoftThreatProtection'), true, false)]"
+            }
+        ],
+        "steps": [
+            {
+                "name": "dataConnectors",
+                "label": "Data connectors",
+                "elements": [
+                    {
+                        "name": "textBlock1",
+                        "type": "Microsoft.Common.TextBlock",
+                        "visible": true,
+                        "options": {
+                            "text": "Please select which data providers you want to onboard into your Azure Sentinel2Go environment",
+                            "link": {
+                                "label": "Learn more",
+                                "uri": "https://www.microsoft.com"
+                            }
+                        }
+                    },
+                    {
+                        "name": "enableDataConnectors",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Select data providers to onboard",
+                        "filter": true,
+                        "filterPlaceholder": "Filter items ...",
+                        "multiselect": true,
+                        "selectAll": true,
+                        "defaultValue": "AzureActivityLog",
+                        "toolTip": "Select Providers",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "Azure Activity Log",
+                                    "value": "AzureActivityLog"
+                                },
+                                {
+                                    "label": "Azure AD Identity Protection",
+                                    "value": "AzureActiveDirectoryIdentityProtection"
+                                },
+                                {
+                                    "label": "Azure ATP (license required!)",
+                                    "value": "MicrosoftDefenderAdvancedThreatProtection"
+                                },
+                                {
+                                    "label": "Azure Security Center",
+                                    "value": "AzureSecurityCenter"
+                                },
+                                {
+                                    "label": "DNS Analytics",
+                                    "value": "DnsAnalytics"
+                                },
+                                {
+                                    "label": "Security Events",
+                                    "value": "SecurityEvents"
+                                },
+                                {
+                                    "label": "Windows Firewall",
+                                    "value": "WindowsFirewall"
+                                },
+                                {
+                                    "label": "Linux Syslog Collection",
+                                    "value": "LinuxSyslogCollection"
+                                },
+                                {
+                                    "label": "Microsoft Threat Protection (license required!)",
+                                    "value": "MicrosoftThreatProtection"
+                                },
+                                {
+                                    "label": "Office365",
+                                    "value": "Office 365"
+                                },
+                                {
+                                    "label": "Office ATP",
+                                    "value": "OfficeATP"
+                                },
+                                {
+                                    "label": "Threat Intelligence",
+                                    "value": "ThreatIntelligence"
+                                },
+                                {
+                                    "label": "Microsoft Cloud App Security",
+                                    "value": "MicrosoftCloudAppSecurity"
+                                },
+                                {
+                                    "label": "Azure Advanced Threat Protection",
+                                    "value": "AzureAdvancedThreatProtection"
+                                }
+                            ],
+                            "required": true
+                        },
+                        "visible": true
+                    },
+                    {
+                        "name": "connectM365Incidents",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Connect M365 Incidents",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": "Please select"
+                        },
+                        "visible": "[if(contains(steps('dataConnectors').enableDataConnectors,'MicrosoftThreatProtection'), true, false)]"
+                    },
+                    {
+                        "name": "securityCollectionTier",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Security Events to stream into Sentinel ",
+                        "defaultValue": "Recommended",
+                        "toolTip": "",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "All",
+                                    "value": "All"
+                                },
+                                {
+                                    "label": "Recommended",
+                                    "value": "Recommended"
+                                },
+                                {
+                                    "label": "Minimal",
+                                    "value": "Minimal"
+                                },
+                                {
+                                    "label": "None",
+                                    "value": "None"
+                                }
+                            ],
+                            "required": true
+                        },
+                        "visible": "[if(contains(steps('dataConnectors').enableDataConnectors,'SecurityEvents'), true, false)]"
+                    }
+                ]
+            },
+            {
+                "name": "functions",
+                "label": "Rules and Alerts",
+                "elements": [
+                    {
+                        "name": "enableScheduledAlerts",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Enable Scheduled alert rules for selected connectors?",
+                        "toolTip": "Select to enable scheduled analytics rules for selected connectors",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": "Enables Scheduled rules matching any of the selected connectors"
+                        },
+                        "visible": true
+                    },
+                    {
+                        "name": "enableLAFunctions",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Log Analytics Functions",
+                        "defaultValue": "Sysmon",
+                        "toolTip": "",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "Sysmon",
+                                    "value": "Sysmon"
+                                },
+                                {
+                                    "label": "None",
+                                    "value": "None"
+                                }
+                            ],
+                            "required": false
+                        },
+                        "visible": "[if(contains(steps('solutionType').selectSolution,'AZS'), true, false)]"
+                    }
+                ]
             }
         ],
         "outputs": {
             "workspaceName": "[steps('basics').workspaceName]",
             "pricingTier": "[steps('basics').pricingTier]",
             "dataRetention": "[if(equals(steps('basics').pricingTier, 'Free'), 7, steps('basics').dataRetention)]",
-            "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]"
+            "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
+            "dataConnectors": "[steps('dataConnectors').enableDataConnectors]",
+            "securityCollectionTier": "[steps('dataConnectors').securityCollectionTier]",
+            "enableScheduledAlerts": "[steps('functions').enableScheduledAlerts]",
+            "enableLAFunctions": "[steps('functions').enableLAFunctions]"
         }
     }
 }
