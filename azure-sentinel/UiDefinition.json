@@ -238,60 +238,7 @@
                         "visible": true
                     }
                 ]
-            },
-            {
-                "name": "DataIngestion",
-                "label": "Date Ingestion",
-                "elements": [
-                    {
-                        "name": "addMordorDatasets",
-                        "type": "Microsoft.Common.DropDown",
-                        "label": "Data ingestion",
-                        "defaultValue": "NoItems",
-                        "toolTip": "Do you want to deploy additional resources and connect them to your current Azure Sentinel's workspace?",
-                        "constraints": {
-                            "allowedValues": [
-                                {
-                                    "label": "No Items",
-                                    "value": "NoItems"
-                                },
-                                {
-                                    "label": "Mordor Small",
-                                    "value": "mordor-small-datasets"
-                                },
-                                {
-                                    "label": "Mordor Large APT29",
-                                    "value": "mordor-large-apt29"
-                                }
-                            ],
-                            "required": true
-                        },
-                        "visible": true
-                    },
-					{
-                        "name": "deployCustomLogsPipeline",
-                        "type": "Microsoft.Common.DropDown",
-                        "label": "Custom Log Pipeline",
-                        "defaultValue": "Logstash",
-                        "toolTip": "Do you want to deploy a data ingestion pipeline along with an Azure Sentinel solution? Events get sent to a custom logs table named prerecorded. You also have the option to deploy the pipeline with pre-recorded datasets from the Mordor project (https://mordordatasets.com)",
-                        "constraints": {
-                            "allowedValues": [
-                                {
-                                    "label": "Logstash",
-                                    "value": "Logstash"
-                                },
-                                {
-                                    "label": "Logstash-EventHub",
-                                    "value": "Logstash-EventHub"
-                                }
-                            ],
-                            "required": true
-                        },
-                        "visible": true
-                    }
-                ]
             }
-            
         ],
         "outputs": {
             "workspaceName": "[steps('basics').workspaceName]",
@@ -304,7 +251,6 @@
             "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "remoteAccessMode": "[steps('networking').sectionNetworking.remoteAccessMethod]",
             "allowedIPAddresses": "[steps('networking').sectionNetworking.allowedIPAddresses]",
-            "addMordorDatasets": "[steps('DataIngestion').addMordorDatasets]",
             "deployCustomLogsPipeline": "[steps('DataIngestion').deployCustomLogsPipeline]"
         }
     }
