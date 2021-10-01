@@ -306,20 +306,6 @@
                     }
                 ]
             }
-        ],
-        "outputs": {
-            "workspaceName": "[steps('basics').workspaceName]",
-            "pricingTier": "[steps('basics').pricingTier]",
-            "dataRetention": "[if(equals(steps('basics').pricingTier, 'Free'), 7, steps('basics').dataRetention)]",
-            "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
-            "vmSize": "[steps('vmParameters').vmSection.vmSize]",
-            "adminUsername": "[steps('vmParameters').adminUsername]",
-            "adminPasswordOrKey": "[steps('vmParameters').vmCredentials]",
-            "authenticationType": "[steps('vmParameters').authenticationType]",
-            "remoteAccessMode": "[steps('networking').sectionNetworking.remoteAccessMethod]",
-            "allowedIPAddresses": "[steps('networking').sectionNetworking.allowedIPAddresses]",
-            "addMordorDatasets": "[steps('DataIngestion').addMordorDatasets]",
-            "deployCustomLogsPipeline": "[steps('DataIngestion').deployCustomLogsPipeline]"
-        }
+        ]
     }
 }
