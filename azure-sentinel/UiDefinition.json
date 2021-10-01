@@ -102,22 +102,15 @@
                                 "label": "Size",
                                 "toolTip": "",
                                 "recommendedSizes": [
-                                    "Standard_D1",
-                                    "Standard_D2",
-                                    "Standard_D3",
-                                    "Standard_B1s"
+                                    "Standard_A2",
+                                    "Standard_A3",
+                                    "Standard_B2s",
+                                    "Standard_B2ms",
+                                    "Standard_A2_v2",
+                                    "Standard_A4_v2"
                                 ],
                                 "constraints": {
                                     "allowedSizes": []
-                                },
-                                "options": {
-                                    "hideDiskTypeFilter": false
-                                },
-                                "osPlatform": "Windows",
-                                "imageReference": {
-                                    "publisher": "MicrosoftWindowsServer",
-                                    "offer": "WindowsServer",
-                                    "sku": "2012-R2-Datacenter"
                                 },
                                 "count": 1,
                                 "visible": true
@@ -303,10 +296,10 @@
             "pricingTier": "[steps('basics').pricingTier]",
             "dataRetention": "[if(equals(steps('basics').pricingTier, 'Free'), 7, steps('basics').dataRetention)]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
-            "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "adminUsername": "[steps('vmParameters').adminUsername]",
-            "adminPasswordOrKey": "[steps('vmParameters').vmCredentials]",
             "authenticationType": "[steps('vmParameters').authenticationType]",
+            "adminPasswordOrKey": "[steps('vmParameters').vmCredentials]",
+            "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "remoteAccessMode": "[steps('networking').sectionNetworking.remoteAccessMethod]",
             "allowedIPAddresses": "[steps('networking').sectionNetworking.allowedIPAddresses]",
             "addMordorDatasets": "[steps('DataIngestion').addMordorDatasets]",
