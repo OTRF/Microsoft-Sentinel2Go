@@ -285,10 +285,18 @@
             }
         ],
         "outputs": {
-            "workspaceName": "[steps('basics').workspaceName]",
+             "workspaceName": "[steps('basics').workspaceName]",
             "pricingTier": "[steps('basics').pricingTier]",
             "dataRetention": "[if(equals(steps('basics').pricingTier, 'Free'), 7, steps('basics').dataRetention)]",
-            "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]"
+            "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
+            "adminUsername": "[steps('vmParameters').adminUsername]",
+            "authenticationType": "[steps('vmParameters').authenticationType]",
+            "adminPasswordOrKey": "[steps('vmParameters').vmCredentials]",
+            "vmSize": "[steps('vmParameters').vmSection.vmSize]",
+            "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
+            "allowedIPAddresses": "[steps('networkParameters').allowedIPAddresses]",
+            "addMordorDatasets": "[steps('DataIngestion').addMordorDatasets]",
+            "deployCustomLogsPipeline": "[steps('DataIngestion').deployCustomLogsPipeline]"
         }
     }
 }
