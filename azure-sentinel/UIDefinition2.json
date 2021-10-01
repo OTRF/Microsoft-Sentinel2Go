@@ -83,7 +83,7 @@
                     "required": false,
                     "validationMessage": "Please select"
                 },
-                "visible": "[if(steps('basics').dataRetention, > 30), true, false)]"
+                "visible": true
             }
         ],
         "steps": [
