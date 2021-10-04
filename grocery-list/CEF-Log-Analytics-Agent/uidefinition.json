@@ -77,7 +77,7 @@
                     "regex": "",
                     "validationMessage": "Your own existing log analytics workspace ID. Leave it empty if you are deploying a new Log Analytics workspace."
                 },
-                "visible": true
+                "visible": "[bool(not(steps('basics').newWorkspace))]"
             },
             {
                 "name": "workspaceKey",
@@ -91,7 +91,7 @@
                     "regex": "",
                     "validationMessage": "Your own existing log analytics workspace ID. Leave it empty if you are deploying a new Log Analytics workspace."
                 },
-                "visible": true
+                "visible": "[bool(not(steps('basics').newWorkspace))]"
             },
             {
                 "name": "pricingTier",
@@ -124,7 +124,7 @@
                     ],
                     "required": true
                 },
-                "visible": "[bool(not(steps('basics').newWorkspace))]"
+                "visible": "[bool(steps('basics').newWorkspace)]"
             },
             {
                 "name": "dataRetention",
@@ -150,7 +150,7 @@
                     "validationMessage": "Please select"
                 },
                 "defaultValue": true,
-                "visible": "[bool(not(steps('basics').newWorkspace))]"
+                "visible": "true"
             }
         ],
         "steps": [
@@ -280,8 +280,8 @@
         ],
         "outputs": {
             "workspaceName": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceName, steps('basics').workspaceSelector.name)]",
-            "workspaceId": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceId, json('null'))]",
-            "workspaceKey": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceKey, json('null')]",
+            "workspaceId": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceId, null)]",
+            "workspaceKey": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceKey, null)]",
             "pricingTier": "[steps('basics').pricingTier]",
             "dataRetention": "[if(equals(steps('basics').pricingTier, 'Free'), 7, steps('basics').dataRetention)]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
