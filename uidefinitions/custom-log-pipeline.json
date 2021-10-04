@@ -275,7 +275,6 @@
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
             "adminUsername": "[steps('vmParameters').adminUsername]",
             "authenticationType": "[steps('vmParameters').vmCredentials.authenticationType]",
-            "adminPasswordOrKey": "[if(steps('vmParameters').vmCredentials.authenticationType, 'password'), steps('vmParameters').vmCredentials.password, steps('vmParameters').vmCredentials.sshPublicKey]",
             "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
             "allowedIPAddresses": "[steps('networkParameters').allowedIPAddresses]",
