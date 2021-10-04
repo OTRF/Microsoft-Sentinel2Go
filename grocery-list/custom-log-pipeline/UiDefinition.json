@@ -87,175 +87,183 @@
                     "required": false,
                     "validationMessage": "Please select"
                 },
-                "visible": "[if(contains(steps('dataConnectors').enableDataConnectors,'MicrosoftThreatProtection'), true, false)]"
+                "defaultValue": true,
+                "visible": true
             }
         ],
         "steps": [
             {
-                "name": "dataConnectors",
-                "label": "Data connectors",
+                "name": "vmParameters",
+                "label": "VM Parameters",
                 "elements": [
                     {
-                        "name": "textBlock1",
-                        "type": "Microsoft.Common.TextBlock",
-                        "visible": true,
-                        "options": {
-                            "text": "Please select which data providers you want to onboard into your Azure Sentinel2Go environment",
-                            "link": {
-                                "label": "Learn more",
-                                "uri": "https://www.microsoft.com"
+                        "name": "vmSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Customize your VM",
+                        "elements": [
+                            {
+                                "name": "vmSize",
+                                "type": "Microsoft.Compute.SizeSelector",
+                                "label": "Size",
+                                "toolTip": "",
+                                "recommendedSizes": [
+                                    "Standard_A2",
+                                    "Standard_A3",
+                                    "Standard_B2s",
+                                    "Standard_B2ms",
+                                    "Standard_A2_v2",
+                                    "Standard_A4_v2"
+                                ],
+                                "constraints": {
+                                    "allowedSizes": []
+                                },
+                                "options": {
+                                    "hideDiskTypeFilter": false
+                                },
+                                "osPlatform": "Windows",
+                                "imageReference": {
+                                    "publisher": "MicrosoftWindowsServer",
+                                    "offer": "WindowsServer",
+                                    "sku": "2012-R2-Datacenter"
+                                },
+                                "count": 1,
+                                "visible": true
                             }
-                        }
-                    },
-                    {
-                        "name": "enableDataConnectors",
-                        "type": "Microsoft.Common.DropDown",
-                        "label": "Select data providers to onboard",
-                        "filter": true,
-                        "filterPlaceholder": "Filter items ...",
-                        "multiselect": true,
-                        "selectAll": true,
-                        "defaultValue": "AzureActivityLog",
-                        "toolTip": "Select Providers",
-                        "constraints": {
-                            "allowedValues": [
-                                {
-                                    "label": "Azure Activity Log",
-                                    "value": "AzureActivityLog"
-                                },
-                                {
-                                    "label": "Azure AD Identity Protection",
-                                    "value": "AzureActiveDirectoryIdentityProtection"
-                                },
-                                {
-                                    "label": "Azure ATP (license required!)",
-                                    "value": "MicrosoftDefenderAdvancedThreatProtection"
-                                },
-                                {
-                                    "label": "Azure Security Center",
-                                    "value": "AzureSecurityCenter"
-                                },
-                                {
-                                    "label": "DNS Analytics",
-                                    "value": "DnsAnalytics"
-                                },
-                                {
-                                    "label": "Security Events",
-                                    "value": "SecurityEvents"
-                                },
-                                {
-                                    "label": "Windows Firewall",
-                                    "value": "WindowsFirewall"
-                                },
-                                {
-                                    "label": "Linux Syslog Collection",
-                                    "value": "LinuxSyslogCollection"
-                                },
-                                {
-                                    "label": "Microsoft Threat Protection (license required!)",
-                                    "value": "MicrosoftThreatProtection"
-                                },
-                                {
-                                    "label": "Office365",
-                                    "value": "Office 365"
-                                },
-                                {
-                                    "label": "Office ATP",
-                                    "value": "OfficeATP"
-                                },
-                                {
-                                    "label": "Threat Intelligence",
-                                    "value": "ThreatIntelligence"
-                                },
-                                {
-                                    "label": "Microsoft Cloud App Security",
-                                    "value": "MicrosoftCloudAppSecurity"
-                                },
-                                {
-                                    "label": "Azure Advanced Threat Protection",
-                                    "value": "AzureAdvancedThreatProtection"
-                                }
-                            ],
-                            "required": true
-                        },
+                        ],
                         "visible": true
                     },
                     {
-                        "name": "connectM365Incidents",
-                        "type": "Microsoft.Common.CheckBox",
-                        "label": "Connect M365 Incidents",
-                        "constraints": {
-                            "required": false,
-                            "validationMessage": "Please select"
-                        },
-                        "visible": "[if(contains(steps('dataConnectors').enableDataConnectors,'MicrosoftThreatProtection'), true, false)]"
-                    },
-                    {
-                        "name": "securityCollectionTier",
-                        "type": "Microsoft.Common.DropDown",
-                        "label": "Security Events to stream into Sentinel ",
-                        "defaultValue": "Recommended",
+                        "name": "adminUsername",
+                        "type": "Microsoft.Compute.UserNameTextBox",
+                        "label": "Admin Username",
+                        "defaultValue": "",
                         "toolTip": "",
                         "constraints": {
-                            "allowedValues": [
-                                {
-                                    "label": "All",
-                                    "value": "All"
-                                },
-                                {
-                                    "label": "Recommended",
-                                    "value": "Recommended"
-                                },
-                                {
-                                    "label": "Minimal",
-                                    "value": "Minimal"
-                                },
-                                {
-                                    "label": "None",
-                                    "value": "None"
-                                }
-                            ],
-                            "required": true
+                            "required": true,
+                            "regex": "^[a-z0-9A-Z]{1,30}$",
+                            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
                         },
-                        "visible": "[if(contains(steps('dataConnectors').enableDataConnectors,'SecurityEvents'), true, false)]"
+                        "osPlatform": "Windows",
+                        "visible": true
+                    },
+                    {
+                        "name": "vmCredentials",
+                        "type": "Microsoft.Compute.CredentialsCombo",
+                        "label": {
+                            "authenticationType": "Authentication type",
+                            "password": "Password",
+                            "confirmPassword": "Confirm password",
+                            "sshPublicKey": "SSH public key"
+                        },
+                        "toolTip": {
+                            "authenticationType": "",
+                            "password": "",
+                            "sshPublicKey": ""
+                        },
+                        "constraints": {
+                            "required": true,
+                            "customPasswordRegex": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[\\w~@#$%^&*+=|{}:;!.?\\()\\[\\]-]{12,}$",
+                            "customValidationMessage": "The password must be alphanumeric, contain at least 12 characters, and have at least 1 letter and 1 number."
+                        },
+                        "options": {
+                            "hideConfirmation": false,
+                            "hidePassword": false
+                        },
+                        "osPlatform": "Linux",
+                        "visible": true
                     }
                 ]
             },
             {
-                "name": "functions",
-                "label": "Rules and Alerts",
+                "name": "networkParameters",
+                "label": "Networking",
                 "elements": [
                     {
-                        "name": "enableScheduledAlerts",
-                        "type": "Microsoft.Common.CheckBox",
-                        "label": "Enable Scheduled alert rules for selected connectors?",
-                        "toolTip": "Select to enable scheduled analytics rules for selected connectors",
+                        "name": "remoteAccessMethod",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Select an access method",
+                        "defaultValue": "Azure Bastion Host",
+                        "toolTip": "Do you want to restrict access to your environment by a Public IP or set up an Azure Bastion Host. If the former, make sure you add your public IP address to the variable 'allowedIPAddresses'",
                         "constraints": {
-                            "required": false,
-                            "validationMessage": "Enables Scheduled rules matching any of the selected connectors"
+                            "allowedValues": [
+                                {
+                                    "label": "Public IP",
+                                    "value": "AllowPublicIP"
+                                },
+                                {
+                                    "label": "Azure Bastion Host",
+                                    "value": "AzureBastionHost"
+                                }
+                            ],
+                            "required": true
                         },
                         "visible": true
                     },
                     {
-                        "name": "enableLAFunctions",
+                        "name": "allowedIPAddresses",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Allowed IP Addresses",
+                        "placeholder": "127.0.0.1/32",
+                        "defaultValue": "",
+                        "toolTip": "The sourceAddressPrefixes allowed to connect to this deployment.",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\/(\\d|[12]\\d|3[01]))?$",
+                            "validationMessage": "Please enter a valid CIDR."
+                        },
+                        "visible": "[if(contains(steps('networkParameters').remoteAccessMethod, 'AllowPublicIP'), true, false)]"
+                    }
+                ]
+            },
+            {
+                "name": "DataIngestion",
+                "label": "Date Ingestion",
+                "elements": [
+                    {
+                        "name": "addMordorDatasets",
                         "type": "Microsoft.Common.DropDown",
-                        "label": "Log Analytics Functions",
-                        "defaultValue": "Sysmon",
-                        "toolTip": "",
+                        "label": "Data ingestion",
+                        "defaultValue": "No Items",
+                        "toolTip": "Do you want to deploy additional resources and connect them to your current Azure Sentinel's workspace?",
                         "constraints": {
                             "allowedValues": [
                                 {
-                                    "label": "Sysmon",
-                                    "value": "Sysmon"
+                                    "label": "No Items",
+                                    "value": "NoItems"
                                 },
                                 {
-                                    "label": "None",
-                                    "value": "None"
+                                    "label": "Mordor Small",
+                                    "value": "mordor-small-datasets"
+                                },
+                                {
+                                    "label": "Mordor Large APT29",
+                                    "value": "mordor-large-apt29"
                                 }
                             ],
-                            "required": false
+                            "required": true
                         },
-                        "visible": "[if(contains(steps('solutionType').selectSolution,'AZS'), true, false)]"
+                        "visible": true
+                    },
+                    {
+                        "name": "deployCustomLogsPipeline",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Custom Log Pipeline",
+                        "defaultValue": "Logstash",
+                        "toolTip": "Do you want to deploy a data ingestion pipeline along with an Azure Sentinel solution? Events get sent to a custom logs table named prerecorded. You also have the option to deploy the pipeline with pre-recorded datasets from the Mordor project (https://mordordatasets.com)",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "Logstash",
+                                    "value": "Logstash"
+                                },
+                                {
+                                    "label": "Logstash-EventHub",
+                                    "value": "Logstash-EventHub"
+                                }
+                            ],
+                            "required": true
+                        },
+                        "visible": true
                     }
                 ]
             }
@@ -265,10 +273,14 @@
             "pricingTier": "[steps('basics').pricingTier]",
             "dataRetention": "[if(equals(steps('basics').pricingTier, 'Free'), 7, steps('basics').dataRetention)]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
-            "dataConnectors": "[steps('dataConnectors').enableDataConnectors]",
-            "securityCollectionTier": "[steps('dataConnectors').securityCollectionTier]",
-            "enableScheduledAlerts": "[steps('functions').enableScheduledAlerts]",
-            "enableLAFunctions": "[steps('functions').enableLAFunctions]"
+            "adminUsername": "[steps('vmParameters').adminUsername]",
+            "authenticationType": "[steps('vmParameters').vmCredentials.authenticationType]",
+            "adminPasswordOrKey": "[steps('vmParameters').vmCredentials.password]",
+            "vmSize": "[steps('vmParameters').vmSection.vmSize]",
+            "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
+            "allowedIPAddresses": "[steps('networkParameters').allowedIPAddresses]",
+            "addMordorDatasets": "[steps('DataIngestion').addMordorDatasets]",
+            "deployCustomLogsPipeline": "[steps('DataIngestion').deployCustomLogsPipeline]"
         }
     }
 }
