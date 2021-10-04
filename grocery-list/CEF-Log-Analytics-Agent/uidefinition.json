@@ -281,7 +281,7 @@
         "outputs": {
             "workspaceName": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceName, steps('basics').workspaceSelector.name)]",
             "workspaceId": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceId, json('null'))]",
-            "workspaceKey": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceKey, json('null')]"
+            "workspaceKey": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceKey, json('null')]",
             "pricingTier": "[steps('basics').pricingTier]",
             "dataRetention": "[if(equals(steps('basics').pricingTier, 'Free'), 7, steps('basics').dataRetention)]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
