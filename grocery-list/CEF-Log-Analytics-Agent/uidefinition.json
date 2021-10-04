@@ -247,8 +247,8 @@
         ],
         "outputs": {
             "workspaceName": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceName, steps('basics').workspaceSelector.name)]",
-            "workspaceId": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceId, json('null'))]",
-            "workspaceKey": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceKey, json('null'))]",
+            "workspaceId": "[steps('basics').newWorkspace]",
+            "workspaceKey": "[steps('basics').workspaceKey]",
             "dataRetention": "[steps('basics').dataRetention)]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
             "adminUsername": "[steps('vmParameters').adminUsername]",
