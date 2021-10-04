@@ -249,7 +249,7 @@
             "workspaceName": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceName, steps('basics').workspaceSelector.name)]",
             "workspaceId": "[steps('basics').newWorkspace]",
             "workspaceKey": "[steps('basics').workspaceKey]",
-            "dataRetention": "[steps('basics').dataRetention)]",
+            "dataRetention": "[steps('basics').dataRetention]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
             "adminUsername": "[steps('vmParameters').adminUsername]",
             "authenticationType": "[steps('vmParameters').vmCredentials.authenticationType]",
