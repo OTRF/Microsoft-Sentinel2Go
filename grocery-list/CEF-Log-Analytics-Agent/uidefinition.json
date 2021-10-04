@@ -247,7 +247,7 @@
         ],
         "outputs": {
             "workspaceName": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceName, steps('basics').workspaceSelector.name)]",
-            "workspaceId": "[steps('basics').newWorkspace]",
+            "workspaceId": "[steps('basics').workspaceId]",
             "workspaceKey": "[steps('basics').workspaceKey]",
             "dataRetention": "[steps('basics').dataRetention]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
