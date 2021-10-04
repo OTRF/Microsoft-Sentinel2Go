@@ -64,8 +64,8 @@
                     "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
                 },
                 "visible": "[bool(steps('basics').newWorkspace)]"
-            }
-          {
+            },
+            {
                 "name": "workspaceId",
                 "type": "Microsoft.Common.TextBox",
                 "label": "Workspace Name",
@@ -79,7 +79,7 @@
                 },
                 "visible": true
             },
-          {
+            {
                 "name": "workspaceKey",
                 "type": "Microsoft.Common.TextBox",
                 "label": "Workspace Name",
