@@ -90,7 +90,7 @@
                 },
                 "defaultValue": true,
                 "visible": "[bool(steps('basics').newWorkspace)]"
-            }
+            },
             {
                 "name": "workspaceId",
                 "type": "Microsoft.Common.TextBox",
@@ -99,7 +99,7 @@
                 "defaultValue": "",
                 "toolTip": "",
                 "constraints": {
-                    "required": false,
+                    "required": true,
                     "regex": "",
                     "validationMessage": "Your own existing log analytics workspace ID. Leave it empty if you are deploying a new Log Analytics workspace."
                 },
@@ -113,7 +113,7 @@
                 "defaultValue": "",
                 "toolTip": "Your own existing log analytics workspace key. Leave it empty if you are deploying a new LA workspace.",
                 "constraints": {
-                    "required": false,
+                    "required": true,
                     "regex": "",
                     "validationMessage": "Your own existing log analytics workspace ID. Leave it empty if you are deploying a new Log Analytics workspace."
                 },
