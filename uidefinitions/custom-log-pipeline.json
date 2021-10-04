@@ -150,42 +150,26 @@
                         "name": "vmCredentials",
                         "type": "Microsoft.Compute.CredentialsCombo",
                         "label": {
-                            "password": "Password Or Key",
-                            "confirmPassword": "Confirm password or key"
+                            "authenticationType": "Authentication type",
+                            "password": "Password",
+                            "confirmPassword": "Confirm password",
+                            "sshPublicKey": "SSH public key"
                         },
                         "toolTip": {
-                            "password": ""
+                            "authenticationType": "",
+                            "password": "",
+                            "sshPublicKey": ""
                         },
                         "constraints": {
                             "required": true,
-                            "customPasswordRegex": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[\\w~@#$%^&*+=|{}:;!.?\\()\\[\\]-]{8,}$",
-                            "customValidationMessage": "SSH Key or password for the Linux Virtual Machine. SSH key is recommended. The password must be at least 8 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter."
+                            "customPasswordRegex": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[\\w~@#$%^&*+=|{}:;!.?\\()\\[\\]-]{12,}$",
+                            "customValidationMessage": "The password must be alphanumeric, contain at least 12 characters, and have at least 1 letter and 1 number."
                         },
                         "options": {
-                            "hideConfirmation": false
+                            "hideConfirmation": false,
+                            "hidePassword": false
                         },
-                        "osPlatform": "Windows",
-                        "visible": true
-                    },
-                    {
-                        "name": "authenticationType",
-                        "type": "Microsoft.Common.DropDown",
-                        "label": "Select an authentication method",
-                        "defaultValue": "password",
-                        "toolTip": "Type of authentication to use on the Linux Virtual Machine. SSH key is recommended.",
-                        "constraints": {
-                            "allowedValues": [
-                                {
-                                    "label": "password",
-                                    "value": "password"
-                                },
-                                {
-                                    "label": "sshPublicKey",
-                                    "value": "sshPublicKey"
-                                }
-                            ],
-                            "required": true
-                        },
+                        "osPlatform": "Linux",
                         "visible": true
                     }
                 ]
@@ -290,8 +274,8 @@
             "dataRetention": "[if(equals(steps('basics').pricingTier, 'Free'), 7, steps('basics').dataRetention)]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
             "adminUsername": "[steps('vmParameters').adminUsername]",
-            "authenticationType": "[steps('vmParameters').authenticationType]",
-            "adminPasswordOrKey": "[steps('vmParameters').vmCredentials]",
+            "authenticationType": "[steps('vmParameters').vmCredentials.authenticationType]",
+            "adminPasswordOrKey": "[if(steps('vmParameters').vmCredentials.authenticationType, 'password'), steps('vmParameters').vmCredentials.password, steps('vmParameters').vmCredentials.sshPublicKey]",
             "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
             "allowedIPAddresses": "[steps('networkParameters').allowedIPAddresses]",
