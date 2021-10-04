@@ -94,8 +94,8 @@
             {
                 "name": "workspaceId",
                 "type": "Microsoft.Common.TextBox",
-                "label": "Workspace Name",
-                "placeholder": "leave empty with new LA",
+                "label": "Workspace ID",
+                "placeholder": "Enter the workspaceId",
                 "defaultValue": "",
                 "toolTip": "",
                 "constraints": {
@@ -108,8 +108,8 @@
             {
                 "name": "workspaceKey",
                 "type": "Microsoft.Common.TextBox",
-                "label": "Workspace Name",
-                "placeholder": "leave empty with new LA",
+                "label": "Workspace Key",
+                "placeholder": "Enter the workspaceKey",
                 "defaultValue": "",
                 "toolTip": "Your own existing log analytics workspace key. Leave it empty if you are deploying a new LA workspace.",
                 "constraints": {
