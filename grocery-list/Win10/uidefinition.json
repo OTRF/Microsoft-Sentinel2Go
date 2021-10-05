@@ -68,7 +68,7 @@
             {
                 "name": "dataRetention",
                 "type": "Microsoft.Common.Slider",
-                "min": 7,
+                "min": 30,
                 "max": 730,
                 "label": "Data retention",
                 "subLabel": "days",
