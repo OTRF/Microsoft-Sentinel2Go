@@ -515,7 +515,7 @@
                             "required": false,
                             "validationMessage": ""
                         },
-                        "visible": "[if(contains(steps('dataConnectors').enableDataConnectors,'MicrosoftThreatProtection'), true, false)]"
+                        "visible": true
                     },
                     {
                         "name": "c2Framework",
