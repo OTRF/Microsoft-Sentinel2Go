@@ -265,6 +265,93 @@
                             }
                         ],
                         "visible": true
+                    },
+                    {
+                        "name": "serverSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Windows Server",
+                        "elements": [
+                            {
+                                "name": "domainFQDN",
+                                "type": "Microsoft.Common.TextBox",
+                                "label": "domain FQDN",
+                                "placeholder": "",
+                                "defaultValue": "azsentinel.local",
+                                "toolTip": "The FQDN of the Active Directory Domain to be created.",
+                                "constraints": {
+                                    "required": true,
+                                    "regex": "",
+                                    "validationMessage": ""
+                                },
+                                "visible": "[bool(steps('basics').newWorkspace)]"
+                            },
+                            {
+                                "name": "windowsServerVersion",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "Windows Server version",
+                                "filter": false,
+                                "filterPlaceholder": "Filter items ...",
+                                "multiselect": false,
+                                "selectAll": false,
+                                "defaultValue": "latest",
+                                "toolTip": "The specific version for the Server VM.",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "latest",
+                                            "value": "latest"
+                                        },
+                                        {
+                                            "label": "17763.1282.2006061952",
+                                            "value": "17763.1282.2006061952"
+                                        },
+                                        {
+                                            "label": "17763.1518.2010132039",
+                                            "value": "17763.1518.2010132039"
+                                        },
+                                        {
+                                            "label": "17763.1577.2011031610",
+                                            "value": "17763.1577.2011031610"
+                                        },
+                                        {
+                                            "label": "17763.1579.2011180054",
+                                            "value": "17763.1579.2011180054"
+                                        },
+                                        {
+                                            "label": "17763.1637.2012040632",
+                                            "value": "17763.1637.2012040632"
+                                        },
+                                        {
+                                            "label": "17763.1697.2101090203",
+                                            "value": "17763.1697.2101090203"
+                                        },
+                                        {
+                                            "label": "17763.1757.2102060435",
+                                            "value": "17763.1757.2102060435"
+                                        },
+                                        {
+                                            "label": "17763.1817.2103030313",
+                                            "value": "17763.1817.2103030313"
+                                        },
+                                        {
+                                            "label": "17763.1879.2104091832",
+                                            "value": "17763.1879.2104091832"
+                                        },
+                                        {
+                                            "label": "17763.1935.2105080716",
+                                            "value": "17763.1935.2105080716"
+                                        },
+                                        {
+                                            "label": "17763.1999.2106060321",
+                                            "value": "17763.1999.2106060321"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            }
+                        ],
+                        "visible": true
                     }
                 ]
             },
@@ -276,7 +363,7 @@
                         "name": "remoteAccessMethod",
                         "type": "Microsoft.Common.DropDown",
                         "label": "Select an access method",
-                        "defaultValue": "Azure Bastion Host",
+                        "defaultValue": "Public IP",
                         "toolTip": "Do you want to restrict access to your environment by a Public IP or set up an Azure Bastion Host. If the former, make sure you add your public IP address to the variable 'allowedIPAddresses'",
                         "constraints": {
                             "allowedValues": [
@@ -318,6 +405,16 @@
                         "type": "Microsoft.Common.CheckBox",
                         "label": "Enable Sysmon",
                         "toolTip": "Do you want to install Sysmon on the endpoint?",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": ""
+                        }
+                    },
+                    {
+                        "name": "enableAADConnect",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Enable AAD Connect",
+                        "toolTip": "Do you want to want download the AADConnect installer and get it ready to set up after the deployment?",
                         "constraints": {
                             "required": false,
                             "validationMessage": ""
@@ -377,8 +474,16 @@
                                     "value": "covenant"
                                 },
                                 {
+                                    "label": "caldera",
+                                    "value": "caldera"
+                                },
+                                {
                                     "label": "metasploit",
                                     "value": "metasploit"
+                                },
+                                {
+                                    "label": "shad0w",
+                                    "value": "shad0w"
                                 }
                             ],
                             "required": false
@@ -398,9 +503,15 @@
             "adminPassword": "[steps('vmParameters').credSection.vmCredentials.password]",
             "numberOfWorkstations": "[steps('vmParameters').windowsSection.numberOfWorkstations]",
             "windowsDesktopSKU": "[steps('vmParameters').windowsSection.windowsDesktopSKU]",
+            "windowsServerSKU": "[steps('vmParameters').serversSection.windowsServerSKU]",
+            "domainFQDN": "[steps('vmParameters').serversSection.domainFQDN]",
+            "windowsServerVersion": "[steps('vmParameters').serversSection.windowsServerVersion]",
             "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
             "allowedIPAddresses": "[if(equals(steps('networkParameters').remoteAccessMethod, 'AzureBastionHost'), '*', steps('networkParameters').allowedIPAddresses)]",
+            "enableSysmon": "[steps('sectionFeatures').enableSysmon]",
+            "enableAADConnect": "[steps('sectionFeatures').enableAADConnect]",
+            "securityCollectionTier": "[steps('sectionFeatures').securityCollectionTier]",
             "c2Framework": "[steps('sectionFeatures').c2Framework]"
         }
     }
