@@ -192,14 +192,14 @@
                                     "Standard_A4_v2"
                                 ],
                                 "constraints": {
-                                   "allowedSizes": [
-										"Standard_A2",
-										"Standard_A3",
-										"Standard_B2s",
-										"Standard_B2ms",
-										"Standard_A2_v2",
-										"Standard_A4_v2"
-									]
+                                    "allowedSizes": [
+                                        "Standard_A2",
+                                        "Standard_A3",
+                                        "Standard_B2s",
+                                        "Standard_B2ms",
+                                        "Standard_A2_v2",
+                                        "Standard_A4_v2"
+                                    ]
                                 },
                                 "options": {
                                     "hideDiskTypeFilter": false
@@ -424,7 +424,7 @@
                         "name": "remoteAccessMethod",
                         "type": "Microsoft.Common.DropDown",
                         "label": "Select an access method",
-                        "defaultValue": "Azure Bastion Host",
+                        "defaultValue": "Public IP",
                         "toolTip": "Do you want to restrict access to your environment by a Public IP or set up an Azure Bastion Host. If the former, make sure you add your public IP address to the variable 'allowedIPAddresses'",
                         "constraints": {
                             "allowedValues": [
