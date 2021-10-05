@@ -323,8 +323,8 @@
                                         {
                                             "label": "7.7",
                                             "value": "7.7"
-                                        }
-                                        ,{
+                                        },
+                                        {
                                             "label": "8.0",
                                             "value": "8.0"
                                         },
@@ -449,6 +449,109 @@
                         "visible": "[if(contains(steps('networkParameters').remoteAccessMethod, 'AllowPublicIP'), true, false)]"
                     }
                 ]
+            },
+            {
+                "name": "sectionFeatures",
+                "label": "Features",
+                "elements": [
+                    {
+                        "name": "collectSyslogFacilities",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Collect Syslog",
+                        "filter": false,
+                        "filterPlaceholder": "Select items ...",
+                        "multiselect": true,
+                        "selectAll": true,
+                        "defaultValue": "auth",
+                        "toolTip": "Do you want to configure your Log Analytics Workspace to collect Syslog from specific facilities.",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "auth",
+                                    "value": "auth"
+                                },
+                                {
+                                    "label": "authpriv",
+                                    "value": "authpriv"
+                                },
+                                {
+                                    "label": "cron",
+                                    "value": "cron"
+                                },
+                                {
+                                    "label": "daemon",
+                                    "value": "daemon"
+                                },
+                                {
+                                    "label": "ftp",
+                                    "value": "ftp"
+                                },
+                                {
+                                    "label": "kern",
+                                    "value": "kern"
+                                },
+                                {
+                                    "label": "user",
+                                    "value": "user"
+                                }
+                            ],
+                            "required": true
+                        },
+                        "visible": true
+                    },
+                    {
+                        "name": "installOMSAuditdPlugin",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Enable Auditd",
+                        "toolTip": "Do you want to enable an Auditd plugin that forwards audit events to OMS Agent for Linux. https://github.com/microsoft/OMS-Auditd-Plugin",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": ""
+                        },
+                        "visible": "[if(contains(steps('dataConnectors').enableDataConnectors,'MicrosoftThreatProtection'), true, false)]"
+                    },
+                    {
+                        "name": "c2Framework",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "C2 Framework",
+                        "filter": false,
+                        "filterPlaceholder": "",
+                        "multiselect": false,
+                        "selectAll": false,
+                        "defaultValue": "None",
+                        "toolTip": "C2 framework to deploy",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "None",
+                                    "value": "None"
+                                },
+                                {
+                                    "label": "empire",
+                                    "value": "empire"
+                                },
+                                {
+                                    "label": "covenant",
+                                    "value": "covenant"
+                                },
+                                {
+                                    "label": "caldera",
+                                    "value": "caldera"
+                                },
+                                {
+                                    "label": "metasploit",
+                                    "value": "metasploit"
+                                },
+                                {
+                                    "label": "shad0w",
+                                    "value": "shad0w"
+                                }
+                            ],
+                            "required": false
+                        },
+                        "visible": true
+                    }
+                ]
             }
         ],
         "outputs": {
@@ -468,7 +571,10 @@
             "redhatSKU": "[if(contains(steps('vmParameters').vmSection.imageType, 'Ubuntu'), steps('vmParameters').RedHatSection.redhatSKU, 0)]",
             "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
-            "allowedIPAddresses": "[if(equals(steps('networkParameters').remoteAccessMethod, 'AzureBastionHost'), '*', steps('networkParameters').allowedIPAddresses)]"
+            "allowedIPAddresses": "[if(equals(steps('networkParameters').remoteAccessMethod, 'AzureBastionHost'), '*', steps('networkParameters').allowedIPAddresses)]",
+            "collectSyslogFacilities": "[steps('sectionFeatures').collectSyslogFacilities]",
+            "installOMSAuditdPlugin": "[steps('sectionFeatures').installOMSAuditdPlugin]",
+            "c2Framework": "[steps('sectionFeatures').c2Framework]"
         }
     }
 }
