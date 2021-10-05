@@ -192,7 +192,14 @@
                                     "Standard_A4_v2"
                                 ],
                                 "constraints": {
-                                    "allowedSizes": []
+                                   "allowedSizes": [
+										"Standard_A2",
+										"Standard_A3",
+										"Standard_B2s",
+										"Standard_B2ms",
+										"Standard_A2_v2",
+										"Standard_A4_v2"
+									]
                                 },
                                 "options": {
                                     "hideDiskTypeFilter": false
