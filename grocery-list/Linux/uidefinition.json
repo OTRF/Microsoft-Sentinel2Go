@@ -126,56 +126,6 @@
                 "label": "VM Parameters",
                 "elements": [
                     {
-                        "name": "vmSection",
-                        "type": "Microsoft.Common.Section",
-                        "label": "Customize your VM",
-                        "elements": [
-                            {
-                                "name": "vmSize",
-                                "type": "Microsoft.Compute.SizeSelector",
-                                "label": "Size",
-                                "toolTip": "",
-                                "recommendedSizes": [
-                                    "Standard_A2",
-                                    "Standard_A3",
-                                    "Standard_B2s",
-                                    "Standard_B2ms",
-                                    "Standard_A2_v2",
-                                    "Standard_A4_v2"
-                                ],
-                                "constraints": {
-                                    "allowedSizes": []
-                                },
-                                "options": {
-                                    "hideDiskTypeFilter": false
-                                },
-                                "osPlatform": "Windows",
-                                "imageReference": {
-                                    "publisher": "MicrosoftWindowsServer",
-                                    "offer": "WindowsServer",
-                                    "sku": "2012-R2-Datacenter"
-                                },
-                                "count": 1,
-                                "visible": true
-                            },
-                            {
-                                "name": "numberOfUbuntuVMs",
-                                "type": "Microsoft.Common.Slider",
-                                "min": 1,
-                                "max": 5,
-                                "label": "Number of VMs",
-                                "subLabel": "",
-                                "defaultValue": 1,
-                                "toolTip": "Number of VMs to deploy",
-                                "constraints": {
-                                    "required": true
-                                },
-                                "visible": true
-                            }
-                        ],
-                        "visible": true
-                    },
-                    {
                         "name": "credSection",
                         "type": "Microsoft.Common.Section",
                         "label": "Credentials",
@@ -222,6 +172,240 @@
                             }
                         ],
                         "visible": true
+                    },
+                    {
+                        "name": "vmSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Customize your VM",
+                        "elements": [
+                            {
+                                "name": "vmSize",
+                                "type": "Microsoft.Compute.SizeSelector",
+                                "label": "Size",
+                                "toolTip": "",
+                                "recommendedSizes": [
+                                    "Standard_A2",
+                                    "Standard_A3",
+                                    "Standard_B2s",
+                                    "Standard_B2ms",
+                                    "Standard_A2_v2",
+                                    "Standard_A4_v2"
+                                ],
+                                "constraints": {
+                                    "allowedSizes": []
+                                },
+                                "options": {
+                                    "hideDiskTypeFilter": false
+                                },
+                                "osPlatform": "Linux",
+                                "imageReference": {
+                                    "publisher": "RedHat",
+                                    "offer": "RHEL",
+                                    "sku": "8.2"
+                                },
+                                "count": 1,
+                                "visible": true
+                            },
+                            {
+                                "name": "imageType",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "Select the os types to deploy",
+                                "filter": true,
+                                "filterPlaceholder": "Filter items ...",
+                                "multiselect": true,
+                                "selectAll": true,
+                                "defaultValue": "Ubuntu",
+                                "toolTip": "",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "Ubuntu",
+                                            "value": "Ubuntu"
+                                        },
+                                        {
+                                            "label": "CentOS",
+                                            "value": "CentOS"
+                                        },
+                                        {
+                                            "label": "RedHat",
+                                            "value": "RedHat"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            }
+                        ],
+                        "visible": true
+                    },
+                    {
+                        "name": "ubuntuSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Ubuntu VMs",
+                        "elements": [
+                            {
+                                "name": "numberOfUbuntuVMs",
+                                "type": "Microsoft.Common.Slider",
+                                "min": 0,
+                                "max": 5,
+                                "label": "Number of VMs",
+                                "subLabel": "",
+                                "defaultValue": 1,
+                                "toolTip": "Number of VMs to deploy",
+                                "constraints": {
+                                    "required": true
+                                },
+                                "visible": true
+                            },
+                            {
+                                "name": "ubuntuSKU",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "Ubuntu version",
+                                "filter": false,
+                                "filterPlaceholder": "Filter items ...",
+                                "multiselect": false,
+                                "selectAll": false,
+                                "defaultValue": "18.04-LTS",
+                                "toolTip": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version.",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "18.04-LTS",
+                                            "value": "18.04-LTS"
+                                        },
+                                        {
+                                            "label": "19.04",
+                                            "value": "19.04"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            }
+                        ],
+                        "visible": "[if(contains(steps('vmParameters').vmSection.imageType, 'Ubuntu'), true, false)]"
+                    },
+                    {
+                        "name": "centOSSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "CentOS VMs",
+                        "elements": [
+                            {
+                                "name": "numberOfCentOSVMs",
+                                "type": "Microsoft.Common.Slider",
+                                "min": 0,
+                                "max": 5,
+                                "label": "Number of VMs",
+                                "subLabel": "",
+                                "defaultValue": 0,
+                                "toolTip": "Number of VMs to deploy",
+                                "constraints": {
+                                    "required": true
+                                },
+                                "visible": true
+                            },
+                            {
+                                "name": "centOSSKU",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "CentOS version",
+                                "filter": false,
+                                "filterPlaceholder": "Filter items ...",
+                                "multiselect": false,
+                                "selectAll": false,
+                                "defaultValue": "8.0",
+                                "toolTip": "The CentOS version for the VM. This will pick a fully patched image of this given Centos version.",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "7.6",
+                                            "value": "7.6"
+                                        },
+                                        {
+                                            "label": "7.7",
+                                            "value": "7.7"
+                                        }
+                                        ,{
+                                            "label": "8.0",
+                                            "value": "8.0"
+                                        },
+                                        {
+                                            "label": "8.1",
+                                            "value": "8_1"
+                                        },
+                                        {
+                                            "label": "8.2",
+                                            "value": "8_2"
+                                        },
+                                        {
+                                            "label": "8.3",
+                                            "value": "8_3"
+                                        },
+                                        {
+                                            "label": "8.4",
+                                            "value": "8_4"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            }
+                        ],
+                        "visible": "[if(contains(steps('vmParameters').vmSection.imageType, 'CentOS'), true, false)]"
+                    },
+                    {
+                        "name": "RedHatSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "RedHat VMs",
+                        "elements": [
+                            {
+                                "name": "numberOfRedHatVMs",
+                                "type": "Microsoft.Common.Slider",
+                                "min": 0,
+                                "max": 5,
+                                "label": "Number of VMs",
+                                "subLabel": "",
+                                "defaultValue": 0,
+                                "toolTip": "Number of VMs to deploy",
+                                "constraints": {
+                                    "required": true
+                                },
+                                "visible": true
+                            },
+                            {
+                                "name": "redhatSKU",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "RedHat version",
+                                "filter": false,
+                                "filterPlaceholder": "Filter items ...",
+                                "multiselect": false,
+                                "selectAll": false,
+                                "defaultValue": "8",
+                                "toolTip": "The Red Hat version for the VM. This will pick a fully patched image of this given Red Hat version.",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "7.7",
+                                            "value": "7.7"
+                                        },
+                                        {
+                                            "label": "8",
+                                            "value": "8"
+                                        },
+                                        {
+                                            "label": "8.1",
+                                            "value": "8.1"
+                                        },
+                                        {
+                                            "label": "8.2",
+                                            "value": "8.2"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            }
+                        ],
+                        "visible": "[if(contains(steps('vmParameters').vmSection.imageType, 'RedHat'), true, false)]"
                     }
                 ]
             },
@@ -276,7 +460,12 @@
             "adminUsername": "[steps('vmParameters').credSection.adminUsername]",
             "authenticationType": "[steps('vmParameters').credSection.vmCredentials.authenticationType]",
             "adminPasswordOrKey": "[steps('vmParameters').credSection.vmCredentials.password]",
-            "numberOfUbuntuVMs": "[steps('vmParameters').vmSection.numberOfUbuntuVMs]",
+            "numberOfUbuntuVMs": "[if(contains(steps('vmParameters').vmSection.imageType, 'Ubuntu'), steps('vmParameters').ubuntuSection.numberOfUbuntuVMs, 0)]",
+            "ubuntuSKU": "[if(contains(steps('vmParameters').vmSection.imageType, 'Ubuntu'), steps('vmParameters').ubuntuSection.ubuntuSKU, 0)]",
+            "numberOfCentOSVMs": "[if(contains(steps('vmParameters').vmSection.imageType, 'Ubuntu'), steps('vmParameters').centOSSection.numberOfCentOSVMs, 0)]",
+            "centOSSKU": "[if(contains(steps('vmParameters').vmSection.imageType, 'Ubuntu'), steps('vmParameters').centOSSection.centOSSKU, 0)]",
+            "numberOfRedHatVMs": "[if(contains(steps('vmParameters').vmSection.imageType, 'Ubuntu'), steps('vmParameters').RedHatSection.numberOfRedHatVMs, 0)]",
+            "redhatSKU": "[if(contains(steps('vmParameters').vmSection.imageType, 'Ubuntu'), steps('vmParameters').RedHatSection.redhatSKU, 0)]",
             "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
             "allowedIPAddresses": "[if(equals(steps('networkParameters').remoteAccessMethod, 'AzureBastionHost'), '*', steps('networkParameters').allowedIPAddresses)]"
