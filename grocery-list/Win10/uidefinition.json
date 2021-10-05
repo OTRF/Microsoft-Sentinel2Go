@@ -187,14 +187,14 @@
                                     "Standard_A4_v2"
                                 ],
                                 "constraints": {
-                                   "allowedSizes": [
-										"Standard_A2",
-										"Standard_A3",
-										"Standard_B2s",
-										"Standard_B2ms",
-										"Standard_A2_v2",
-										"Standard_A4_v2"
-									]
+                                    "allowedSizes": [
+                                        "Standard_A2",
+                                        "Standard_A3",
+                                        "Standard_B2s",
+                                        "Standard_B2ms",
+                                        "Standard_A2_v2",
+                                        "Standard_A4_v2"
+                                    ]
                                 },
                                 "options": {
                                     "hideDiskTypeFilter": false
@@ -214,12 +214,12 @@
                     {
                         "name": "windowsSection",
                         "type": "Microsoft.Common.Section",
-                        "label": "Ubuntu VMs",
+                        "label": "Windows Desktop",
                         "elements": [
                             {
                                 "name": "numberOfWorkstations",
                                 "type": "Microsoft.Common.Slider",
-                                "min": 0,
+                                "min": 1,
                                 "max": 10,
                                 "label": "Number of VMs",
                                 "subLabel": "",
@@ -396,7 +396,7 @@
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
             "adminUsername": "[steps('vmParameters').credSection.adminUsername]",
             "adminPassword": "[steps('vmParameters').credSection.vmCredentials.password]",
-            "numberOfWorkstations": "steps('vmParameters').windowsSection.numberOfWorkstations]",
+            "numberOfWorkstations": "[steps('vmParameters').windowsSection.numberOfWorkstations]",
             "windowsDesktopSKU": "[steps('vmParameters').windowsSection.windowsDesktopSKU]",
             "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
