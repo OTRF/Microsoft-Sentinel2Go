@@ -126,63 +126,6 @@
                 "label": "VM Parameters",
                 "elements": [
                     {
-                        "name": "vmSection",
-                        "type": "Microsoft.Common.Section",
-                        "label": "Customize your VM",
-                        "elements": [
-                            {
-                                "name": "vmSize",
-                                "type": "Microsoft.Compute.SizeSelector",
-                                "label": "Size",
-                                "toolTip": "",
-                                "recommendedSizes": [
-                                    "Standard_A2",
-                                    "Standard_A3",
-                                    "Standard_B2s",
-                                    "Standard_B2ms",
-                                    "Standard_A2_v2",
-                                    "Standard_A4_v2"
-                                ],
-                                "constraints": {
-                                    "allowedSizes": [
-										"Standard_A2",
-										"Standard_A3",
-										"Standard_B2s",
-										"Standard_B2ms",
-										"Standard_A2_v2",
-										"Standard_A4_v2"
-									]
-                                },
-                                "options": {
-                                    "hideDiskTypeFilter": false
-                                },
-                                "osPlatform": "Windows",
-                                "imageReference": {
-                                    "publisher": "MicrosoftWindowsServer",
-                                    "offer": "WindowsServer",
-                                    "sku": "2012-R2-Datacenter"
-                                },
-                                "count": 1,
-                                "visible": true
-                            },
-                            {
-                                "name": "numberOfUbuntuVMs",
-                                "type": "Microsoft.Common.Slider",
-                                "min": 1,
-                                "max": 5,
-                                "label": "Number of VMs",
-                                "subLabel": "",
-                                "defaultValue": 1,
-                                "toolTip": "Number of VMs to deploy",
-                                "constraints": {
-                                    "required": true
-                                },
-                                "visible": true
-                            }
-                        ],
-                        "visible": true
-                    },
-                    {
                         "name": "credSection",
                         "type": "Microsoft.Common.Section",
                         "label": "Credentials",
@@ -205,15 +148,11 @@
                                 "name": "vmCredentials",
                                 "type": "Microsoft.Compute.CredentialsCombo",
                                 "label": {
-                                    "authenticationType": "Authentication type",
                                     "password": "Password",
-                                    "confirmPassword": "Confirm password",
-                                    "sshPublicKey": "SSH public key"
+                                    "confirmPassword": "Confirm password"
                                 },
                                 "toolTip": {
-                                    "authenticationType": "",
-                                    "password": "",
-                                    "sshPublicKey": ""
+                                    "password": ""
                                 },
                                 "constraints": {
                                     "required": true,
@@ -221,10 +160,107 @@
                                     "customValidationMessage": "The password must be alphanumeric, contain at least 12 characters, and have at least 1 letter and 1 number."
                                 },
                                 "options": {
-                                    "hideConfirmation": false,
-                                    "hidePassword": false
+                                    "hideConfirmation": false
                                 },
-                                "osPlatform": "Linux",
+                                "osPlatform": "Windows",
+                                "visible": true
+                            }
+                        ],
+                        "visible": true
+                    },
+                    {
+                        "name": "vmSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Customize your VM",
+                        "elements": [
+                            {
+                                "name": "vmSize",
+                                "type": "Microsoft.Compute.SizeSelector",
+                                "label": "Size",
+                                "toolTip": "",
+                                "recommendedSizes": [
+                                    "Standard_A2",
+                                    "Standard_A3",
+                                    "Standard_B2s",
+                                    "Standard_B2ms",
+                                    "Standard_A2_v2",
+                                    "Standard_A4_v2"
+                                ],
+                                "constraints": {
+                                   "allowedSizes": [
+										"Standard_A2",
+										"Standard_A3",
+										"Standard_B2s",
+										"Standard_B2ms",
+										"Standard_A2_v2",
+										"Standard_A4_v2"
+									]
+                                },
+                                "options": {
+                                    "hideDiskTypeFilter": false
+                                },
+                                "osPlatform": "Windows",
+                                "imageReference": {
+                                    "publisher": "MicrosoftWindowsServer",
+                                    "offer": "WindowsServer",
+                                    "sku": "2012-R2-Datacenter"
+                                },
+                                "count": 1,
+                                "visible": true
+                            }
+                        ],
+                        "visible": true
+                    },
+                    {
+                        "name": "windowsSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Ubuntu VMs",
+                        "elements": [
+                            {
+                                "name": "numberOfWorkstations",
+                                "type": "Microsoft.Common.Slider",
+                                "min": 0,
+                                "max": 10,
+                                "label": "Number of VMs",
+                                "subLabel": "",
+                                "defaultValue": 1,
+                                "toolTip": "Number of VMs to deploy",
+                                "constraints": {
+                                    "required": true
+                                },
+                                "visible": true
+                            },
+                            {
+                                "name": "windowsDesktopSKU",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "Windows Desktop version",
+                                "filter": false,
+                                "filterPlaceholder": "Filter items ...",
+                                "multiselect": false,
+                                "selectAll": false,
+                                "defaultValue": "19h2-pro",
+                                "toolTip": "The Windows version for the Desktop VM. This will pick a fully patched image of this given Windows version.",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "19h1-pro",
+                                            "value": "19h1-pro"
+                                        },
+                                        {
+                                            "label": "19h2-pro",
+                                            "value": "19h2-pro"
+                                        },
+                                        {
+                                            "label": "rs4-pro",
+                                            "value": "rs4-pro"
+                                        },
+                                        {
+                                            "label": "rs5-pro",
+                                            "value": "rs5-pro"
+                                        }
+                                    ],
+                                    "required": true
+                                },
                                 "visible": true
                             }
                         ],
@@ -272,6 +308,84 @@
                         "visible": "[if(contains(steps('networkParameters').remoteAccessMethod, 'AllowPublicIP'), true, false)]"
                     }
                 ]
+            },
+            {
+                "name": "sectionFeatures",
+                "label": "Features",
+                "elements": [
+                    {
+                        "name": "enableSysmon",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Enable Sysmon",
+                        "toolTip": "Do you want to install Sysmon on the endpoint?",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": ""
+                        }
+                    },
+                    {
+                        "name": "securityCollectionTier",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Security Collection Tier",
+                        "defaultValue": "Minimal",
+                        "toolTip": "Tier for gathering Windows Security Events.",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "All",
+                                    "value": "All"
+                                },
+                                {
+                                    "label": "Recommended",
+                                    "value": "Recommended"
+                                },
+                                {
+                                    "label": "Minimal",
+                                    "value": "Minimal"
+                                },
+                                {
+                                    "label": "None",
+                                    "value": "None"
+                                }
+                            ],
+                            "required": true
+                        },
+                        "visible": true
+                    },
+                    {
+                        "name": "c2Framework",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "C2 Framework",
+                        "filter": false,
+                        "filterPlaceholder": "",
+                        "multiselect": false,
+                        "selectAll": false,
+                        "defaultValue": "None",
+                        "toolTip": "C2 framework to deploy",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "None",
+                                    "value": "None"
+                                },
+                                {
+                                    "label": "empire",
+                                    "value": "empire"
+                                },
+                                {
+                                    "label": "covenant",
+                                    "value": "covenant"
+                                },
+                                {
+                                    "label": "metasploit",
+                                    "value": "metasploit"
+                                }
+                            ],
+                            "required": false
+                        },
+                        "visible": true
+                    }
+                ]
             }
         ],
         "outputs": {
@@ -281,12 +395,13 @@
             "dataRetention": "[steps('basics').dataRetention]",
             "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
             "adminUsername": "[steps('vmParameters').credSection.adminUsername]",
-            "authenticationType": "[steps('vmParameters').credSection.vmCredentials.authenticationType]",
-            "adminPasswordOrKey": "[steps('vmParameters').credSection.vmCredentials.password]",
-            "numberOfUbuntuVMs": "[steps('vmParameters').vmSection.numberOfUbuntuVMs]",
+            "adminPassword": "[steps('vmParameters').credSection.vmCredentials.password]",
+            "numberOfWorkstations": "steps('vmParameters').windowsSection.numberOfWorkstations]",
+            "windowsDesktopSKU": "[steps('vmParameters').windowsSection.windowsDesktopSKU]",
             "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
-            "allowedIPAddresses": "[if(equals(steps('networkParameters').remoteAccessMethod, 'AzureBastionHost'), '*', steps('networkParameters').allowedIPAddresses)]"
+            "allowedIPAddresses": "[if(equals(steps('networkParameters').remoteAccessMethod, 'AzureBastionHost'), '*', steps('networkParameters').allowedIPAddresses)]",
+            "c2Framework": "[steps('sectionFeatures').c2Framework]"
         }
     }
 }
