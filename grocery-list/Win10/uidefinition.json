@@ -401,6 +401,8 @@
             "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
             "allowedIPAddresses": "[if(equals(steps('networkParameters').remoteAccessMethod, 'AzureBastionHost'), '*', steps('networkParameters').allowedIPAddresses)]",
+            "enableSysmon": "[steps('sectionFeatures').enableSysmon]",
+            "securityCollectionTier": "[steps('sectionFeatures').securityCollectionTier]",
             "c2Framework": "[steps('sectionFeatures').c2Framework]"
         }
     }
