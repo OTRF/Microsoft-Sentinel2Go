@@ -333,9 +333,6 @@
             "name": "deployC2",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
-            "dependsOn": [
-                "deployWin10VM"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
