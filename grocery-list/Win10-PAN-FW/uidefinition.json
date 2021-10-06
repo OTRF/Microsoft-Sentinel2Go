@@ -383,7 +383,7 @@
             "adminUsername": "[steps('vmParameters').credSection.adminUsername]",
             "adminPassword": "[steps('vmParameters').credSection.vmCredentials.password]",
             "vmSize": "[steps('vmParameters').vmSection.vmSize]",
-            "windowsDesktopSKU": "[steps('vmParameters').windowsSection.vmSize]",
+            "windowsDesktopSKU": "[steps('vmParameters').windowsSection.windowsDesktopSKU]",
             "firewallVMSize": "[steps('paloaltoParameters').serverSection.firewallVMSize]",
             "firewallSubscription": "[steps('paloaltoParameters').releaseSection.firewallSubscription]",
             "allowedIPAddresses": "[steps('networkParameters').allowedIPAddresses]",
