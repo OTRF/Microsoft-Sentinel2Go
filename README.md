@@ -5,7 +5,7 @@
 
 <img src="resources/images/logo.png" alt="Azure Sentinel To-Go!" width="650"/>
 
-Azure Sentinel2Go is an open source project developed to expedite the deployment of an Azure Sentinel lab along with other Azure resources and a data ingestion pipeline to consume pre-recorded datasets for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Security Datasets](https://securitydatasets.com/) right at deployment time.
+Azure Sentinel To-Go is an open source project developed to expedite the deployment of an Azure Sentinel lab along with other Azure resources for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Security Datasets](https://securitydatasets.com/) project right at deployment time.
 
 ## Getting Started
 
@@ -29,11 +29,13 @@ A few deployments available through Azure Sentinel To-go!
 
 ## Media
 
-For more information about the development of this project, feel free to check out the following resources:
-
 * [Azure Sentinel To-Go (Part 1): A lab w/ Prerecorded Data 😈 & a Custom Logs Pipe via ARM Templates 🚀](https://techcommunity.microsoft.com/t5/azure-sentinel/azure-sentinel-to-go-sentinel-lab-w-prerecorded-data-amp-a/ba-p/1260191)
 * [Azure Sentinel To-Go (Part 2): Integrating a Basic Windows Lab 🧪 via ARM Templates 🚀](https://techcommunity.microsoft.com/t5/azure-sentinel/azure-sentinel-to-go-part2-integrating-a-basic-windows-lab-via/ba-p/1742165)
+* [Testing the New Version of the Windows Security Events Connector with Azure Sentinel To-Go!](https://techcommunity.microsoft.com/t5/azure-sentinel/testing-the-new-version-of-the-windows-security-events-connector/ba-p/2483369)
+* [Azure Sentinel To-Go! A Linux 🐧 Lab with AUOMS Set Up to Learn About the OMI Vulnerability 💥](https://techcommunity.microsoft.com/t5/azure-sentinel/azure-sentinel-to-go-a-linux-lab-with-auoms-set-up-to-learn/ba-p/2772581)
 
-## Author
+## Maintainers
 
 * Roberto Rodriguez ([@Cyb3rWard0g](https://twitter.com/Cyb3rWard0g))
+
+## Committers
