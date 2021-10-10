@@ -7,7 +7,7 @@ usage(){
     echo " "
     echo "Usage: $0 [option...]" >&2
     echo
-    echo "   -d         What Mordor datasets you would like to import (SMALL_DATASETS or APT29"
+    echo "   -d         What Security datasets you would like to import (SMALL_DATASETS or APT29"
     echo
     echo "Examples:"
     echo " $0 -d SMALL_DATASETS"
@@ -21,7 +21,7 @@ while getopts :d:h option
 do
     case "${option}"
     in
-        d) MORDOR_DATASETS=$OPTARG;;
+        d) SECURITY_DATASETS=$OPTARG;;
         h) usage;;
         \?) usage;;
         :  ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
@@ -35,11 +35,11 @@ then
     usage
 fi
 
-if [ -z "$MORDOR_DATASETS" ]; then
-  echo "[!] Make sure you provide values for the Mordor Datasets (-d)"
+if [ -z "$SECURITY_DATASETS" ]; then
+  echo "[!] Make sure you provide values for the Security Datasets (-d)"
   usage
 else
-    case $MORDOR_DATASETS in
+    case $SECURITY_DATASETS in
         SMALL_DATASETS) ;;
         LARGE_APT29) ;;
         *) echo "[!] ]Not a valid dataset option"; usage; exit 1;;
@@ -54,17 +54,17 @@ else
     echo "Installing Git.."
     apt install -y git unzip
 
-    echo "Cloning Mordor repo.."
-    git clone https://github.com/OTRF/mordor.git /opt/mordor
+    echo "Cloning Security Datasets repo.."
+    git clone https://github.com/OTRF/Security-Datasets.git /opt/Security-Datasets
 
-    if [[ $MORDOR_DATASETS == "SMALL_DATASETS" ]]; then
-        echo "Decompressing every small mordor dataset.."
-        cd /opt/mordor/datasets/small/
+    if [[ $SECURITY_DATASETS == "SMALL_DATASETS" ]]; then
+        echo "Decompressing every small security dataset.."
+        cd /opt/Security-Datasets/datasets/atomic/
         find . -type f -name "*.zip" | grep -i 'host' | while read filename; do unzip -o -d /opt/logstash/datasets/ $filename; done;
         # find . -type f -name "*.tar.gz" -print0 | xargs -0 -I{} tar xf {} -C /opt/logstash/datasets/
-    elif [[ $MORDOR_DATASETS == "LARGE_APT29" ]]; then
+    elif [[ $SECURITY_DATASETS == "LARGE_APT29" ]]; then
         echo "Decompressing only APT29 Dataset.."
-        cd /opt/mordor/datasets/large/apt29
+        cd /opt/Security-Datasets/datasets/compound/apt29
         find . -type f -name "*_manual.zip" -print0 | xargs -0 -I{} unzip {} -d /opt/logstash/datasets/
     fi
     folder_size=$(du -ach /opt/logstash/datasets/ | tail -1 | cut -f1)

@@ -54,19 +54,19 @@ cp kafkacat /usr/local/bin/
 echo "Installing Git.."
 apt install -y git
 
-echo "Cloning Mordor repo.."
-git clone https://github.com/OTRF/mordor.git
+echo "Cloning Security Datasets repo.."
+git clone https://github.com/OTRF/Security-Datasets.git
 
-echo "Decompressing every small mordor dataset.."
-cd mordor/datasets/small/
+echo "Decompressing every small security dataset.."
+cd Security-Datasets/datasets/small/
 find . -type f -name "*.tar.gz" -print0 | xargs -0 -I{} tar xf {} -C .
 
 echo "Sending every dataset to Azure Event Hub"
 filescount=$(find . -maxdepth 1 -type f -name "*.json" -printf x | wc -c)
 count=0
-for mordorfile in *.json; do
+for dataset in *.json; do
     count=$(($count + 1))
-    echo "($count of $filescount) Sending $mordorfile .."
-    kafkacat -b ${EVENTHUB_NAMESPACE}.servicebus.windows.net:9093 -t ${EVENTHUB_NAME} -X metadata.broker.list=${EVENTHUB_NAMESPACE}.servicebus.windows.net:9093 -X security.protocol=sasl_ssl -X sasl.mechanisms=PLAIN -X sasl.username=\$ConnectionString -X sasl.password="${EVENTHUB_CONNECTIONSTRING}" -X enable.ssl.certificate.verification=false -X message.max.bytes=1000000 -P -v -l $mordorfile
+    echo "($count of $filescount) Sending $dataset .."
+    kafkacat -b ${EVENTHUB_NAMESPACE}.servicebus.windows.net:9093 -t ${EVENTHUB_NAME} -X metadata.broker.list=${EVENTHUB_NAMESPACE}.servicebus.windows.net:9093 -X security.protocol=sasl_ssl -X sasl.mechanisms=PLAIN -X sasl.username=\$ConnectionString -X sasl.password="${EVENTHUB_CONNECTIONSTRING}" -X enable.ssl.certificate.verification=false -X message.max.bytes=1000000 -P -v -l $dataset
     sleep 5
 done
