@@ -1,6 +1,6 @@
 # Sysmon For Linux Lab Environment
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FLinux%2Fdemos%2FSysmon-For-Linux%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FSecureHats%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FLinux%2Fdemos%2FSysmon-For-Linux%2Fuidefinition.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FLinux%2Fdemos%2FSysmon-For-Linux%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FLinux%2Fdemos%2FSysmon-For-Linux%2Fuidefinition.json)
 
 ## Metadata
 
