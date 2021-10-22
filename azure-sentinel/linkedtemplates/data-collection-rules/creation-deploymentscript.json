@@ -103,7 +103,7 @@
                 "forceUpdateTag": "1",
                 "azPowerShellVersion": "3.0",
                 "arguments": "[variables('scriptArguments')]",
-                "primaryScriptUri": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/templates/azure/Data-Collection-Rules/Create-DataCollectionRules.ps1",
+                "primaryScriptUri": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/resources/scripts/Create-DataCollectionRules.ps1",
                 "supportingScriptUris": [
                     "[parameters('dataSourcesFileUrl')]"
                 ],

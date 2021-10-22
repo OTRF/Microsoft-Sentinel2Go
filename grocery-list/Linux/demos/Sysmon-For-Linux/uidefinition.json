@@ -68,7 +68,7 @@
             {
                 "name": "dataRetention",
                 "type": "Microsoft.Common.Slider",
-                "min": 7,
+                "min": 30,
                 "max": 730,
                 "label": "Data retention",
                 "subLabel": "days",
@@ -163,20 +163,6 @@
                                     "sku": "2012-R2-Datacenter"
                                 },
                                 "count": 1,
-                                "visible": true
-                            },
-                            {
-                                "name": "numberOfUbuntuVMs",
-                                "type": "Microsoft.Common.Slider",
-                                "min": 1,
-                                "max": 5,
-                                "label": "Number of VMs",
-                                "subLabel": "",
-                                "defaultValue": 1,
-                                "toolTip": "Number of VMs to deploy",
-                                "constraints": {
-                                    "required": true
-                                },
                                 "visible": true
                             }
                         ],
@@ -283,7 +269,6 @@
             "adminUsername": "[steps('vmParameters').credSection.adminUsername]",
             "authenticationType": "[steps('vmParameters').credSection.vmCredentials.authenticationType]",
             "adminPasswordOrKey": "[steps('vmParameters').credSection.vmCredentials.password]",
-            "numberOfUbuntuVMs": "[steps('vmParameters').vmSection.numberOfUbuntuVMs]",
             "vmSize": "[steps('vmParameters').vmSection.vmSize]",
             "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
             "allowedIPAddresses": "[if(equals(steps('networkParameters').remoteAccessMethod, 'AzureBastionHost'), '*', steps('networkParameters').allowedIPAddresses)]"
