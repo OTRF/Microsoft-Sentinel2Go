@@ -49,6 +49,9 @@
                 "dataTypes": {
                     "incidents": {
                         "state": "enabled"
+                    },
+                    "alerts": {
+                        "state": "enabled"
                     }
                 }
             }
