@@ -401,23 +401,44 @@
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
                     },
-                    "enableMonitoringAgent": {
-                        "value": true
-                    },
                     "enableSysmon": {
                         "value": "[parameters('enableSysmon')]"
                     },
                     "enableAADConnect": {
                         "value": "[parameters('enableAADConnect')]"
                     },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "installAzureMonitorAgent",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployAzureSentinel2Go",
+                "deployWinADFS"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Azure-Monitor-Agents/windows.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWinADFS').outputs.allWinVMsDeployed.value]"
+                    },
+                    "monitorAgent": {
+                        "value": "Log Analytics Agent"
+                    },
                     "workspaceId": {
                         "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
                     },
                     "workspaceKey": {
                         "value": "[if(empty(parameters('workspaceKey')), reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, parameters('workspaceKey'))]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
                     }
                 }
             }
