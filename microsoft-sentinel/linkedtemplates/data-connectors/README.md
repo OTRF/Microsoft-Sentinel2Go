@@ -1,10 +1,10 @@
 # Microsoft Sentinel Data Connectors
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fazure-sentinel%2Flinkedtemplates%2Fdata-connectors%2FallConnectors.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fmicrosoft-sentinel%2Flinkedtemplates%2Fdata-connectors%2FallConnectors.json" target="_blank">
     <img src="https://aka.ms/deploytoazurebutton"/>
 </a>
 <br/>
-<a href="https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fazure-sentinel%2Flinkedtemplates%2Fdata-connectors%2FallConnectors.json" target="_blank">
+<a href="https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fmicrosoft-sentinel%2Flinkedtemplates%2Fdata-connectors%2FallConnectors.json" target="_blank">
     <img src="https://aka.ms/deploytoazuregovbutton"/>
 </a>
 <br/>
