@@ -169,39 +169,6 @@
             },
             "defaultValue": "azsentinel.local"
         },
-        "securityCollectionTier": {
-            "type": "string",
-            "metadata": {
-                "description": "Tier for gathering Windows Security Events."
-            },
-            "allowedValues": [
-                "All",
-                "Recommended",
-                "Minimal",
-                "None"
-            ],
-            "defaultValue": "Minimal"
-        },
-        "collectWinEventProviders": {
-            "type": "array",
-            "metadata": {
-                "description": "Do you want to configure your Log Analytics Workspace to collect Windows Event Logs from several pre-defined event providers?. Windows Security Auditing is not enabled through this option. It is enabled through the Data Connectors parameter."
-            },
-            "defaultValue": [
-                "System",
-                "Microsoft-Windows-Sysmon/Operational",
-                "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational",
-                "Microsoft-Windows-Bits-Client/Operational",
-                "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational",
-                "Directory Service",
-                "Microsoft-Windows-DNS-Client/Operational",
-                "Microsoft-Windows-Windows Firewall With Advanced Security/Firewall",
-                "Windows PowerShell",
-                "Microsoft-Windows-PowerShell/Operational",
-                "Microsoft-Windows-WMI-Activity/Operational",
-                "Microsoft-Windows-TaskScheduler/Operational"
-            ]
-        },
         "c2Framework": {
             "type": "string",
             "defaultValue": "None",
