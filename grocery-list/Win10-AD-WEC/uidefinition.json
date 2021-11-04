@@ -276,7 +276,7 @@
                                 "type": "Microsoft.Common.TextBox",
                                 "label": "domain FQDN",
                                 "placeholder": "",
-                                "defaultValue": "azsentinel.local",
+                                "defaultValue": "mssentinel.local",
                                 "toolTip": "The FQDN of the Active Directory Domain to be created.",
                                 "constraints": {
                                     "required": true,

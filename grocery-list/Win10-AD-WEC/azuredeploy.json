@@ -467,7 +467,7 @@
                 "allowGatewayTransit": false,
                 "useRemoteGateways": false,
                 "remoteVirtualNetwork": {
-                    "id": "[reference('deployWinAD').outputs.virtualNetworkId.value]"
+                    "id": "[reference('deployWinADWEC').outputs.virtualNetworkId.value]"
                 }
             }
         },
