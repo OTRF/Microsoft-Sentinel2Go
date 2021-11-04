@@ -4,7 +4,7 @@
                                  "Name":  "eventLogsDataSource",
                                  "scheduledTransferPeriod":  "PT1M",
                                  "streams":  [
-                                                 "Microsoft-SecurityEvent"
+                                                 "Microsoft-WindowsEvent"
                                              ],
                                  "xPathQueries":  [
                                                       "Security!*[System[(EventID=5136 or EventID=5139)]]",

@@ -145,7 +145,7 @@
     },
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
+        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "dataCollectionRuleName": "WindowsDCR",
         "dataSources": {
             "windowsEventLogs": [
@@ -153,7 +153,7 @@
                     "name": "eventLogsDataSource",
                     "scheduledTransferPeriod": "PT5M",
                     "streams": [
-                        "Microsoft-SecurityEvent"
+                        "Microsoft-WindowsEvent"
                     ],
                     "xPathQueries": [
                         "Security!*[System[(EventID=4624)]]"
@@ -164,10 +164,10 @@
         "dataFlows": [
             {
                 "streams": [
-                    "Microsoft-SecurityEvent"
+                    "Microsoft-WindowsEvent"
                 ],
                 "destinations": [
-                    "SecurityEvent"
+                    "WindowsEvents"
                 ]
             }
         ]
@@ -181,7 +181,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -210,7 +210,7 @@
             "properties": {
                  "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-collection-rules/creation-azureresource.json')]",
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-collection-rules/creation-azureresource.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -224,7 +224,7 @@
                         "value": {
                             "logAnalytics": [
                                 {
-                                    "name": "SecurityEvent",
+                                    "name": "WindowsEvents",
                                     "workspaceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]",
                                     "workspaceResourceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
                                 }
@@ -324,7 +324,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-collection-rules/association.json')]",
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-collection-rules/association.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {

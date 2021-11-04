@@ -146,7 +146,7 @@
     },
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/"
+        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/"
     },
     "resources": [
         {
@@ -157,7 +157,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {

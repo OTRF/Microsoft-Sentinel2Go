@@ -135,7 +135,7 @@
     },
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
+        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "sysmonForLinuxInstallScript": "[uri(variables('artifactsBlacksmith'), 'resources/scripts/bash/Install-Sysmon-For-Linux.sh')]",
         "sysmonConfigUrl": "[uri(variables('artifactsBlacksmith'), 'resources/configs/sysmon/linux/sysmon.xml')]",
         "sysmonParserPackTemplate": "https://raw.githubusercontent.com/Azure/microsoft-sentinel/master/Parsers/ASim%20Sysmon%20for%20Linux/SysmonForLinuxFullDeployment.json",
@@ -152,7 +152,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -184,7 +184,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/syslogCollection.json')]",
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/syslogCollection.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -207,7 +207,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'microsoft-sentinel/linkedtemplates/log-analytics/syslogDataSources.json')]",
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'microsoft-sentinel/linkedtemplates/log-analytics/syslogDataSources.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {

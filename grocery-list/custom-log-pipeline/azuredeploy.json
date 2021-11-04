@@ -142,8 +142,8 @@
     },
     "variables": {
         "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
-        "customScriptTemplateUri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/customScript.json')]",
+        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
+        "customScriptTemplateUri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'microsoft-sentinel/linkedtemplates/customScript.json')]",
         "azureEnvironment": "[toLower(environment().name)]"
     },
     "resources": [
@@ -154,7 +154,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -259,7 +259,7 @@
                     },
                     "fileUris": {
                         "value": [
-                            "[uri(variables('artifactsAzureSentinel2Go'), 'grocery-list/custom-log-pipeline/scripts/Install-Logstash.sh')]"
+                            "[uri(variables('artifactsMicrosoftSentinel2Go'), 'grocery-list/custom-log-pipeline/scripts/Install-Logstash.sh')]"
                         ]
                     },
                     "vmName": {
@@ -294,7 +294,7 @@
                     },
                     "fileUris": {
                         "value": [
-                            "[uri(variables('artifactsAzureSentinel2Go'), 'grocery-list/custom-log-pipeline/scripts/Get-Security-Datasets.sh')]"
+                            "[uri(variables('artifactsMicrosoftSentinel2Go'), 'grocery-list/custom-log-pipeline/scripts/Get-Security-Datasets.sh')]"
                         ]
                     },
                     "vmName": {
