@@ -4,7 +4,7 @@
     "parameters": {
         "workspaceName": {
             "type": "string",
-            "defaultValue": "AzSen2Go",
+            "defaultValue": "MSSen2Go",
             "metadata": {
                 "description": "Name for the Log Analytics workspace used to aggregate data. If this is a new LA workspace, the template will add a unique string to the name you choose. If you are using an existing LA workspace, the name will not change and will be passed as is to the resources in the template."
             }
@@ -163,18 +163,18 @@
     },
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/"
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/"
     },
     "resources": [
         {
             "condition": "[and(empty(parameters('workspaceId')),empty(parameters('workspaceKey')))]",
-            "name": "deployAzureSentinel2Go",
+            "name": "deployMSSentinel2Go",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -198,7 +198,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "dependsOn": [
-                "deployAzureSentinel2Go"
+                "deployMSSentinel2Go"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -238,10 +238,10 @@
                         "value": "[parameters('enableSysmon')]"
                     },
                     "workspaceId": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
+                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
                     },
                     "workspaceKey": {
-                        "value": "[if(empty(parameters('workspaceKey')), reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, parameters('workspaceKey'))]"
+                        "value": "[if(empty(parameters('workspaceKey')), reference('deployMSSentinel2Go').outputs.workspaceKeyOutput.value, parameters('workspaceKey'))]"
                     },
                     "location": {
                         "value": "[parameters('location')]"

@@ -1,0 +1,50 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "solutionTypes": {
+            "defaultValue": [],
+            "type": "Array",
+            "metadata": {
+                "description": "Log Analytics Workspace solutions"
+            }
+        },
+        "workspaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the Log Analytics workspace used to aggregate data"
+            }
+        },
+        "workspaceId": {
+            "type": "string",
+            "metadata": {
+                "description": "Log Analytics workspace ID"
+            }
+        },
+        "location": {
+            "defaultValue": "",
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.OperationsManagement/solutions",
+            "apiVersion": "2015-11-01-preview",
+            "name": "[Concat(parameters('solutionTypes')[copyIndex()], '(', parameters('workspaceName'), ')')]",
+            "location": "[parameters('location')]",
+            "copy": {
+                "name": "solutionsCopy",
+                "count": "[length(parameters('solutionTypes'))]"
+            },
+            "properties": {
+                "workspaceResourceId": "[parameters('workspaceId')]"
+            },
+            "plan": {
+                "name": "[Concat(parameters('solutionTypes')[copyIndex()], '(', parameters('workspaceName'), ')')]",
+                "product": "[Concat('OMSGallery/', parameters('solutionTypes')[copyIndex()])]",
+                "promotionCode": "",
+                "publisher": "Microsoft"
+            }
+        }
+    ]
+}

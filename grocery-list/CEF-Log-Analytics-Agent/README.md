@@ -1,12 +1,12 @@
-# Azure Sentinel + Common Event Format (CEF) + Log Analytics Agent for Linux
+# Microsoft Sentinel + Common Event Format (CEF) + Log Analytics Agent for Linux
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FCEF-Log-Analytics-Agent%2Fazuredeploy.json)
-[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FCEF-Log-Analytics-Agent%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fgrocery-list%2FCEF-Log-Analytics-Agent%2Fazuredeploy.json)
+[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fgrocery-list%2FCEF-Log-Analytics-Agent%2Fazuredeploy.json)
 
 ## Grocery Items
 
-* Azure Sentinel
-    * Would you like to Bring-Your-Own Azure Sentinel?.
+* Microsoft Sentinel
+    * Would you like to Bring-Your-Own Microsoft Sentinel?.
     * If so, set the `workspaceId` and `workspaceKey` parameters of your own workspace.
 * CEF Server (`Ubuntu`)
     * [Linux CEF Installer + OMS Agent for Linux](https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/DataConnectors/CEF/cef_installer.py)
@@ -144,7 +144,7 @@ cat cef_simulator_debug.log
 05/26/2021 08:39:49 AM Executing the following command: ['logger', '-p', 'local4.warn', '-t', 'CEF:', '0|Palo Alto Networks|PAN-OS|9.1.0-h3|Morto RDP Request Traffic(13274)|THREAT|2|rt=May 26 2021 08:39:49  deviceExternalId=RANDOMID src=1.2.3.4 dst=10.0.0.1 sourceTranslatedAddress=10.0.0.1 destinationTranslatedAddress=1.2.3.4 cs1Label=Rule cs1=RDP Inbound suser= duser= app=ms-rdp cs3Label=Virtual System cs3=vsys1 cs4Label=Source Zone cs4=Untrust cs5Label=Destination Zone cs5=Trust deviceInboundInterface=ethernet1/1 deviceOutboundInterface=ethernet1/2 cs6Label=LogProfile cs6=default cn1Label=SessionID cn1=86053 cnt=1 spt=2687 dpt=3389 sourceTranslatedPort=51475 destinationTranslatedPort=3389 flexString1Label=Flags flexString1=0x402000 proto=tcp act=alert request="" cs2Label=URL Category cs2=any flexString2Label=Direction flexString2=client-to-server PanOSActionFlags=0x2000000000000000 externalId=2316 cat=Morto RDP Request Traffic(13274) fileId=0 PanOSDGl1=0 PanOSDGl2=0 PanOSDGl3=0 PanOSDGl4=0 PanOSVsysName= dvchost=pannwfusiondemo PanOSSrcUUID= PanOSDstUUID= PanOSTunnelID=0 PanOSMonitorTag= PanOSParent SessionID=0 PanOSParentStartTime= PanOSTunnelType=N/A PanOSThreatCategory=net-worm PanOSContentVer=AppThreat-8224-5855 PanOSAssocID=0 PanOSPPID=4294967295 PanOSHTTPHeader="personal-sites-and-blogs,high-risk" PanOSURLCatList="personal-sites-and-blogs,high-risk" PanOSRuleUUID=c60266c3-fcfd-4f99-b921-54d5aaae7a54 PanOSHTTP2Con=0|data1=example', '-P', '514', '-n', '127.0.0.1']..
 ```
 
-10. Check if the CEF event made it to Azure Sentinel by going to `Logs` and running the following KQL query against the `CommonSecurityLog` table:
+10. Check if the CEF event made it to Microsoft Sentinel by going to `Logs` and running the following KQL query against the `CommonSecurityLog` table:
 
 ```
 CommonSecurityLog 

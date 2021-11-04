@@ -1,0 +1,66 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the Log Analytics workspace used to aggregate data"
+            }
+        },
+        "winEventProviders": {
+            "type": "array",
+            "defaultValue": [
+                "System",
+                "Microsoft-Windows-Sysmon/Operational",
+                "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational",
+                "Microsoft-Windows-Bits-Client/Operational",
+                "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational",
+                "Directory Service",
+                "Microsoft-Windows-DNS-Client/Operational",
+                "Microsoft-Windows-Windows Firewall With Advanced Security/Firewall",
+                "Windows PowerShell",
+                "Microsoft-Windows-PowerShell/Operational",
+                "Microsoft-Windows-WMI-Activity/Operational",
+                "Microsoft-Windows-TaskScheduler/Operational"
+            ],
+            "metadata": {
+                "description": "A list of Windows Event Providers that you would like to collect.  Windows Security Auditing is not enabled through this option. It is enabled through Microsoft Sentinel Data Connectors."
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/dataSources",
+            "apiVersion": "2020-08-01",
+            "location": "[parameters('location')]",
+            "name": "[concat(parameters('workspaceName'), '/winEvent', copyindex())]",
+            "copy": {
+                "name": "winEventCopy",
+                "count": "[length(parameters('winEventProviders'))]"
+            },
+            "kind": "WindowsEvent",
+            "properties": {
+                "eventLogName": "[trim(parameters('winEventProviders')[copyIndex()])]",
+                "eventTypes": [
+                    {
+                        "eventType": "Error"
+                    },
+                    {
+                        "eventType": "Warning"
+                    },
+                    {
+                        "eventType": "Information"
+                    }
+                ]
+            }
+        }
+    ]
+}

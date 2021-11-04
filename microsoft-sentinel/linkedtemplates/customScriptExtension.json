@@ -1,0 +1,45 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Windows virtual machine"
+            }
+        },
+        "extensionName": {
+            "type": "string"
+        },
+        "fileUris": {
+            "type": "array"
+        },
+        "commandToExecute": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "apiVersion": "2016-08-30",
+            "name": "[concat(parameters('vmName'), '/', parameters('extensionName'))]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": "[parameters('fileUris')]",
+                    "commandToExecute": "[parameters('commandToExecute')]"
+                }
+            }
+        }
+    ]
+}
