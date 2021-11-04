@@ -458,7 +458,7 @@
             "apiVersion": "2019-11-01",
             "dependsOn": [
                 "deployC2",
-                "deployWinAD"
+                "deployWinADWEC"
             ],
             "location": "[parameters('location')]",
             "properties": {
@@ -478,7 +478,7 @@
             "apiVersion": "2019-11-01",
             "dependsOn": [
                 "deployC2",
-                "deployWinAD"
+                "deployWinADWEC"
             ],
             "location": "[parameters('location')]",
             "properties": {
