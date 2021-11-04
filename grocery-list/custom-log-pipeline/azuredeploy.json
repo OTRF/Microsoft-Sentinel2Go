@@ -118,7 +118,7 @@
                 "security-large-apt29"
             ],
             "metadata": {
-                "description": "Do you want to deploy additional resources and connect them to your current Azure Sentinel's workspace?"
+                "description": "Do you want to deploy additional resources and connect them to your current Microsoft Sentinel's workspace?"
             }
         },
         "deployCustomLogsPipeline": {
@@ -129,7 +129,7 @@
                 "Logstash-EventHub"
             ],
             "metadata": {
-                "description": "Do you want to deploy a data ingestion pipeline along with an Azure Sentinel solution? Events get sent to a custom logs table named prerecorded. You also have the option to deploy the pipeline with pre-recorded datasets from the Security Datasets project (https://securitydatasets.com)"
+                "description": "Do you want to deploy a data ingestion pipeline along with an Microsoft Sentinel solution? Events get sent to a custom logs table named prerecorded. You also have the option to deploy the pipeline with pre-recorded datasets from the Security Datasets project (https://securitydatasets.com)"
             }
         },
         "location": {
@@ -142,19 +142,19 @@
     },
     "variables": {
         "artifactsBlacksmithLocation": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/",
-        "customScriptTemplateUri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/customScript.json')]",
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
+        "customScriptTemplateUri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/customScript.json')]",
         "azureEnvironment": "[toLower(environment().name)]"
     },
     "resources": [
         {
-            "name": "deployAzureSentinel2Go",
+            "name": "deployMSSentinel2Go",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -240,7 +240,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "dependsOn": [
-                "deployAzureSentinel2Go",
+                "deployMSSentinel2Go",
                 "deployLogstashVM",
                 "deployEventHub"
             ],
@@ -255,7 +255,7 @@
                         "value": "SetupLogstash"
                     },
                     "commandToExecute": {
-                        "value": "[concat('bash Install-Logstash.sh -i ', reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, ' ', '-k', ' ', reference('deployAzureSentinel2Go').outputs.workspaceKeyOutput.value, ' ', '-u', ' ', parameters('adminUsername'), ' ', '-p', ' ', variables('azureEnvironment'), if(contains(parameters('deployCustomLogsPipeline'), 'EventHub'), concat(' ', '-c', ' ', '\"', reference('deployEventHub').outputs.NamespaceConnectionString.value, '\"', ' ', '-e', ' ', reference('deployEventHub').outputs.EventHubName.value), ''))]"
+                        "value": "[concat('bash Install-Logstash.sh -i ', reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, ' ', '-k', ' ', reference('deployMSSentinel2Go').outputs.workspaceKeyOutput.value, ' ', '-u', ' ', parameters('adminUsername'), ' ', '-p', ' ', variables('azureEnvironment'), if(contains(parameters('deployCustomLogsPipeline'), 'EventHub'), concat(' ', '-c', ' ', '\"', reference('deployEventHub').outputs.NamespaceConnectionString.value, '\"', ' ', '-e', ' ', reference('deployEventHub').outputs.EventHubName.value), ''))]"
                     },
                     "fileUris": {
                         "value": [

@@ -1,12 +1,12 @@
 # Windows 10 + Windows Server (Active Directory) + Windows Server 2016 (MS Exchange)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FWin10-AD-MXS%2Fazuredeploy.json)
-[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FWin10-AD-MXS%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fgrocery-list%2FWin10-AD-MXS%2Fazuredeploy.json)
+[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fgrocery-list%2FWin10-AD-MXS%2Fazuredeploy.json)
 
 ## Grocery Items
 
-* Azure Sentinel
-    * Would you like to Bring-Your-Own Azure Sentinel?.
+* Microsoft Sentinel
+    * Would you like to Bring-Your-Own Microsoft Sentinel?.
     * If so, set the `workspaceId` and `workspaceKey` parameters of your own workspace.
 * One Windows Active Directory domain (One Domain Controller)
 * One Windows Microsoft Exchange Server 2016 (One Server)
@@ -25,7 +25,7 @@
     * `MXS2016-x64-CU12-KB4471392` -> `ExchangeServer2016-x64-cu12.iso`
 * Windows 10 Workstations (Max. 10)
 * Windows [Microsoft Monitoring Agent](https://docs.microsoft.com/en-us/services-hub/health/mma-setup) installed
-    * It connects to the Azure Sentinel Log Analytics workspace defined in the template.
+    * It connects to the Microsoft Sentinel Log Analytics workspace defined in the template.
 * SecurityEvents data connector enabled (`Minimal` default option)
     * `All`
     * `Recommended`

@@ -6,7 +6,7 @@
         "config": {
             "isWizard": true,
             "basics": {
-                "description": "<img width=450 src=\"https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/resources/images/logo.png\">\n\n**Azure Sentinel2Go** is an open source project developed to expedite the deployment of an Azure Sentinel lab along with other Azure resources and a data ingestion pipeline to consume pre-recorded datasets for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Security Datasets project](https://securitydatasets.com/) right at deployment time.\n\n**Data Connectors:** 14, **Functions:** 1\n\n[Learn more about Sentinel2Go](https://techcommunity.microsoft.com/t5/azure-sentinel/azure-sentinel-to-go-part1-a-lab-w-prerecorded-data-amp-a-custom/ba-p/1260191) | [Learn more about Security Datasets](https://securitydatasets.com)",
+                "description": "<img width=450 src=\"https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/resources/images/logo.png\">\n\n**Microsoft Sentinel2Go** is an open source project developed to expedite the deployment of an Microsoft Sentinel lab along with other Azure resources and a data ingestion pipeline to consume pre-recorded datasets for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Security Datasets project](https://securitydatasets.com/) right at deployment time.\n\n**Data Connectors:** 14, **Functions:** 1\n\n[Learn more about Sentinel2Go](https://techcommunity.microsoft.com/t5/microsoft-sentinel/microsoft-sentinel-to-go-part1-a-lab-w-prerecorded-data-amp-a-custom/ba-p/1260191) | [Learn more about Security Datasets](https://securitydatasets.com)",
                 "location": {
                     "label": "Location",
                     "toolTip": "Location for all resources",
@@ -231,7 +231,7 @@
                         "type": "Microsoft.Common.DropDown",
                         "label": "Data ingestion",
                         "defaultValue": "No Items",
-                        "toolTip": "Do you want to deploy additional resources and connect them to your current Azure Sentinel's workspace?",
+                        "toolTip": "Do you want to deploy additional resources and connect them to your current Microsoft Sentinel's workspace?",
                         "constraints": {
                             "allowedValues": [
                                 {
@@ -256,7 +256,7 @@
                         "type": "Microsoft.Common.DropDown",
                         "label": "Custom Log Pipeline",
                         "defaultValue": "Logstash",
-                        "toolTip": "Do you want to deploy a data ingestion pipeline along with an Azure Sentinel solution? Events get sent to a custom logs table named prerecorded. You also have the option to deploy the pipeline with pre-recorded datasets from the Security Datasets project (https://securitydatasets.com)",
+                        "toolTip": "Do you want to deploy a data ingestion pipeline along with an Microsoft Sentinel solution? Events get sent to a custom logs table named prerecorded. You also have the option to deploy the pipeline with pre-recorded datasets from the Security Datasets project (https://securitydatasets.com)",
                         "constraints": {
                             "allowedValues": [
                                 {

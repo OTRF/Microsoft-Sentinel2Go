@@ -1,0 +1,76 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the Log Analytics workspace used to aggregate data"
+            }
+        },
+        "syslogFacilities": {
+            "type": "array",
+            "defaultValue": [
+                "auth",
+                "authpriv",
+                "cron",
+                "daemon",
+                "ftp",
+                "kern",
+                "user"
+            ],
+            "metadata": {
+                "description": "A list of facilities to collect from Syslog."
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/dataSources",
+            "apiVersion": "2020-08-01",
+            "location": "[parameters('location')]",
+            "name": "[concat(parameters('workspaceName'), '/syslog', copyindex())]",
+            "copy": {
+                "name": "linuxEventCopy",
+                "count": "[length(parameters('syslogFacilities'))]"
+            },
+            "kind": "LinuxSyslog",
+            "properties": {
+                "sysLogName": "[trim(parameters('syslogFacilities')[copyIndex()])]",
+                "syslogSeverities": [
+                    {
+                        "severity": "emerg"
+                    },
+                    {
+                        "severity": "alert"
+                    },
+                    {
+                        "severity": "crit"
+                    },
+                    {
+                        "severity": "err"
+                    },
+                    {
+                        "severity": "warning"
+                    },
+                    {
+                        "severity": "notice"
+                    },
+                    {
+                        "severity": "info"
+                    },
+                    {
+                        "severity": "debug"
+                    }
+                ]
+            }
+        }
+    ]
+}

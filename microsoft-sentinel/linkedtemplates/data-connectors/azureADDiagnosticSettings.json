@@ -1,0 +1,71 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceGroup": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The resource group to deploy all the resources to"
+            }
+        },
+        "subscriptionId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The subscriptionId to deploy all the resources to"
+            }
+        },
+        "workspaceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own existing log analytics workspace ID. Leave it empty if you are deploying a new LA workspace."
+            }
+        },
+        "utcValue": {
+            "type": "string",
+            "metadata": {
+                "description": "Returns the current (UTC) datetime value in the specified format. If no format is provided, the ISO 8601 (yyyyMMddTHHmmssZ) format is used"
+            },
+            "defaultValue": "[utcNow()]"
+        }
+    },
+    "resources": [
+        {
+            "type": "microsoft.aadiam/diagnosticSettings",
+            "apiVersion": "2017-04-01",
+            "name": "[concat('AADConnector-',uniqueString(parameters('subscriptionId'),parameters('resourceGroup'),parameters('utcValue')))]",
+            "properties": {
+                "workspaceId": "[if(empty(parameters('workspaceId')), concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('resourceGroup'), '/providers/microsoft.operationalinsights/workspaces/', reference('deployMSSentinel2Go').outputs.workspaceName.value), parameters('workspaceId'))]",
+                "logs": [
+                    {
+                        "category": "SignInLogs",
+                        "enabled": true
+                    },
+                    {
+                        "category": "AuditLogs",
+                        "enabled": true
+                    },
+                    {
+                        "category": "NonInteractiveUserSignInLogs",
+                        "enabled": true
+                    },
+                    {
+                        "category":  "ServicePrincipalSignInLogs",
+                        "enabled":  true
+                    },
+                    {
+                        "category":  "ManagedIdentitySignInLogs",
+                        "enabled":  true
+                    },
+                    {
+                        "category":  "ProvisioningLogs",
+                        "enabled":  true
+                    }
+                ],
+                 "metrics": []
+            }
+        }
+    ]
+}

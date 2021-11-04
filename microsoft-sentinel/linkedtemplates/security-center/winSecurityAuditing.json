@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the Log Analytics workspace used to aggregate data"
+            }
+        },
+        "workspaceId": {
+            "type": "string",
+            "metadata": {
+                "description": "Log Analytics workspace ID"
+            }
+        },
+        "securityCollectionTier": {
+            "type": "string",
+            "metadata": {
+                "description": "Tier for gathering Windows Security Events."
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[concat('Security','(', parameters('workspaceName'),')')]",
+            "type": "Microsoft.OperationsManagement/solutions",
+            "apiVersion": "2015-11-01-preview",
+            "location":"[parameters('location')]",
+            "properties": {
+                "workspaceResourceId": "[parameters('workspaceId')]"
+            },
+            "plan": {
+                "name": "[concat('Security','(', parameters('workspaceName'),')')]",
+                "product": "OMSGallery/Security",
+                "publisher": "Microsoft",
+                "promotionCode": ""
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/dataSources",
+            "apiVersion": "2015-11-01-preview",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationsManagement/solutions/', concat('Security','(', parameters('workspaceName'),')'))]"
+            ],
+            "name": "[concat(parameters('workspaceName'), '/', 'SecurityEventCollectionConfiguration')]",
+            "kind": "SecurityEventCollectionConfiguration",
+            "properties": {
+                "tier": "[parameters('securityCollectionTier')]",
+                "tierSetMethod": "Custom"
+            }
+        }
+    ]
+}

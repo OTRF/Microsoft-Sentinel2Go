@@ -4,7 +4,7 @@
     "parameters": {
         "workspaceName": {
             "type": "string",
-            "defaultValue": "AzSen2Go",
+            "defaultValue": "MSSen2Go",
             "metadata": {
                 "description": "Name for the Log Analytics workspace used to aggregate data. If this is a new LA workspace, the template will add a unique string to the name you choose. If you are using an existing LA workspace, the name will not change and will be passed as is to the resources in the template."
             }
@@ -145,7 +145,7 @@
     },
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/",
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "dataCollectionRuleName": "WindowsDCR",
         "dataSources": {
             "windowsEventLogs": [
@@ -175,13 +175,13 @@
     "resources": [
         {
             "condition": "[and(empty(parameters('workspaceId')),empty(parameters('workspaceKey')))]",
-            "name": "deployAzureSentinel2Go",
+            "name": "deployMSSentinel2Go",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -205,12 +205,12 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "dependsOn": [
-                "deployAzureSentinel2Go"
+                "deployMSSentinel2Go"
             ],
             "properties": {
                  "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/data-collection-rules/creation-azureresource.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-collection-rules/creation-azureresource.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -225,8 +225,8 @@
                             "logAnalytics": [
                                 {
                                     "name": "SecurityEvent",
-                                    "workspaceId": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]",
-                                    "workspaceResourceId": "[if(empty(parameters('workspaceId')), reference('deployAzureSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
+                                    "workspaceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]",
+                                    "workspaceResourceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
                                 }
                             ]
                         }
@@ -294,7 +294,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "dependsOn": [
-                "deployAzureSentinel2Go",
+                "deployMSSentinel2Go",
                 "deployWin10VM"
             ],
             "properties": {
@@ -324,7 +324,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/data-collection-rules/association.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-collection-rules/association.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {

@@ -4,7 +4,7 @@
     "parameters": {
         "workspaceName": {
             "type": "string",
-            "defaultValue": "AzSen2Go",
+            "defaultValue": "MSSen2Go",
             "metadata": {
                 "description": "Name for the Log Analytics workspace used to aggregate data. If this is a new LA workspace, the template will add a unique string to the name you choose. If you are using an existing LA workspace, the name will not change and will be passed as is to the resources in the template."
             }
@@ -147,7 +147,7 @@
     },
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/"
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/"
     },
     "resources": [
         {
@@ -186,7 +186,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'azure-sentinel/linkedtemplates/data-connectors/securityEvents.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/securityEvents.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -212,7 +212,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'azure-sentinel/linkedtemplates/log-analytics/winDataSources.json')]",
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'),'microsoft-sentinel/linkedtemplates/log-analytics/winDataSources.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -238,7 +238,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Win10/demos/Win10-Azure-Sentinel.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Win10/demos/Win10-microsoft-sentinel.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {

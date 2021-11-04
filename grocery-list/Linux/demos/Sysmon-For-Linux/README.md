@@ -1,6 +1,6 @@
 # Sysmon For Linux Lab Environment
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FLinux%2Fdemos%2FSysmon-For-Linux%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FAzure-Sentinel2Go%2Fmaster%2Fgrocery-list%2FLinux%2Fdemos%2FSysmon-For-Linux%2Fuidefinition.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fgrocery-list%2FLinux%2Fdemos%2FSysmon-For-Linux%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fgrocery-list%2FLinux%2Fdemos%2FSysmon-For-Linux%2Fuidefinition.json)
 
 ## Metadata
 
@@ -10,8 +10,8 @@
 
 ## Grocery Items
 
-* Azure Sentinel
-    * Would you like to Bring-Your-Own Azure Sentinel?.
+* Microsoft Sentinel
+    * Would you like to Bring-Your-Own Microsoft Sentinel?.
     * If so, set the `workspaceId` and `workspaceKey` parameters of your own workspace.
 * Linux VMs
     * Distro: `Ubuntu 18.04.6 LTS` - Kernel release: `5.4.0-1059-azure `
@@ -56,7 +56,7 @@ sudo tail -f /var/log/syslog | sudo /opt/sysmon/sysmonLogView -e 1
 
 ![](../../../../resources/images/linux-sysmon-tail-sysmonlogview.png)
 
-## Explore Events in Azure Sentinel
+## Explore Events in Microsoft Sentinel
 
 You can query Sysmon for Linux logs by using the Syslog table with the following Kusto query: 
 
@@ -74,7 +74,7 @@ Syslog
 | summarize count() by tostring(EventID) 
 ```
 
-Additionally, as part of the [ASIM](https://docs.microsoft.com/en-us/azure/sentinel/normalization-content) (Azure Sentinel Information Model) project, we have created parsers for [Sysmon for Linux](https://github.com/Azure/Azure-Sentinel/tree/master/Parsers/ASim%20Sysmon%20for%20Linux). The parsers get imported automatically by the template we use to deploy the lab environment. Therefore, you can simply use the parsers available under **Functions** > **Workspace functions**:
+Additionally, as part of the [ASIM](https://docs.microsoft.com/en-us/azure/sentinel/normalization-content) (Microsoft Sentinel Information Model) project, we have created parsers for [Sysmon for Linux](https://github.com/Azure/Azure-Sentinel/tree/master/Parsers/ASim%20Sysmon%20for%20Linux). The parsers get imported automatically by the template we use to deploy the lab environment. Therefore, you can simply use the parsers available under **Functions** > **Workspace functions**:
 
 ```
 VimProcessCreateLinuxSysmon 
