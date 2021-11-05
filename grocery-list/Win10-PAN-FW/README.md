@@ -16,6 +16,9 @@
     * Bundle 2 Subscription: It includes the VM-Series capacity license with the complete suite of licenses that includes Threat Prevention, GlobalProtect, WildFire, PAN-DB URL Filtering, and a premium support entitleme
 * CEF Data Connector Enabled
 * Palo Alto Networks Data Connector
+* Windows [Azure Monitoring Agent](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview?tabs=PowerShellWindows) installed
+    * It connects to the Microsoft Sentinel Log Analytics workspace defined in the template.
+* [Windows Security Events via AMA](https://docs.microsoft.com/en-us/azure/sentinel/data-connectors-reference#windows-security-events-via-ama) data connector enabled
 * [OPTIONAL] Sysmon
     * [Sysmon Config](https://github.com/OTRF/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)
 * [OPTIONAL] Command and Control (c2) options:

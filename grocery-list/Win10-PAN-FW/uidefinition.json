@@ -360,16 +360,6 @@
                             "required": false,
                             "validationMessage": ""
                         }
-                    },
-                    {
-                        "name": "enableMonitoringAgent",
-                        "type": "Microsoft.Common.CheckBox",
-                        "label": "Enable Monitoring Agent",
-                        "toolTip": "Do you want to enable the Microsoft Log Analytics Monitoring agent on your Windows 10 workstation?",
-                        "constraints": {
-                            "required": false,
-                            "validationMessage": ""
-                        }
                     }
                 ]
             }
@@ -387,8 +377,7 @@
             "firewallVMSize": "[steps('paloaltoParameters').serverSection.firewallVMSize]",
             "firewallSubscription": "[steps('paloaltoParameters').releaseSection.firewallSubscription]",
             "allowedIPAddresses": "[steps('networkParameters').allowedIPAddresses]",
-            "enableSysmon": "[steps('sectionFeatures').enableSysmon]",
-            "enableMonitoringAgent": "[steps('sectionFeatures').enableMonitoringAgent]"
+            "enableSysmon": "[steps('sectionFeatures').enableSysmon]"
         }
     }
 }

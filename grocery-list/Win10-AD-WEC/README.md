@@ -10,9 +10,9 @@
     * If so, set the `workspaceId` and `workspaceKey` parameters of your own workspace.
 * One Windows Active Directory domain (One Domain Controller)
 * Windows 10 Workstations (Max. 10)
-* Windows [Microsoft Monitoring Agent](https://docs.microsoft.com/en-us/services-hub/health/mma-setup) installed
+* Windows [Azure Monitoring Agent](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview?tabs=PowerShellWindows) installed
     * It connects to the Microsoft Sentinel Log Analytics workspace defined in the template.
-* SecurityEvents data connector enabled
+* [Windows Forwarded Events](https://docs.microsoft.com/en-us/azure/sentinel/data-connectors-reference#windows-forwarded-events-preview) data connector enabled
 * [Windows event subscriptions](https://github.com/OTRF/Blacksmith/tree/master/resources/configs/wef/subscriptions)
 * [OPTIONAL] Sysmon
     * [Sysmon Config](https://github.com/OTRF/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)

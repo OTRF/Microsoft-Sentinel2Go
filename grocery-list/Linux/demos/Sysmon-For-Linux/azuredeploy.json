@@ -138,7 +138,7 @@
         "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "sysmonForLinuxInstallScript": "[uri(variables('artifactsBlacksmith'), 'resources/scripts/bash/Install-Sysmon-For-Linux.sh')]",
         "sysmonConfigUrl": "[uri(variables('artifactsBlacksmith'), 'resources/configs/sysmon/linux/sysmon.xml')]",
-        "sysmonParserPackTemplate": "https://raw.githubusercontent.com/Azure/microsoft-sentinel/master/Parsers/ASim%20Sysmon%20for%20Linux/SysmonForLinuxFullDeployment.json",
+        "sysmonLinuxParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Linux/SysmonForLinuxFullDeployment.json",
         "syslogFacilities": [
             "user"
         ]
@@ -224,7 +224,7 @@
             }
         },
         {
-            "name": "deploySysmonParserPack",
+            "name": "deploySysmonLinuxParserPack",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
             "dependsOn": [
@@ -233,12 +233,12 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('sysmonParserPackTemplate')]",
+                    "uri": "[variables('sysmonLinuxParserPackTemplate')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go', '2020-06-01').outputs.workspaceName.value, parameters('workspaceName'))]"
+                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -298,12 +298,6 @@
                     },
                     "azureBastionSubnetRange": {
                         "value": "[parameters('azureBastionSubnetRange')]"
-                    },
-                    "workspaceId": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
-                    },
-                    "workspaceKey": {
-                        "value": "[if(empty(parameters('workspaceKey')), reference('deployMSSentinel2Go').outputs.workspaceKeyOutput.value, parameters('workspaceKey'))]"
                     },
                     "location": {
                         "value": "[parameters('location')]"

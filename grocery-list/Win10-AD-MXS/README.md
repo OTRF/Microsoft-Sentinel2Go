@@ -24,13 +24,9 @@
     * `MXS2016-x64-CU13-KB4488406` -> `ExchangeServer2016-x64-cu13.iso`
     * `MXS2016-x64-CU12-KB4471392` -> `ExchangeServer2016-x64-cu12.iso`
 * Windows 10 Workstations (Max. 10)
-* Windows [Microsoft Monitoring Agent](https://docs.microsoft.com/en-us/services-hub/health/mma-setup) installed
+* Windows [Azure Monitoring Agent](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview?tabs=PowerShellWindows) installed
     * It connects to the Microsoft Sentinel Log Analytics workspace defined in the template.
-* SecurityEvents data connector enabled (`Minimal` default option)
-    * `All`
-    * `Recommended`
-    * `Minimal`
-    * `None`
+* [Windows Security Events via AMA](https://docs.microsoft.com/en-us/azure/sentinel/data-connectors-reference#windows-security-events-via-ama) data connector enabled
 * Windows event channels enabled
     * `Application`
     * `System`

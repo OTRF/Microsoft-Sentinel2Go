@@ -31,9 +31,9 @@
         * Auditpol command: auditpol.exe /set /subcategory:"Application Generated" /failure:enable /success:enable
     * Azure Active Directory (AAD) Connect installed
 * Windows 10 Workstations (Max. 10)
-* Windows [Microsoft Monitoring Agent](https://docs.microsoft.com/en-us/services-hub/health/mma-setup) installed
+* Windows [Azure Monitoring Agent](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview?tabs=PowerShellWindows) installed
     * It connects to the Microsoft Sentinel Log Analytics workspace defined in the template.
-* SecurityEvents data connector enabled
+* [Windows Security Events via AMA](https://docs.microsoft.com/en-us/azure/sentinel/data-connectors-reference#windows-security-events-via-ama) data connector enabled
 * Windows event channels enabled
     * `System`
     * `Microsoft-Windows-Sysmon/Operational`

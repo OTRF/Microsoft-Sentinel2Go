@@ -246,7 +246,7 @@
             "condition": "[and(empty(parameters('workspaceId')),empty(parameters('workspaceKey')))]",
             "name": "deployMSSentinel2Go",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -275,7 +275,7 @@
         {
             "name": "enableLinuxSyslogCollection",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
                 "deployMSSentinel2Go"
             ],
@@ -325,7 +325,7 @@
         {
             "name": "deployLinuxVM",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
                 "deployMSSentinel2Go"
             ],
@@ -397,7 +397,7 @@
             "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
             "name": "deployC2",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
