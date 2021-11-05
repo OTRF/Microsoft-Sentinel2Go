@@ -34,9 +34,6 @@
             "name": "deployWindowsEventParserPack",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
-            "dependsOn": [
-                "deployMSSentinel2Go"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -58,9 +55,6 @@
             "name": "deploySysmonWindowsParserPack",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
-            "dependsOn": [
-                "deployMSSentinel2Go"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -82,9 +76,6 @@
             "name": "deploySysmonLinuxParserPack",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
-            "dependsOn": [
-                "deployMSSentinel2Go"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
