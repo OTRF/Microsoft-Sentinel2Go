@@ -282,7 +282,7 @@
                             "name": "eventLogsDataSource",
                             "scheduledTransferPeriod": "PT5M",
                             "streams": [
-                                "Microsoft-WindowsEvent"
+                                "Microsoft-SecurityEvent"
                             ],
                             "xPathQueries": [
                                 "Security!*[System[(EventID=5136 or EventID=5139)]]",
@@ -324,7 +324,7 @@
                 "dataFlows": [
                     {
                         "streams": [
-                            "Microsoft-WindowsEvent"
+                            "Microsoft-SecurityEvent"
                         ],
                         "destinations": [
                             "WindowsEvents"
