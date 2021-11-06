@@ -8,42 +8,44 @@
 * Microsoft Sentinel
     * Would you like to Bring-Your-Own Microsoft Sentinel?.
     * If so, set the `workspaceId` and `workspaceKey` parameters of your own workspace.
-* One Windows Active Directory domain (One Domain Controller)
-* One Windows Microsoft Exchange Server 2016 (One Server)
-    * Mailbox Server Role Installed
-        * In Exchange 2013 or earlier, you could install the Client Access server role and the Mailbox server role on separate computers. In Exchange 2016 or later, the Client Access server role is automatically installed as part of the Mailbox server role, and the Client Access server role isn't available as a separate installation option.
-    * Admin mailbox audit logging enabled
-    * Admin audit logging enabled (Every cmdlet and every parameter in the organization and Log Level set to `Verbose`)
-* Microsoft Exchange 2016 Versions: (`ExchangeServer2016-x64-cu12.iso` default option)
-    * `MXS2016-x64-CU19-KB4588884` -> `ExchangeServer2016-x64-CU19.ISO`
-    * `MXS2016-x64-CU18-KB4571788` -> `ExchangeServer2016-x64-cu18.iso`
-    * `MXS2016-x64-CU17-KB4556414` -> `ExchangeServer2016-x64-cu17.iso`
-    * `MXS2016-x64-CU16-KB4537678` -> `ExchangeServer2016-x64-CU16.ISO`
-    * `MXS2016-x64-CU15-KB4522150` -> `ExchangeServer2016-x64-CU15.ISO`
-    * `MXS2016-x64-CU14-KB4514140` -> `ExchangeServer2016-x64-cu14.iso`
-    * `MXS2016-x64-CU13-KB4488406` -> `ExchangeServer2016-x64-cu13.iso`
-    * `MXS2016-x64-CU12-KB4471392` -> `ExchangeServer2016-x64-cu12.iso`
-* Windows 10 Workstations (Max. 10)
-* Windows [Azure Monitoring Agent](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview?tabs=PowerShellWindows) installed
-    * It connects to the Microsoft Sentinel Log Analytics workspace defined in the template.
-* [Windows Security Events via AMA](https://docs.microsoft.com/en-us/azure/sentinel/data-connectors-reference#windows-security-events-via-ama) data connector enabled
+    * [Windows Security Events via AMA](https://docs.microsoft.com/en-us/azure/sentinel/data-connectors-reference#windows-security-events-via-ama) data connector enabled.
+    * [Data collection rule (DCR)](https://docs.microsoft.com/en-us/azure/templates/microsoft.insights/datacollectionrules?tabs=json) to collect Windows Security events.
 * Windows event channels enabled
     * `Application`
     * `System`
     * `Microsoft-Windows-Sysmon/Operational`
     * `Directory Service`
     * `MSExchange Management`
-* W3C Format IIS Log Files Collection
+* One Windows Active Directory domain (One Domain Controller)
+    * [Data Collection Rule (DCR) association](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-rule-azure-monitor-agent#data-collection-rule-associations)
+    * Windows [Azure Monitoring Agent](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview?tabs=PowerShellWindows) installed. It connects to the Microsoft Sentinel Log Analytics workspace defined in the template.
+* One Windows Microsoft Exchange Server 2016 (One Server)
+    * [Data Collection Rule (DCR) association](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-rule-azure-monitor-agent#data-collection-rule-associations)
+    * Windows [Azure Monitoring Agent](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview?tabs=PowerShellWindows) installed. It connects to the Microsoft Sentinel Log Analytics workspace defined in the template.
+    * Mailbox Server Role Installed
+        * In Exchange 2013 or earlier, you could install the Client Access server role and the Mailbox server role on separate computers. In Exchange 2016 or later, the Client Access server role is automatically installed as part of the Mailbox server role, and the Client Access server role isn't available as a separate installation option.
+    * Admin mailbox audit logging enabled
+    * Admin audit logging enabled (Every cmdlet and every parameter in the organization and Log Level set to `Verbose`)
+    * Microsoft Exchange 2016 Versions: (`ExchangeServer2016-x64-cu12.iso` default option)
+        * `MXS2016-x64-CU19-KB4588884` -> `ExchangeServer2016-x64-CU19.ISO`
+        * `MXS2016-x64-CU18-KB4571788` -> `ExchangeServer2016-x64-cu18.iso`
+        * `MXS2016-x64-CU17-KB4556414` -> `ExchangeServer2016-x64-cu17.iso`
+        * `MXS2016-x64-CU16-KB4537678` -> `ExchangeServer2016-x64-CU16.ISO`
+        * `MXS2016-x64-CU15-KB4522150` -> `ExchangeServer2016-x64-CU15.ISO`
+        * `MXS2016-x64-CU14-KB4514140` -> `ExchangeServer2016-x64-cu14.iso`
+        * `MXS2016-x64-CU13-KB4488406` -> `ExchangeServer2016-x64-cu13.iso`
+        * `MXS2016-x64-CU12-KB4471392` -> `ExchangeServer2016-x64-cu12.iso`
+    * W3C Format IIS Log Files Collection
+* Windows 10 Workstations (Max. 10)
+    * [Data Collection Rule (DCR) association](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-rule-azure-monitor-agent#data-collection-rule-associations)
+    * Windows [Azure Monitoring Agent](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview?tabs=PowerShellWindows) installed. It connects to the Microsoft Sentinel Log Analytics workspace defined in the template.
+* [OPTIONAL] Sysmon
+    * [Sysmon Config](https://github.com/OTRF/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)
+    * [ASIM Sysmon Windows parser](https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json)
 * Remote Access Restrictions (`AllowPublicIP` default option)
     * Access via Azure Bastion (Recommended. Additional costs applied)
     * Restrict Access to one Public IP Address (For example, Home Public IP Address)
-* [OPTIONAL] Sysmon
-    * [Sysmon Config](https://github.com/OTRF/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)
-* [OPTIONAL] Command and Control (c2) options:
-    * `empire`
-    * `covenant`
-    * `caldera`
-    * `metasploit`
+
 
 ## Exchange Mailbox Access Validation
 ## Access Exchange Admin Center

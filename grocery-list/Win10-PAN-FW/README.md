@@ -8,27 +8,30 @@
 * Microsoft Sentinel
     * Would you like to Bring-Your-Own Microsoft Sentinel?.
     * If so, set the `workspaceId` and `workspaceKey` parameters of your own workspace.
-* One Windows 10 Workstation
+    * [Windows Security Events via AMA](https://docs.microsoft.com/en-us/azure/sentinel/data-connectors-reference#windows-security-events-via-ama) data connector enabled.
+    * [Data collection rule (DCR)](https://docs.microsoft.com/en-us/azure/templates/microsoft.insights/datacollectionrules?tabs=json) to collect Windows Security events.
+    * [CEF Data Connector Enabled](https://docs.microsoft.com/en-us/azure/sentinel/connect-common-event-format).
+    * [Palo Alto Networks Data Connector enabled](https://docs.microsoft.com/en-us/azure/sentinel/data-connectors-reference#palo-alto-networks).
 * One Ubuntu Server
     * CEF Collector Server (RSyslog)
     * Linux [Microsoft Monitoring Agent](https://docs.microsoft.com/en-us/services-hub/health/mma-setup) installed.
 * Palo Alto Networks VM-Series firewall
     * Bundle 2 Subscription: It includes the VM-Series capacity license with the complete suite of licenses that includes Threat Prevention, GlobalProtect, WildFire, PAN-DB URL Filtering, and a premium support entitleme
-* CEF Data Connector Enabled
-* Palo Alto Networks Data Connector
-* Windows [Azure Monitoring Agent](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview?tabs=PowerShellWindows) installed
-    * It connects to the Microsoft Sentinel Log Analytics workspace defined in the template.
-* [Windows Security Events via AMA](https://docs.microsoft.com/en-us/azure/sentinel/data-connectors-reference#windows-security-events-via-ama) data connector enabled
+* Windows 10 Workstations (Max. 10)
+    * [Data Collection Rule (DCR) association](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-rule-azure-monitor-agent#data-collection-rule-associations)
+    * Windows [Azure Monitoring Agent](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview?tabs=PowerShellWindows) installed. It connects to the Microsoft Sentinel Log Analytics workspace defined in the template.
 * [OPTIONAL] Sysmon
     * [Sysmon Config](https://github.com/OTRF/Blacksmith/blob/master/resources/configs/sysmon/sysmon.xml)
+    * [ASIM Sysmon Windows parser](https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json)
 * [OPTIONAL] Command and Control (c2) options:
     * `empire`
     * `covenant`
-    * `caldera`
     * `metasploit`
-    * `shad0w`
+* Remote Access Restrictions (`AllowPublicIP` default option)
+    * Access via Azure Bastion (Recommended. Additional costs applied)
+    * Restrict Access to one Public IP Address (For example, Home Public IP Address)
 
-## VM-Series Licensing
+## VM-Series Licensing Process
 
 For both AWS and Microsoft Azure, the licensing options are bring your own license (BYOL) and pay as you go/consumption-based (PAYG) subscriptions.
 

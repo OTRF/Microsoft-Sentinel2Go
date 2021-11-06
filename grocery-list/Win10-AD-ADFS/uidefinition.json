@@ -534,16 +534,8 @@
                                     "value": "covenant"
                                 },
                                 {
-                                    "label": "caldera",
-                                    "value": "caldera"
-                                },
-                                {
                                     "label": "metasploit",
                                     "value": "metasploit"
-                                },
-                                {
-                                    "label": "shad0w",
-                                    "value": "shad0w"
                                 }
                             ],
                             "required": false
