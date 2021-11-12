@@ -371,7 +371,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'grocery-list/Win10-RPCFW/linkedtemplates/customScriptExtensions.json')]",
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'grocery-list/Win10-RPCFW/linkedtemplates/customScriptExtension.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
