@@ -42,7 +42,7 @@
     "variables": {
         "identityName": "[concat('userIdentity',uniqueString(resourceGroup().id))]",
         "DataSourceFile": "[last(split(parameters('dataSourcesFileUrl'),'/'))]",
-        "createDCScript": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/resources/scripts/Create-DataCollectionRules.ps1",
+        "createDCScript": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/microsoft-sentinel/scripts/Create-DataCollectionRules.ps1",
         "scriptArguments": "[concat('-WorkspaceId ', parameters('WorkspaceId'), ' -WorkspaceResourceId ', parameters('WorkspaceResourceId'),' -ResourceGroup ', resourceGroup().name, ' -DataCollectionRuleName ', parameters('DataCollectionRuleName'), ' -DataSourcesFile ', variables('DataSourceFile'), ' -Location ', parameters('location'), ' -verbose')]"
     },
     "resources": [
