@@ -1,0 +1,479 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "config": {
+            "isWizard": true,
+            "basics": {
+                "description": "<img width=450 src=\"https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/resources/images/logo.png\">\n\n**Microsoft Sentinel2Go** is an open source project developed to expedite the deployment of an Microsoft Sentinel lab along with other Azure resources and a data ingestion pipeline to consume pre-recorded datasets for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Security Datasets project](https://securitydatasets.com/) right at deployment time.\n\n**Data Connectors:** 14, **Functions:** 1\n\n[Learn more about Sentinel2Go](https://techcommunity.microsoft.com/t5/microsoft-sentinel/microsoft-sentinel-to-go-part1-a-lab-w-prerecorded-data-amp-a-custom/ba-p/1260191) | [Learn more about Security Datasets](https://securitydatasets.com)",
+                "location": {
+                    "label": "Location",
+                    "toolTip": "Location for all resources",
+                    "resourceTypes": [
+                        "Microsoft.OperationalInsights"
+                    ]
+                }
+            }
+        },
+        "basics": [
+            {
+                "name": "newWorkspace",
+                "type": "Microsoft.Common.OptionsGroup",
+                "label": "New Log Analytics workspace",
+                "defaultValue": "No (use existing)",
+                "toolTip": "",
+                "constraints": {
+                    "allowedValues": [
+                        {
+                            "label": "No (use existing)",
+                            "value": false
+                        },
+                        {
+                            "label": "Yes",
+                            "value": true
+                        }
+                    ],
+                    "required": true
+                },
+                "visible": true
+            },
+            {
+                "name": "workspaceSelector",
+                "type": "Microsoft.Solutions.ResourceSelector",
+                "label": "Select an existing workspace",
+                "resourceType": "Microsoft.OperationalInsights/workspaces",
+                "options": {
+                    "filter": {
+                        "subscription": "onBasics",
+                        "location": "onBasics"
+                    }
+                },
+                "visible": "[bool(not(steps('basics').newWorkspace))]"
+            },
+            {
+                "name": "workspaceName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Workspace Name",
+                "placeholder": "",
+                "defaultValue": "",
+                "toolTip": "The workspace name should include 4-63 letters, digits or '-'. The '-' shouldn't be the first or the last symbol.",
+                "constraints": {
+                    "required": true,
+                    "regex": "^[A-Za-z0-9][A-Za-z0-9-]+[A-Za-z0-9]$",
+                    "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
+                },
+                "visible": "[bool(steps('basics').newWorkspace)]"
+            },
+            {
+                "name": "dataRetention",
+                "type": "Microsoft.Common.Slider",
+                "min": 30,
+                "max": 730,
+                "label": "Data retention",
+                "subLabel": "days",
+                "defaultValue": 30,
+                "toolTip": "Number of days of retention. Workspaces in the legacy Free pricing tier can only have 7 days.",
+                "constraints": {
+                    "required": true
+                },
+                "visible": "[bool(steps('basics').newWorkspace)]"
+            },
+            {
+                "name": "immediatePurgeDataOn30Days",
+                "type": "Microsoft.Common.CheckBox",
+                "label": "Immediate Purge Data On 30 Days",
+                "toolTip": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days.",
+                "constraints": {
+                    "required": false,
+                    "validationMessage": "Please select"
+                },
+                "defaultValue": true,
+                "visible": "[bool(steps('basics').newWorkspace)]"
+            },
+            {
+                "name": "workspaceId",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Workspace ID",
+                "placeholder": "Enter the workspaceId",
+                "defaultValue": "",
+                "toolTip": "",
+                "constraints": {
+                    "required": true,
+                    "regex": "",
+                    "validationMessage": "Your own existing log analytics workspace ID. Leave it empty if you are deploying a new Log Analytics workspace."
+                },
+                "visible": "[bool(not(steps('basics').newWorkspace))]"
+            },
+            {
+                "name": "workspaceKey",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Workspace Key",
+                "placeholder": "Enter the workspaceKey",
+                "defaultValue": "",
+                "toolTip": "Your own existing log analytics workspace key. Leave it empty if you are deploying a new LA workspace.",
+                "constraints": {
+                    "required": true,
+                    "regex": "",
+                    "validationMessage": "Your own existing log analytics workspace ID. Leave it empty if you are deploying a new Log Analytics workspace."
+                },
+                "visible": "[bool(not(steps('basics').newWorkspace))]"
+            }
+        ],
+        "steps": [
+            {
+                "name": "vmParameters",
+                "label": "VM Parameters",
+                "elements": [
+                    {
+                        "name": "credSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Credentials",
+                        "elements": [
+                            {
+                                "name": "adminUsername",
+                                "type": "Microsoft.Compute.UserNameTextBox",
+                                "label": "Admin Username",
+                                "defaultValue": "",
+                                "toolTip": "",
+                                "constraints": {
+                                    "required": true,
+                                    "regex": "^[a-z0-9A-Z]{1,30}$",
+                                    "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
+                                },
+                                "osPlatform": "Windows",
+                                "visible": true
+                            },
+                            {
+                                "name": "vmCredentials",
+                                "type": "Microsoft.Compute.CredentialsCombo",
+                                "label": {
+                                    "password": "Password",
+                                    "confirmPassword": "Confirm password"
+                                },
+                                "toolTip": {
+                                    "password": ""
+                                },
+                                "constraints": {
+                                    "required": true,
+                                    "customPasswordRegex": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[\\w~@#$%^&*+=|{}:;!.?\\()\\[\\]-]{12,}$",
+                                    "customValidationMessage": "The password must be alphanumeric, contain at least 12 characters, and have at least 1 letter and 1 number."
+                                },
+                                "options": {
+                                    "hideConfirmation": false
+                                },
+                                "osPlatform": "Windows",
+                                "visible": true
+                            }
+                        ],
+                        "visible": true
+                    },
+                    {
+                        "name": "vmSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Customize your VM",
+                        "elements": [
+                            {
+                                "name": "vmSize",
+                                "type": "Microsoft.Compute.SizeSelector",
+                                "label": "Size",
+                                "toolTip": "",
+                                "recommendedSizes": [
+                                    "Standard_A2",
+                                    "Standard_A3",
+                                    "Standard_B2s",
+                                    "Standard_B2ms",
+                                    "Standard_A2_v2",
+                                    "Standard_A4_v2"
+                                ],
+                                "constraints": {
+                                    "allowedSizes": [
+                                        "Standard_A2",
+                                        "Standard_A3",
+                                        "Standard_B2s",
+                                        "Standard_B2ms",
+                                        "Standard_A2_v2",
+                                        "Standard_A4_v2"
+                                    ]
+                                },
+                                "options": {
+                                    "hideDiskTypeFilter": false
+                                },
+                                "osPlatform": "Windows",
+                                "imageReference": {
+                                    "publisher": "MicrosoftWindowsServer",
+                                    "offer": "WindowsServer",
+                                    "sku": "2012-R2-Datacenter"
+                                },
+                                "count": 1,
+                                "visible": true
+                            }
+                        ],
+                        "visible": true
+                    },
+                    {
+                        "name": "windowsSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Windows Desktop",
+                        "elements": [
+                            {
+                                "name": "numberOfWorkstations",
+                                "type": "Microsoft.Common.Slider",
+                                "min": 1,
+                                "max": 10,
+                                "label": "Number of VMs",
+                                "subLabel": "",
+                                "defaultValue": 1,
+                                "toolTip": "Number of VMs to deploy",
+                                "constraints": {
+                                    "required": true
+                                },
+                                "visible": true
+                            },
+                            {
+                                "name": "windowsDesktopSKU",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "Windows Desktop version",
+                                "filter": false,
+                                "filterPlaceholder": "Filter items ...",
+                                "multiselect": false,
+                                "selectAll": false,
+                                "defaultValue": "19h2-pro",
+                                "toolTip": "The Windows version for the Desktop VM. This will pick a fully patched image of this given Windows version.",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "19h1-pro",
+                                            "value": "19h1-pro"
+                                        },
+                                        {
+                                            "label": "19h2-pro",
+                                            "value": "19h2-pro"
+                                        },
+                                        {
+                                            "label": "rs4-pro",
+                                            "value": "rs4-pro"
+                                        },
+                                        {
+                                            "label": "rs5-pro",
+                                            "value": "rs5-pro"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            }
+                        ],
+                        "visible": true
+                    },
+                    {
+                        "name": "serverSection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Windows Server",
+                        "elements": [
+                            {
+                                "name": "domainFQDN",
+                                "type": "Microsoft.Common.TextBox",
+                                "label": "domain FQDN",
+                                "placeholder": "",
+                                "defaultValue": "mssentinel.local",
+                                "toolTip": "The FQDN of the Active Directory Domain to be created.",
+                                "constraints": {
+                                    "required": true,
+                                    "regex": "",
+                                    "validationMessage": ""
+                                },
+                                "visible": "[bool(steps('basics').newWorkspace)]"
+                            },
+                            {
+                                "name": "windowsServerVersion",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "Windows Server version",
+                                "filter": false,
+                                "filterPlaceholder": "Filter items ...",
+                                "multiselect": false,
+                                "selectAll": false,
+                                "defaultValue": "latest",
+                                "toolTip": "The specific version for the Server VM.",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "latest",
+                                            "value": "latest"
+                                        },
+                                        {
+                                            "label": "17763.1282.2006061952",
+                                            "value": "17763.1282.2006061952"
+                                        },
+                                        {
+                                            "label": "17763.1518.2010132039",
+                                            "value": "17763.1518.2010132039"
+                                        },
+                                        {
+                                            "label": "17763.1577.2011031610",
+                                            "value": "17763.1577.2011031610"
+                                        },
+                                        {
+                                            "label": "17763.1579.2011180054",
+                                            "value": "17763.1579.2011180054"
+                                        },
+                                        {
+                                            "label": "17763.1637.2012040632",
+                                            "value": "17763.1637.2012040632"
+                                        },
+                                        {
+                                            "label": "17763.1697.2101090203",
+                                            "value": "17763.1697.2101090203"
+                                        },
+                                        {
+                                            "label": "17763.1757.2102060435",
+                                            "value": "17763.1757.2102060435"
+                                        },
+                                        {
+                                            "label": "17763.1817.2103030313",
+                                            "value": "17763.1817.2103030313"
+                                        },
+                                        {
+                                            "label": "17763.1879.2104091832",
+                                            "value": "17763.1879.2104091832"
+                                        },
+                                        {
+                                            "label": "17763.1935.2105080716",
+                                            "value": "17763.1935.2105080716"
+                                        },
+                                        {
+                                            "label": "17763.1999.2106060321",
+                                            "value": "17763.1999.2106060321"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            }
+                        ],
+                        "visible": true
+                    }
+                ]
+            },
+            {
+                "name": "networkParameters",
+                "label": "Networking",
+                "elements": [
+                    {
+                        "name": "remoteAccessMethod",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Select an access method",
+                        "defaultValue": "Public IP",
+                        "toolTip": "Do you want to restrict access to your environment by a Public IP or set up an Azure Bastion Host. If the former, make sure you add your public IP address to the variable 'allowedIPAddresses'",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "Public IP",
+                                    "value": "AllowPublicIP"
+                                },
+                                {
+                                    "label": "Azure Bastion Host",
+                                    "value": "AzureBastionHost"
+                                }
+                            ],
+                            "required": true
+                        },
+                        "visible": true
+                    },
+                    {
+                        "name": "allowedIPAddresses",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Allowed IP Addresses",
+                        "placeholder": "127.0.0.1/32",
+                        "defaultValue": "",
+                        "toolTip": "The sourceAddressPrefixes allowed to connect to this deployment.",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\/(\\d|[12]\\d|3[01]))?$",
+                            "validationMessage": "Please enter a valid CIDR."
+                        },
+                        "visible": "[if(contains(steps('networkParameters').remoteAccessMethod, 'AllowPublicIP'), true, false)]"
+                    }
+                ]
+            },
+            {
+                "name": "sectionFeatures",
+                "label": "Features",
+                "elements": [
+                    {
+                        "name": "enableSysmon",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Enable Sysmon",
+                        "toolTip": "Do you want to install Sysmon on the endpoint?",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": ""
+                        }
+                    },
+                    {
+                        "name": "enableAADConnect",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Enable AAD Connect",
+                        "toolTip": "Do you want to want download the AADConnect installer and get it ready to set up after the deployment?",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": ""
+                        }
+                    },
+                    {
+                        "name": "c2Framework",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "C2 Framework",
+                        "filter": false,
+                        "filterPlaceholder": "",
+                        "multiselect": false,
+                        "selectAll": false,
+                        "defaultValue": "None",
+                        "toolTip": "C2 framework to deploy",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "None",
+                                    "value": "None"
+                                },
+                                {
+                                    "label": "empire",
+                                    "value": "empire"
+                                },
+                                {
+                                    "label": "covenant",
+                                    "value": "covenant"
+                                },
+                                {
+                                    "label": "metasploit",
+                                    "value": "metasploit"
+                                }
+                            ],
+                            "required": false
+                        },
+                        "visible": true
+                    }
+                ]
+            }
+        ],
+        "outputs": {
+            "workspaceName": "[if(equals(steps('basics').newWorkspace, true), steps('basics').workspaceName, steps('basics').workspaceSelector.name)]",
+            "workspaceId": "[steps('basics').workspaceId]",
+            "workspaceKey": "[steps('basics').workspaceKey]",
+            "dataRetention": "[steps('basics').dataRetention]",
+            "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
+            "adminUsername": "[steps('vmParameters').credSection.adminUsername]",
+            "adminPassword": "[steps('vmParameters').credSection.vmCredentials.password]",
+            "numberOfWorkstations": "[steps('vmParameters').windowsSection.numberOfWorkstations]",
+            "windowsDesktopSKU": "[steps('vmParameters').windowsSection.windowsDesktopSKU]",
+            "windowsServerVersion": "[steps('vmParameters').serverSection.windowsServerVersion]",
+            "domainFQDN": "[steps('vmParameters').serverSection.domainFQDN]",       
+            "vmSize": "[steps('vmParameters').vmSection.vmSize]",
+            "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
+            "allowedIPAddresses": "[if(equals(steps('networkParameters').remoteAccessMethod, 'AzureBastionHost'), '*', steps('networkParameters').allowedIPAddresses)]",
+            "enableSysmon": "[steps('sectionFeatures').enableSysmon]",
+            "enableAADConnect": "[steps('sectionFeatures').enableAADConnect]",
+            "c2Framework": "[steps('sectionFeatures').c2Framework]"
+        }
+    }
+}

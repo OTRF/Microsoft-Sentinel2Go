@@ -207,6 +207,13 @@
             },
             "defaultValue": false
         },
+        "rpcFWConfigUrl": {
+            "type": "string",
+            "metadata": {
+                "description": "RPC Firewall config file. Referece: https://github.com/zeronetworks/rpcfirewall"
+            },
+            "defaultValue": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/resources/configs/rpcfirewall/RpcFw.conf"
+        },
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]",
@@ -218,7 +225,7 @@
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
-        "sysmonWindowsParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json",
+        "installRPCFWScript": "[concat(variables('artifactsBlacksmith'), 'resources/scripts/powershell/endpoint-software/Install-RPCFW.ps1')]",
         "dataCollectionRuleName": "WindowsDCR"
     },
     "resources": [
@@ -302,30 +309,6 @@
             }
         },
         {
-            "condition": "[parameters('enableSysmon')]",
-            "name": "deploySysmonWindowsParserPack",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-10-01",
-            "dependsOn": [
-                "deployMSSentinel2Go"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('sysmonWindowsParserPackTemplate')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    }
-                }
-            }
-        },
-        {
             "name": "deployWinADWEC",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
@@ -377,6 +360,41 @@
                     },
                     "enableAADConnect": {
                         "value": "[parameters('enableAADConnect')]"
+                    },
+                    "wefSubscriptionsUrl": {
+                        "value": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/grocery-list/Win10-RPCFW/winRPCFWLogs.zip"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "installRPCFW",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployMSSentinel2Go",
+                "deployWinADWEC"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'grocery-list/Win10-RPCFW/linkedtemplates/customScriptExtensions.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWinADWEC').outputs.allMonitoredWinVMsDeployed.value]"
+                    },
+                    "fileUris": {
+                        "value": [
+                            "[variables('installRPCFWScript')]"
+                        ]
+                    },
+                    "commandToExecute": {
+                        "value": "[concat('powershell -ExecutionPolicy Unrestricted -File ./Install-RPCFW.ps1 -RPCFWConfigUrl ', parameters('rpcFWConfigUrl'))]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
