@@ -11,13 +11,13 @@
         "dataConnectors": {
             "type": "array",
             "metadata": {
-                "description": "Data connectors: [\"AzureActivityLog\",\"SecurityEvents\",\"WindowsFirewall\",\"DnsAnalytics\"]. Reference: https://docs.microsoft.com/azure/templates/microsoft.operationalinsights/2020-03-01-preview/workspaces/datasources#microsoftoperationalinsightsworkspacesdatasources-object and https://github.com/Azure/microsoft-sentinel/blob/master/Tools/Sentinel-All-In-One/ARMTemplates/LinkedTemplates/scheduledAlerts.json"
+                "description": "Data connectors: [\"AzureActivityLog\",\"SecurityEvents\",\"WindowsFirewall\",\"DnsAnalytics\"]. Reference: https://docs.microsoft.com/azure/templates/microsoft.operationalinsights/2020-03-01-preview/workspaces/datasources#microsoftoperationalinsightsworkspacesdatasources-object and https://github.com/Azure/Azure-Sentinel/blob/master/Tools/Sentinel-All-In-One/ARMTemplates/LinkedTemplates/scheduledAlerts.json"
             }
         },
         "specificScheduledAlerts": {
             "type": "array",
             "metadata": {
-                "description": "Name of specific scheduled alert rules to enable. Reference: https://github.com/Azure/microsoft-sentinel/tree/master/Detections"
+                "description": "Name of specific scheduled alert rules to enable. Reference: https://github.com/Azure/Azure-Sentinel/tree/master/Detections"
             }
         },
         "roleGuid": {
@@ -90,7 +90,7 @@
                 "forceUpdateTag": "1",
                 "azPowerShellVersion": "3.0",
                 "arguments": "[variables('alertArguments')]",
-                "primaryScriptUri": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/resources/scripts/Enable-ScheduledAlerts.ps1",
+                "primaryScriptUri": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/microsoft-sentinel/scripts/Enable-ScheduledAlerts.ps1",
                 "supportingScriptUris": [],
                 "timeout": "PT30M",
                 "cleanupPreference": "OnSuccess",

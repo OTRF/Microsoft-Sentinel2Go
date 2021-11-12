@@ -195,19 +195,6 @@
             },
             "defaultValue": "mssentinel.local"
         },
-        "securityCollectionTier": {
-            "type": "string",
-            "metadata": {
-                "description": "Tier for gathering Windows Security Events."
-            },
-            "allowedValues": [
-                "All",
-                "Recommended",
-                "Minimal",
-                "None"
-            ],
-            "defaultValue": "Minimal"
-        },
         "collectWinEventProviders": {
             "type": "array",
             "metadata": {
@@ -229,9 +216,7 @@
                 "None",
                 "empire",
                 "covenant",
-                "caldera",
-                "metasploit",
-                "shad0w"
+                "metasploit"
             ],
             "metadata": {
                 "description": "C2 framework to deploy"
@@ -272,14 +257,16 @@
     },
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/"
+        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
+        "sysmonWindowsParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json",
+        "dataCollectionRuleName": "WindowsDCR"
     },
     "resources": [
         {
             "condition": "[and(empty(parameters('workspaceId')),empty(parameters('workspaceKey')))]",
             "name": "deployMSSentinel2Go",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -298,28 +285,84 @@
                     },
                     "immediatePurgeDataOn30Days": {
                         "value": "[parameters('immediatePurgeDataOn30Days')]"
-                    },
-                    "enableLAFunctions": {
-                        "value": [
-                            "Sysmon"
-                        ]
-                    },
-                    "dataConnectors": {
-                        "value": [
-                            "SecurityEvents"
-                        ]
-                    },
-                    "securityCollectionTier": {
-                        "value": "[parameters('securityCollectionTier')]"
                     }
                 }
+            }
+        },
+        {
+            "type": "microsoft.insights/dataCollectionRules",
+            "apiVersion": "2021-04-01",
+            "dependsOn": [
+                "deployMSSentinel2Go"
+            ],
+            "name": "[variables('dataCollectionRuleName')]",
+            "location": "[parameters('location')]",
+            "tags": {
+                "createdBy": "Sentinel"
+            },
+            "properties": {
+                "dataSources": {
+                    "windowsEventLogs": [
+                        {
+                            "name": "eventLogsDataSource",
+                            "scheduledTransferPeriod": "PT5M",
+                            "streams": [
+                                "Microsoft-SecurityEvent"
+                            ],
+                            "xPathQueries": [
+                                "Security!*[System[(EventID=5136 or EventID=5139)]]",
+                                "Security!*[System[(EventID=5137)]]",
+                                "Security!*[System[(EventID=5141)]]",
+                                "Security!*[System[(EventID=4662 or EventID=4661)]]",
+                                "Security!*[System[(EventID=4768 or EventID=4769)]]",
+                                "Security!*[System[(EventID=4688)]]",
+                                "Security!*[System[(EventID=4660)]]",
+                                "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='File']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='File']]))) or (*[System[EventID=4661]] and ((*[EventData[Data[@Name='ObjectType']='SAM']])))",
+                                "Security!*[System[(EventID=4670)]]",
+                                "Security!*[System[(EventID=4624 or EventID=4778 or EventID=4964)]]",
+                                "Security!*[System[(EventID=5140 or EventID=5145)]]",
+                                "Security!*[System[(EventID=5154 or EventID=5159 or EventID=5155 or EventID=5158 or EventID=5156 or EventID=5157 or EventID=5031)]]",
+                                "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Process']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Process']])))",
+                                "Security!*[System[(EventID=4689)]]",
+                                "Security!*[System[(EventID=4698)]]",
+                                "Security!*[System[(EventID=4701 or EventID=4700 or EventID=4702)]]",
+                                "Security!*[System[(EventID=4697)]]",
+                                "Security!*[System[(EventID=4725 or EventID=4722 or EventID=4717 or EventID=4740 or EventID=4738 or EventID=4781 or EventID=4767 or EventID=4718)]]",
+                                "Security!*[System[(EventID=4624 or EventID=4625 or EventID=4648)]]",
+                                "Security!*[System[(EventID=4726)]]",
+                                "Security!*[System[(EventID=4720)]]",
+                                "Security!*[System[(EventID=4670 or EventID=4657)]]",
+                                "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Key']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Key']])))"
+                            ]
+                        }
+                    ]
+                },
+                "destinations": {
+                    "logAnalytics": [
+                        {
+                            "name": "WindowsEvents",
+                            "workspaceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]",
+                            "workspaceResourceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
+                        }
+                    ]
+                },
+                "dataFlows": [
+                    {
+                        "streams": [
+                            "Microsoft-SecurityEvent"
+                        ],
+                        "destinations": [
+                            "WindowsEvents"
+                        ]
+                    }
+                ]
             }
         },
         {
             "condition": "[not(empty(parameters('collectWinEventProviders')))]",
             "name": "collectWinDataSources",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
                 "deployMSSentinel2Go"
             ],
@@ -343,9 +386,33 @@
             }
         },
         {
+            "condition": "[parameters('enableSysmon')]",
+            "name": "deploySysmonWindowsParserPack",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployMSSentinel2Go"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('sysmonWindowsParserPackTemplate')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
             "name": "deployWinADFS",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
                 "deployMSSentinel2Go"
             ],
@@ -395,6 +462,9 @@
                     "domainFQDN": {
                         "value": "[parameters('domainFQDN')]"
                     },
+                    "identityType": {
+                        "value": "SystemAssigned"
+                    },
                     "remoteAccessMode": {
                         "value": "[parameters('remoteAccessMode')]"
                     },
@@ -432,13 +502,34 @@
                         "value": "[reference('deployWinADFS').outputs.allWinVMsDeployed.value]"
                     },
                     "monitorAgent": {
-                        "value": "Log Analytics Agent"
+                        "value": "Azure Monitor Agent"
+                    }
+                }
+            }
+        },
+        {
+            "name": "associateWindowsDCR",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/dataCollectionRules', variables('dataCollectionRuleName'))]",
+                "installAzureMonitorAgent"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-collection-rules/association.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWinADFS').outputs.allWinVMsDeployed.value]"
                     },
-                    "workspaceId": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
+                    "dataCollectionRuleId": {
+                        "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('dataCollectionRuleName'))]"
                     },
-                    "workspaceKey": {
-                        "value": "[if(empty(parameters('workspaceKey')), reference('deployMSSentinel2Go').outputs.workspaceKeyOutput.value, parameters('workspaceKey'))]"
+                    "dataCollectionRuleName": {
+                        "value": "[variables('dataCollectionRuleName')]"
                     }
                 }
             }
@@ -447,7 +538,7 @@
             "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
             "name": "deployC2",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {

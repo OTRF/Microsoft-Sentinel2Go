@@ -151,9 +151,9 @@
     },
     "resources": [
         {
-            "name": "deployAzureSentinel",
+            "name": "deployMSSentinel2Go",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -179,9 +179,9 @@
         {
             "name": "enableSecurityEventDataConnector",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
-                "deployAzureSentinel"
+                "deployMSSentinel2Go"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -191,7 +191,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzureSentinel').outputs.workspaceName.value]"
+                        "value": "[reference('deployMSSentinel2Go').outputs.workspaceName.value]"
                     },
                     "securityCollectionTier": {
                         "value": "[parameters('setSecurityCollectionTier')]"
@@ -205,9 +205,9 @@
         {
             "name": "collectWinDataSources",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
-                "deployAzureSentinel"
+                "deployMSSentinel2Go"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -217,7 +217,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzureSentinel').outputs.workspaceName.value]"
+                        "value": "[reference('deployMSSentinel2Go').outputs.workspaceName.value]"
                     },
                     "winEventProviders": {
                         "value": "[parameters('collectWinEventProviders')]"
@@ -231,14 +231,14 @@
         {
             "name": "deployWin10VM",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
-                "deployAzureSentinel"
+                "deployMSSentinel2Go"
             ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Win10/demos/Win10-microsoft-sentinel.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Win10/demos/Win10-Microsoft-Sentinel.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -263,17 +263,38 @@
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
                     },
-                    "enableMonitoringAgent": {
-                        "value": true
-                    },
-                    "workspaceId": {
-                        "value": "[reference('deployAzureSentinel').outputs.workspaceIdOutput.value]"
-                    },
-                    "workspaceKey": {
-                        "value": "[reference('deployAzureSentinel').outputs.workspaceKeyOutput.value]"
-                    },
                     "location": {
                         "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "installAzureMonitorAgent",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployMSSentinel2Go",
+                "deployWin10VM"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Azure-Monitor-Agents/windows.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWin10VM').outputs.allWinVMsDeployed.value]"
+                    },
+                    "monitorAgent": {
+                        "value": "Log Analytics Agent"
+                    },
+                    "workspaceId": {
+                        "value": "[reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value]"
+                    },
+                    "workspaceKey": {
+                        "value": "[reference('deployMSSentinel2Go').outputs.workspaceKeyOutput.value]"
                     }
                 }
             }

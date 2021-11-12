@@ -11,7 +11,7 @@ param(
     [Parameter(Mandatory=$false)][ValidateSet('Windows','Linux')][string]$Kind = 'Windows',
     [Parameter(Mandatory=$true)][string]$DataCollectionRuleName,
     [Parameter(Mandatory=$false)][string]$DestinationLogAnalyticsName = 'WindowsEvents',
-    [Parameter(Mandatory=$false)][string[]]$DataFlowsStreams = @('Microsoft-WindowsEvent'),
+    [Parameter(Mandatory=$false)][string[]]$DataFlowsStreams = @('Microsoft-SecurityEvent'),
     [Parameter(Mandatory=$false)][object]$DataSourcesObject,
     [Parameter(Mandatory=$false)][string]$DataSourcesFile,
     [Parameter(Mandatory=$true)][string]$Location

@@ -362,14 +362,37 @@
                         }
                     },
                     {
-                        "name": "enableMonitoringAgent",
-                        "type": "Microsoft.Common.CheckBox",
-                        "label": "Enable Monitoring Agent",
-                        "toolTip": "Do you want to enable the Microsoft Log Analytics Monitoring agent on your Windows 10 workstation?",
+                        "name": "c2Framework",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "C2 Framework",
+                        "filter": false,
+                        "filterPlaceholder": "",
+                        "multiselect": false,
+                        "selectAll": false,
+                        "defaultValue": "None",
+                        "toolTip": "C2 framework to deploy",
                         "constraints": {
-                            "required": false,
-                            "validationMessage": ""
-                        }
+                            "allowedValues": [
+                                {
+                                    "label": "None",
+                                    "value": "None"
+                                },
+                                {
+                                    "label": "empire",
+                                    "value": "empire"
+                                },
+                                {
+                                    "label": "covenant",
+                                    "value": "covenant"
+                                },
+                                {
+                                    "label": "metasploit",
+                                    "value": "metasploit"
+                                }
+                            ],
+                            "required": false
+                        },
+                        "visible": true
                     }
                 ]
             }
@@ -388,7 +411,7 @@
             "firewallSubscription": "[steps('paloaltoParameters').releaseSection.firewallSubscription]",
             "allowedIPAddresses": "[steps('networkParameters').allowedIPAddresses]",
             "enableSysmon": "[steps('sectionFeatures').enableSysmon]",
-            "enableMonitoringAgent": "[steps('sectionFeatures').enableMonitoringAgent]"
+            "c2Framework": "[steps('sectionFeatures').c2Framework]"
         }
     }
 }

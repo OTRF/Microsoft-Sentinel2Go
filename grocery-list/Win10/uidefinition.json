@@ -324,35 +324,6 @@
                         }
                     },
                     {
-                        "name": "securityCollectionTier",
-                        "type": "Microsoft.Common.DropDown",
-                        "label": "Security Collection Tier",
-                        "defaultValue": "Minimal",
-                        "toolTip": "Tier for gathering Windows Security Events.",
-                        "constraints": {
-                            "allowedValues": [
-                                {
-                                    "label": "All",
-                                    "value": "All"
-                                },
-                                {
-                                    "label": "Recommended",
-                                    "value": "Recommended"
-                                },
-                                {
-                                    "label": "Minimal",
-                                    "value": "Minimal"
-                                },
-                                {
-                                    "label": "None",
-                                    "value": "None"
-                                }
-                            ],
-                            "required": true
-                        },
-                        "visible": true
-                    },
-                    {
                         "name": "c2Framework",
                         "type": "Microsoft.Common.DropDown",
                         "label": "C2 Framework",
@@ -402,7 +373,6 @@
             "remoteAccessMode": "[steps('networkParameters').remoteAccessMethod]",
             "allowedIPAddresses": "[if(equals(steps('networkParameters').remoteAccessMethod, 'AzureBastionHost'), '*', steps('networkParameters').allowedIPAddresses)]",
             "enableSysmon": "[steps('sectionFeatures').enableSysmon]",
-            "securityCollectionTier": "[steps('sectionFeatures').securityCollectionTier]",
             "c2Framework": "[steps('sectionFeatures').c2Framework]"
         }
     }

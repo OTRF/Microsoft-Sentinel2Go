@@ -176,9 +176,7 @@
                 "None",
                 "empire",
                 "covenant",
-                "caldera",
-                "metasploit",
-                "shad0w"
+                "metasploit"
             ],
             "metadata": {
                 "description": "C2 framework to deploy"
@@ -220,6 +218,7 @@
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
+        "sysmonWindowsParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json",
         "dataCollectionRuleName": "WindowsDCR"
     },
     "resources": [
@@ -227,7 +226,7 @@
             "condition": "[and(empty(parameters('workspaceId')),empty(parameters('workspaceKey')))]",
             "name": "deployMSSentinel2Go",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -249,7 +248,7 @@
                     },
                     "enableLAFunctions": {
                         "value": [
-                            "Sysmon"
+                            "WindowsEvents"
                         ]
                     }
                 }
@@ -303,9 +302,33 @@
             }
         },
         {
+            "condition": "[parameters('enableSysmon')]",
+            "name": "deploySysmonWindowsParserPack",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployMSSentinel2Go"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('sysmonWindowsParserPackTemplate')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
             "name": "deployWinADWEC",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
                 "deployMSSentinel2Go"
             ],
@@ -416,7 +439,7 @@
             "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
             "name": "deployC2",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
