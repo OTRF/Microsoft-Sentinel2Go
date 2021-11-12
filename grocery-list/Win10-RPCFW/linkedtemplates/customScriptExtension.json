@@ -1,0 +1,47 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines": {
+            "type": "array",
+            "metadata": {
+                "description": "List of endpoints to run a script. The format is an array of endpoints with a property/attribute named 'vmName'"
+            }
+        },
+        "fileUris": {
+            "type": "array"
+        },
+        "commandToExecute": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "apiVersion": "2021-07-01",
+            "name": "[concat(parameters('virtualMachines')[copyIndex('runScriptCopy')].vmName, '/', parameters('virtualMachines')[copyIndex('runScriptCopy')].extensionName)]",
+            "location": "[parameters('location')]",
+            "copy": {
+                "name": "runScriptCopy",
+                "count": "[length(parameters('virtualMachines'))]"
+            },
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": "[parameters('fileUris')]",
+                    "commandToExecute": "[parameters('commandToExecute')]"
+                },
+                "protectedSettings": {}
+            }
+        }
+    ]
+}
