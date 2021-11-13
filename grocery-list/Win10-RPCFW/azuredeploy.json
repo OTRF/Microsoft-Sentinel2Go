@@ -248,7 +248,7 @@
                     },
                     "enableLAFunctions": {
                         "value": [
-                            "WindowsEvents"
+                            "WinRPCFWLogs"
                         ]
                     }
                 }
