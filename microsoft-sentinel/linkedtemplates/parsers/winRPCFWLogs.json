@@ -32,55 +32,59 @@
 // Contributors: Randy Pargman - BinaryDefense, Roberto Rodriguez @Cyb3rWard0g MSTIC
 // Reference: https://raw.githubusercontent.com/BinaryDefense/RPCFirewall-LogParsers/main/KQLParser.txt
 WindowsEvent
+| where Channel == 'RPCFWP'
+| where EventID == 3
 | extend ParsedEventData = parse_xml(EventData)
-| extend RPCRT_Func = tostring(ParsedEventData.[\"01\"])
-| extend ProcessId = tostring(ParsedEventData.[\"02\"])
-| extend ImagePath = tostring(ParsedEventData.[\"03\"])
-| extend Protocol = tostring(ParsedEventData.[\"04\"])
-| extend Endpoint = tostring(ParsedEventData.[\"05\"])
-| extend SourceIpAddress = tostring(ParsedEventData.[\"06\"])
-| extend RPCInterfaceUUID = tostring(ParsedEventData.[\"07\"])
-| extend RPCOpNum = tostring(ParsedEventData.[\"08\"])
-| extend SubjectSecurityId = tostring(ParsedEventData.[\"09\"])
-| extend AuthenticationLevel = tostring(ParsedEventData.[\"10\"])
-| extend AuthenticationService = tostring(ParsedEventData.[\"11\"])
-| extend MS_RPC_Name = case(RPCInterfaceUUID == \"367abb81-9844-35f1-ad32-98f038001003\", \"MS-SCMR\",
-                            RPCInterfaceUUID == \"e3514235-4b06-11d1-ab04-00c04fc2dcd2\", \"MS-DRSR\",
-                            RPCInterfaceUUID == \"338cd001-2244-31f1-aaaa-900038001003\", \"MS-RRP\",
-                            RPCInterfaceUUID == \"1ff70682-0a51-30e8-076d-740be8cee98b\", \"MS-TSCH_ATSvc\",
-                            RPCInterfaceUUID == \"378e52b0-c0a9-11cf-822d-00aa0051e40f\", \"MS-TSCH_SASec\",
-                            RPCInterfaceUUID == \"86d35949-83c9-4044-b424-db363231fd0c\", \"MS-TSCH_ITaskSchedulerService\",
-                            RPCInterfaceUUID == \"6bffd098-a112-3610-9833-46c3f87e345a\", \"MS-WKST\",
-                            RPCInterfaceUUID == \"4b324fc8-1670-01d3-1278-5a47bf6ee188\", \"MS-SRVS\",
-                            RPCInterfaceUUID == \"12345678-1234-abcd-ef00-0123456789ab\", \"MS-RPRN\",
-                            RPCInterfaceUUID == \"76f03f96-cdfd-44fc-a22c-64950a001209\", \"MS-PAR\",
-                            RPCInterfaceUUID == \"12345778-1234-abcd-ef00-0123456789ac\", \"MS-SAMR\",
-                            RPCInterfaceUUID == \"12345778-1234-abcd-ef00-0123456789ab\", \"MS-LSAD\",
-                            RPCInterfaceUUID == \"c681d488-d850-11d0-8c52-00c04fd90f7e\", \"MS-EFSR\",
-                            RPCInterfaceUUID == \"df1941c5-fe89-4e79-bf10-463657acf44d\", \"MS-EFSR\",
-                            RPCInterfaceUUID == \"12345678-1234-abcd-ef00-01234567cffb\", \"MS-NRPC\",
-                            RPCInterfaceUUID == \"e1af8308-5d1f-11c9-91a4-08002b14a0fa\", \"MS-RPC-EPM\",
-                            RPCInterfaceUUID == \"3919286a-b10c-11d0-9ba8-00c04fd92ef5\", \"MS-AD-DSSETUP\",
-                            RPCInterfaceUUID == \"4fc742e0-4a10-11cf-8273-00aa004ae673\", \"MS-DFSNM\",
+| extend rpc_rt_function = tostring(ParsedEventData.[\"01\"])
+| extend process_id = tostring(ParsedEventData.[\"02\"])
+| extend proces_file_path = tostring(ParsedEventData.[\"03\"])
+| extend rpc_protocol_sequence = tostring(ParsedEventData.[\"04\"])
+| extend rpc_endpoint = tostring(ParsedEventData.[\"05\"])
+| extend src_ip_addr = tostring(ParsedEventData.[\"06\"])
+| extend rpc_interface_uuid = tostring(ParsedEventData.[\"07\"])
+| extend rpc_opnum = tostring(ParsedEventData.[\"08\"])
+| extend user_name = tostring(ParsedEventData.[\"09\"])
+| extend rpc_authentication_level = tostring(ParsedEventData.[\"10\"])
+| extend rpc_authentication_service= tostring(ParsedEventData.[\"11\"])
+| extend rpc_interface_name = case(rpc_interface_uuid == \"367abb81-9844-35f1-ad32-98f038001003\", \"MS-SCMR\",
+                            rpc_interface_uuid == \"e3514235-4b06-11d1-ab04-00c04fc2dcd2\", \"MS-DRSR\",
+                            rpc_interface_uuid == \"338cd001-2244-31f1-aaaa-900038001003\", \"MS-RRP\",
+                            rpc_interface_uuid == \"1ff70682-0a51-30e8-076d-740be8cee98b\", \"MS-TSCH_ATSvc\",
+                            rpc_interface_uuid == \"378e52b0-c0a9-11cf-822d-00aa0051e40f\", \"MS-TSCH_SASec\",
+                            rpc_interface_uuid == \"86d35949-83c9-4044-b424-db363231fd0c\", \"MS-TSCH_ITaskSchedulerService\",
+                            rpc_interface_uuid == \"6bffd098-a112-3610-9833-46c3f87e345a\", \"MS-WKST\",
+                            rpc_interface_uuid == \"4b324fc8-1670-01d3-1278-5a47bf6ee188\", \"MS-SRVS\",
+                            rpc_interface_uuid == \"12345678-1234-abcd-ef00-0123456789ab\", \"MS-RPRN\",
+                            rpc_interface_uuid == \"76f03f96-cdfd-44fc-a22c-64950a001209\", \"MS-PAR\",
+                            rpc_interface_uuid == \"12345778-1234-abcd-ef00-0123456789ac\", \"MS-SAMR\",
+                            rpc_interface_uuid == \"12345778-1234-abcd-ef00-0123456789ab\", \"MS-LSAD\",
+                            rpc_interface_uuid == \"c681d488-d850-11d0-8c52-00c04fd90f7e\", \"MS-EFSR\",
+                            rpc_interface_uuid == \"df1941c5-fe89-4e79-bf10-463657acf44d\", \"MS-EFSR\",
+                            rpc_interface_uuid == \"12345678-1234-abcd-ef00-01234567cffb\", \"MS-NRPC\",
+                            rpc_interface_uuid == \"e1af8308-5d1f-11c9-91a4-08002b14a0fa\", \"MS-RPC-EPM\",
+                            rpc_interface_uuid == \"3919286a-b10c-11d0-9ba8-00c04fd92ef5\", \"MS-AD-DSSETUP\",
+                            rpc_interface_uuid == \"4fc742e0-4a10-11cf-8273-00aa004ae673\", \"MS-DFSNM\",
+                            rpc_interface_uuid == \"3dde7c30-165d-11d1-ab8f-00805f14db40\", \"MS-BKRP\",
                             \"Unknown\")
-| extend MS_RPC_Desc = case(RPCInterfaceUUID == \"367abb81-9844-35f1-ad32-98f038001003\", \"Service Control Manager Remote Protocol\",
-                            RPCInterfaceUUID == \"e3514235-4b06-11d1-ab04-00c04fc2dcd2\", \"Directory Replication Service\",
-                            RPCInterfaceUUID == \"338cd001-2244-31f1-aaaa-900038001003\", \"Remote Registry\",
-                            RPCInterfaceUUID == \"1ff70682-0a51-30e8-076d-740be8cee98b\", \"Scheduled Task (At Service)\",
-                            RPCInterfaceUUID == \"378e52b0-c0a9-11cf-822d-00aa0051e40f\", \"Scheduled Task (SA Sec)\",
-                            RPCInterfaceUUID == \"86d35949-83c9-4044-b424-db363231fd0c\", \"Scheduled Task (ITask Scheduler Service\",
-                            RPCInterfaceUUID == \"6bffd098-a112-3610-9833-46c3f87e345a\", \"Workstation Service Remote Protocol\",
-                            RPCInterfaceUUID == \"4b324fc8-1670-01d3-1278-5a47bf6ee188\", \"Server Service Remote Protocol\",
-                            RPCInterfaceUUID == \"12345678-1234-abcd-ef00-0123456789ab\", \"Print System Remote Protocol\",
-                            RPCInterfaceUUID == \"76f03f96-cdfd-44fc-a22c-64950a001209\", \"Print System Asynchronous Remote Protocol\",
-                            RPCInterfaceUUID == \"12345778-1234-abcd-ef00-0123456789ac\", \"Security Account Manager (SAM) Remote Protocol\",
-                            RPCInterfaceUUID == \"12345778-1234-abcd-ef00-0123456789ab\", \"Local Security Authority (Domain Policy) Remote Protocol\",
-                            RPCInterfaceUUID == \"c681d488-d850-11d0-8c52-00c04fd90f7e\", \"Encrypting File System Remote (EFSRPC) Protocol - Unauthenticated\",
-                            RPCInterfaceUUID == \"df1941c5-fe89-4e79-bf10-463657acf44d\", \"Encrypting File System Remote (EFSRPC) Protocol\",
-                            RPCInterfaceUUID == \"12345678-1234-abcd-ef00-01234567cffb\", \"Netlogon Remote Protocol\",
-                            RPCInterfaceUUID == \"e1af8308-5d1f-11c9-91a4-08002b14a0fa\", \"Microsoft RPC Endpoint Mapper (EPM) Protocol\",
-                            RPCInterfaceUUID == \"3919286a-b10c-11d0-9ba8-00c04fd92ef5\", \"Microsoft Active Directory Setup Service\",
-                            RPCInterfaceUUID == \"4fc742e0-4a10-11cf-8273-00aa004ae673\", \"Distributed File System Namespace Management Protocol (Transport)\",
+| extend rpc_interface_desc = case(rpc_interface_uuid == \"367abb81-9844-35f1-ad32-98f038001003\", \"Service Control Manager Remote Protocol\",
+                            rpc_interface_uuid == \"e3514235-4b06-11d1-ab04-00c04fc2dcd2\", \"Directory Replication Service\",
+                            rpc_interface_uuid == \"338cd001-2244-31f1-aaaa-900038001003\", \"Remote Registry\",
+                            rpc_interface_uuid == \"1ff70682-0a51-30e8-076d-740be8cee98b\", \"Scheduled Task (At Service)\",
+                            rpc_interface_uuid == \"378e52b0-c0a9-11cf-822d-00aa0051e40f\", \"Scheduled Task (SA Sec)\",
+                            rpc_interface_uuid == \"86d35949-83c9-4044-b424-db363231fd0c\", \"Scheduled Task (ITask Scheduler Service\",
+                            rpc_interface_uuid == \"6bffd098-a112-3610-9833-46c3f87e345a\", \"Workstation Service Remote Protocol\",
+                            rpc_interface_uuid == \"4b324fc8-1670-01d3-1278-5a47bf6ee188\", \"Server Service Remote Protocol\",
+                            rpc_interface_uuid == \"12345678-1234-abcd-ef00-0123456789ab\", \"Print System Remote Protocol\",
+                            rpc_interface_uuid == \"76f03f96-cdfd-44fc-a22c-64950a001209\", \"Print System Asynchronous Remote Protocol\",
+                            rpc_interface_uuid == \"12345778-1234-abcd-ef00-0123456789ac\", \"Security Account Manager (SAM) Remote Protocol\",
+                            rpc_interface_uuid == \"12345778-1234-abcd-ef00-0123456789ab\", \"Local Security Authority (Domain Policy) Remote Protocol\",
+                            rpc_interface_uuid == \"c681d488-d850-11d0-8c52-00c04fd90f7e\", \"Encrypting File System Remote (EFSRPC) Protocol - Unauthenticated\",
+                            rpc_interface_uuid == \"df1941c5-fe89-4e79-bf10-463657acf44d\", \"Encrypting File System Remote (EFSRPC) Protocol\",
+                            rpc_interface_uuid == \"12345678-1234-abcd-ef00-01234567cffb\", \"Netlogon Remote Protocol\",
+                            rpc_interface_uuid == \"e1af8308-5d1f-11c9-91a4-08002b14a0fa\", \"Microsoft RPC Endpoint Mapper (EPM) Protocol\",
+                            rpc_interface_uuid == \"3919286a-b10c-11d0-9ba8-00c04fd92ef5\", \"Microsoft Active Directory Setup Service\",
+                            rpc_interface_uuid == \"4fc742e0-4a10-11cf-8273-00aa004ae673\", \"Distributed File System Namespace Management Protocol (Transport)\",
+                            rpc_interface_uuid == \"3dde7c30-165d-11d1-ab8f-00805f14db40\", \"The BackupKey Remote Protocol is used by clients to encrypt and decrypt sensitive data (such as cryptographic keys) with the help of a server\",
                             \"Unknown\")
 | project-away EventData, ParsedEventData",
                     "version": 1
