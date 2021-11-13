@@ -19,7 +19,7 @@
         <![CDATA[
             <QueryList>
                 <Query Id="0">
-                    <Select Path="Application">*[System[Provider[@Name='RPCFWP']]]</Select>
+                    <Select Path="RPCFWP">*</Select>
                 </Query>
             </QueryList>
         ]]>
