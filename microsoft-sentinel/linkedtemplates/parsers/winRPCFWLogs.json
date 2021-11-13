@@ -29,24 +29,21 @@
                     "category": "Security",
                     "FunctionAlias": "winRPCFWLogs",
                     "query": "// KQL RPCFW parser
-// Author: Randy Pargman - BinaryDefense
+// Contributors: Randy Pargman - BinaryDefense, Roberto Rodriguez @Cyb3rWard0g MSTIC
 // Reference: https://raw.githubusercontent.com/BinaryDefense/RPCFirewall-LogParsers/main/KQLParser.txt
-Event
-| where Source == \"RPCFWP\"
-| where EventID == 3
+WindowsEvent
 | extend ParsedEventData = parse_xml(EventData)
-| extend ParsedData = ParsedEventData[\"DataItem\"][\"EventData\"][\"Data\"]
-| extend RPCRT_Func = tostring(ParsedData[0])
-| extend ProcessId = toint(ParsedData[1])
-| extend ImagePath = tostring(ParsedData[2])
-| extend Protocol = tostring(ParsedData[3])
-| extend Endpoint = toint(ParsedData[4])
-| extend SourceIpAddress = tostring(ParsedData[5])
-| extend RPCInterfaceUUID = tostring(ParsedData[6])
-| extend RPCOpNum = toint(ParsedData[7])
-| extend SubjectSecurityId = tostring(ParsedData[8])
-| extend AuthenticationLevel = tostring(ParsedData[9])
-| extend AuthenticationService = tostring(ParsedData[10])
+| extend RPCRT_Func = tostring(ParsedEventData.[\"01\"])
+| extend ProcessId = tostring(ParsedEventData.[\"02\"])
+| extend ImagePath = tostring(ParsedEventData.[\"03\"])
+| extend Protocol = tostring(ParsedEventData.[\"04\"])
+| extend Endpoint = tostring(ParsedEventData.[\"05\"])
+| extend SourceIpAddress = tostring(ParsedEventData.[\"06\"])
+| extend RPCInterfaceUUID = tostring(ParsedEventData.[\"07\"])
+| extend RPCOpNum = tostring(ParsedEventData.[\"08\"])
+| extend SubjectSecurityId = tostring(ParsedEventData.[\"09\"])
+| extend AuthenticationLevel = tostring(ParsedEventData.[\"10\"])
+| extend AuthenticationService = tostring(ParsedEventData.[\"11\"])
 | extend MS_RPC_Name = case(RPCInterfaceUUID == \"367abb81-9844-35f1-ad32-98f038001003\", \"MS-SCMR\",
                             RPCInterfaceUUID == \"e3514235-4b06-11d1-ab04-00c04fc2dcd2\", \"MS-DRSR\",
                             RPCInterfaceUUID == \"338cd001-2244-31f1-aaaa-900038001003\", \"MS-RRP\",
@@ -85,7 +82,7 @@ Event
                             RPCInterfaceUUID == \"3919286a-b10c-11d0-9ba8-00c04fd92ef5\", \"Microsoft Active Directory Setup Service\",
                             RPCInterfaceUUID == \"4fc742e0-4a10-11cf-8273-00aa004ae673\", \"Distributed File System Namespace Management Protocol (Transport)\",
                             \"Unknown\")
-| project-away EventData, ParsedEventData, ParsedData",
+| project-away EventData, ParsedEventData",
                     "version": 1
                     }
                 }
