@@ -167,7 +167,7 @@
             "metadata": {
                 "description": "The FQDN of the Active Directory Domain to be created"
             },
-            "defaultValue": "azsentinel.local"
+            "defaultValue": "mssentinel.local"
         },
         "c2Framework": {
             "type": "string",
