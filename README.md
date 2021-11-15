@@ -5,11 +5,7 @@
 
 <img src="resources/images/logo.png" alt="Microsoft Sentinel To-Go!" width="650"/>
 
-Microsoft Sentinel To-Go is an open source project developed to expedite the deployment of an Microsoft Sentinel lab along with other Azure resources for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Security Datasets](https://securitydatasets.com/) project right at deployment time.
-
-## Getting Started
-
-There are a few things that you can do with this project. This project is intended for research purposes, so I highly recommend to create a new resource group in your subscription to not interfere with any other system in the same resource group. Take a look at the different scenarios that you can deploy in the section below.
+Microsoft Sentinel To-Go is an open source project developed to expedite the deployment of a Microsoft Sentinel lab along with other resources for research purposes. It also comes with the option to ingest pre-recorded datasets from the [Security Datasets](https://securitydatasets.com/) project right at deployment time.
 
 ## Grocery List - Deployment Options
 
