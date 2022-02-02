@@ -176,8 +176,11 @@
         },
         "mxsRelease": {
             "type": "string",
-            "defaultValue": "MXS2016-x64-CU12-KB4471392",
+            "defaultValue": "MXS2016-x64-CU19-KB4588884",
             "allowedValues": [
+                "MXS2016-x64-CU22-KB5005333",
+                "MXS2016-x64-CU21-KB5003611",
+                "MXS2016-x64-CU20-KB4602569",
                 "MXS2016-x64-CU19-KB4588884",
                 "MXS2016-x64-CU18-KB4571788",
                 "MXS2016-x64-CU17-KB4556414",
