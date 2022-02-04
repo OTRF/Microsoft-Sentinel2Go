@@ -134,18 +134,17 @@
                 "description": "Do you want to configure your Log Analytics Workspace to collect Windows Event Logs from several pre-defined event providers?. Windows Security Auditing is not enabled through this option. It is enabled through the Data Connectors parameter."
             },
             "defaultValue": [
-                "System",
-                "Microsoft-Windows-Sysmon/Operational",
-                "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational",
-                "Microsoft-Windows-Bits-Client/Operational",
-                "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational",
-                "Directory Service",
-                "Microsoft-Windows-DNS-Client/Operational",
-                "Microsoft-Windows-Windows Firewall With Advanced Security/Firewall",
-                "Windows PowerShell",
-                "Microsoft-Windows-PowerShell/Operational",
-                "Microsoft-Windows-WMI-Activity/Operational",
-                "Microsoft-Windows-TaskScheduler/Operational"
+                "System!*",
+                "Microsoft-Windows-Sysmon/Operational!*",
+                "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational!*",
+                "Microsoft-Windows-Bits-Client/Operational!*",
+                "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational!*",
+                "Microsoft-Windows-DNS-Client/Operational!*",
+                "Microsoft-Windows-Windows Firewall With Advanced Security/Firewall!*",
+                "Windows PowerShell!*",
+                "Microsoft-Windows-PowerShell/Operational!*",
+                "Microsoft-Windows-WMI-Activity/Operational!*",
+                "Microsoft-Windows-TaskScheduler/Operational!*"
             ]
         },
         "enableSysmon": {
@@ -266,6 +265,14 @@
                                 "Security!*[System[(EventID=4670 or EventID=4657)]]",
                                 "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Key']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Key']])))"
                             ]
+                        },
+                        {
+                            "name": "additionalWinDataSource",
+                            "scheduledTransferPeriod": "PT5M",
+                            "streams": [
+                                "Microsoft-WindowsEvent"
+                            ],
+                            "xPathQueries": "[parameters('collectWinEventProviders')]"
                         }
                     ]
                 },
@@ -281,7 +288,8 @@
                 "dataFlows": [
                     {
                         "streams": [
-                            "Microsoft-SecurityEvent"
+                            "Microsoft-SecurityEvent",
+                            "Microsoft-WindowsEvent"
                         ],
                         "destinations": [
                             "WindowsEvents"
