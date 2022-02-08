@@ -201,12 +201,14 @@
                 "description": "Do you want to configure your Log Analytics Workspace to collect Windows Event Logs from several pre-defined event providers?. Windows Security Auditing is not enabled through this option. It is enabled through the Data Connectors parameter."
             },
             "defaultValue": [
-                "System",
-                "Microsoft-Windows-Sysmon/Operational",
-                "Directory Service",
-                "Windows PowerShell",
-                "Microsoft-Windows-PowerShell/Operational",
-                "AD FS/Admin"
+                "System!*",
+                "Microsoft-Windows-Sysmon/Operational!*",
+                "Directory Service!*",
+                "Microsoft-Windows-DNS-Client/Operational!*",
+                "Microsoft-Windows-Windows Firewall With Advanced Security/Firewall!*",
+                "Windows PowerShell!*",
+                "Microsoft-Windows-PowerShell/Operational!*",
+                "AD FS/Admin!*"
             ]
         },
         "c2Framework": {
@@ -334,6 +336,14 @@
                                 "Security!*[System[(EventID=4670 or EventID=4657)]]",
                                 "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Key']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Key']])))"
                             ]
+                        },
+                        {
+                            "name": "additionalWinDataSource",
+                            "scheduledTransferPeriod": "PT5M",
+                            "streams": [
+                                "Microsoft-WindowsEvent"
+                            ],
+                            "xPathQueries": "[parameters('collectWinEventProviders')]"
                         }
                     ]
                 },
@@ -349,40 +359,14 @@
                 "dataFlows": [
                     {
                         "streams": [
-                            "Microsoft-SecurityEvent"
+                            "Microsoft-SecurityEvent",
+                            "Microsoft-WindowsEvent"
                         ],
                         "destinations": [
                             "WindowsEvents"
                         ]
                     }
                 ]
-            }
-        },
-        {
-            "condition": "[not(empty(parameters('collectWinEventProviders')))]",
-            "name": "collectWinDataSources",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-10-01",
-            "dependsOn": [
-                "deployMSSentinel2Go"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'microsoft-sentinel/linkedtemplates/log-analytics/winDataSources.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
-                    },
-                    "winEventProviders": {
-                        "value": "[parameters('collectWinEventProviders')]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    }
-                }
             }
         },
         {

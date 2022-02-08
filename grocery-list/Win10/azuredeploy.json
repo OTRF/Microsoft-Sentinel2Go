@@ -299,33 +299,6 @@
             }
         },
         {
-            "condition": "[not(empty(parameters('collectWinEventProviders')))]",
-            "name": "collectWinDataSources",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-10-01",
-            "dependsOn": [
-                "deployMSSentinel2Go"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'microsoft-sentinel/linkedtemplates/log-analytics/winDataSources.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
-                    },
-                    "winEventProviders": {
-                        "value": "[parameters('collectWinEventProviders')]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    }
-                }
-            }
-        },
-        {
             "condition": "[parameters('enableSysmon')]",
             "name": "deploySysmonWindowsParserPack",
             "type": "Microsoft.Resources/deployments",
