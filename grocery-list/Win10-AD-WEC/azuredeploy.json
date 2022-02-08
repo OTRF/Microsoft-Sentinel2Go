@@ -226,7 +226,7 @@
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "sysmonWindowsParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json",
-        "dataCollectionRuleName": "WindowsDCR"
+        "dataCollectionRuleName": "WinForwardedEventsDCR"
     },
     "resources": [
         {

@@ -190,7 +190,8 @@
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "sysmonWindowsParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json",
-        "dataCollectionRuleName": "WindowsDCR"
+        "winSecurityEventsDCRName": "WinSecurityEventsDCR",
+        "winOtherEventsDCRName": "WinOtherEventsDCR"
     },
     "resources": [
         {
@@ -226,7 +227,7 @@
             "dependsOn": [
                 "deployMSSentinel2Go"
             ],
-            "name": "[variables('dataCollectionRuleName')]",
+            "name": "[variables('winSecurityEventsDCRName')]",
             "location": "[parameters('location')]",
             "tags": {
                 "createdBy": "Sentinel"
@@ -265,14 +266,6 @@
                                 "Security!*[System[(EventID=4670 or EventID=4657)]]",
                                 "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Key']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Key']])))"
                             ]
-                        },
-                        {
-                            "name": "additionalWinDataSource",
-                            "scheduledTransferPeriod": "PT5M",
-                            "streams": [
-                                "Microsoft-WindowsEvent"
-                            ],
-                            "xPathQueries": "[parameters('collectWinEventProviders')]"
                         }
                     ]
                 },
@@ -288,11 +281,53 @@
                 "dataFlows": [
                     {
                         "streams": [
-                            "Microsoft-SecurityEvent",
-                            "Microsoft-WindowsEvent"
+                            "Microsoft-SecurityEvent"
                         ],
                         "destinations": [
                             "WindowsEvents"
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "type": "microsoft.insights/dataCollectionRules",
+            "apiVersion": "2021-04-01",
+            "dependsOn": [
+                "deployMSSentinel2Go"
+            ],
+            "name": "[variables('winOtherEventsDCRName')]",
+            "location": "[parameters('location')]",
+            "kind": "Windows",
+            "properties": {
+                "dataSources": {
+                    "windowsEventLogs": [
+                        {
+                            "name": "additionalWinDataSource",
+                            "scheduledTransferPeriod": "PT5M",
+                            "streams": [
+                                "Microsoft-WindowsEvent"
+                            ],
+                            "xPathQueries": "[parameters('collectWinEventProviders')]"
+                        }
+                    ]
+                },
+                "destinations": {
+                    "logAnalytics": [
+                        {
+                            "name": "WindowsOtherEvents",
+                            "workspaceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]",
+                            "workspaceResourceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
+                        }
+                    ]
+                },
+                "dataFlows": [
+                    {
+                        "streams": [
+                            "Microsoft-WindowsEvent"
+                        ],
+                        "destinations": [
+                            "WindowsOtherEvents"
                         ]
                     }
                 ]
@@ -397,11 +432,11 @@
             }
         },
         {
-            "name": "associateWindowsDCR",
+            "name": "associateWinSecurityEventsDCR",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "dependsOn": [
-                "[resourceId('microsoft.insights/dataCollectionRules', variables('dataCollectionRuleName'))]",
+                "[resourceId('microsoft.insights/dataCollectionRules', variables('winSecurityEventsDCRName'))]",
                 "installAzureMonitorAgent"
             ],
             "properties": {
@@ -412,13 +447,40 @@
                 },
                 "parameters": {
                     "virtualMachines": {
-                        "value": "[reference('deployWin10VM').outputs.allWinVMsDeployed.value]"
+                        "value": "[reference('deployWinADFS').outputs.allWinVMsDeployed.value]"
                     },
                     "dataCollectionRuleId": {
-                        "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('dataCollectionRuleName'))]"
+                        "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('winSecurityEventsDCRName'))]"
                     },
                     "dataCollectionRuleName": {
-                        "value": "[variables('dataCollectionRuleName')]"
+                        "value": "[variables('winSecurityEventsDCRName')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "associateWinOtherEventsDCR",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/dataCollectionRules', variables('winOtherEventsDCRName'))]",
+                "installAzureMonitorAgent"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-collection-rules/association.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWinADFS').outputs.allWinVMsDeployed.value]"
+                    },
+                    "dataCollectionRuleId": {
+                        "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('winOtherEventsDCRName'))]"
+                    },
+                    "dataCollectionRuleName": {
+                        "value": "[variables('winOtherEventsDCRName')]"
                     }
                 }
             }

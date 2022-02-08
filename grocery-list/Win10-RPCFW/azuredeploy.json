@@ -219,7 +219,7 @@
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "installRPCFWScript": "[concat(variables('artifactsBlacksmith'), 'resources/scripts/powershell/endpoint-software/Install-RPCFW.ps1')]",
-        "dataCollectionRuleName": "WindowsDCR"
+        "dataCollectionRuleName": "WinForwardedEventsDCR"
     },
     "resources": [
         {
