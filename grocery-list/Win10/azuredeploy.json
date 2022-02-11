@@ -135,19 +135,19 @@
             },
             "defaultValue": true
         },
-        "winExistingVnetName": {
-            "type": "string",
-            "metadata": {
-                "description": "name of existing subnet used while setting up the windows network settings for the virtual VM."
-            },
-            "defaultValue": ""
-        },
         "winExistingSubnetId": {
             "type": "string",
             "metadata": {
                 "description": "Id of existing subnet used while setting up the windows network settings for the virtual VM."
             },
             "defaultValue": ""
+        },
+        "winVnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "name of existing vnet used while setting up the windows network settings for the virtual VM."
+            },
+            "defaultValue": "vnet-win"
         },
         "winSubnetRange": {
             "type": "string",
@@ -204,12 +204,12 @@
             },
             "defaultValue": true
         },
-        "c2ExistingVnetName": {
+        "c2VnetName": {
             "type": "string",
             "metadata": {
-                "description": "name of existing subnet used while setting up the network settings for the virtual VM."
+                "description": "name of existing vnet used while setting up the network settings for the C2 virtual VM."
             },
-            "defaultValue": ""
+            "defaultValue": "c2-vnet"
         },
         "c2ExistingSubnetId": {
             "type": "string",
@@ -443,7 +443,7 @@
                         "value": "[parameters('winExistingSubnetId')]"
                     },
                     "virtualNetworkName": {
-                        "value": "[parameters('winExistingVnetName')]"
+                        "value": "[parameters('winVnetName')]"
                     },
                     "subnetRange": {
                         "value": "[parameters('winSubnetRange')]"
@@ -572,7 +572,7 @@
                         "value": "[parameters('c2ExistingSubnetId')]"
                     },
                     "virtualNetworkName": {
-                        "value": "[parameters('c2ExistingVnetName')]"
+                        "value": "[parameters('c2VnetName')]"
                     },
                     "subnetRange": {
                         "value": "[parameters('c2SubnetRange')]"
