@@ -507,41 +507,35 @@
         },
         {
             "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
-            "name": "vnet-c2/peering-to-remote-vnet-win",
-            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "apiVersion": "2019-11-01",
+            "name": "deployVnetPeering",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
             "dependsOn": [
                 "deployC2",
                 "deployWinADWEC"
             ],
-            "location": "[parameters('location')]",
             "properties": {
-                "allowVirtualNetworkAccess": true,
-                "allowForwardedTraffic": false,
-                "allowGatewayTransit": false,
-                "useRemoteGateways": false,
-                "remoteVirtualNetwork": {
-                    "id": "[reference('deployWinADWEC').outputs.virtualNetworkId.value]"
-                }
-            }
-        },
-        {
-            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
-            "name": "vnet-win/peering-to-remote-vnet-c2",
-            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "apiVersion": "2019-11-01",
-            "dependsOn": [
-                "deployC2",
-                "deployWinADWEC"
-            ],
-            "location": "[parameters('location')]",
-            "properties": {
-                "allowVirtualNetworkAccess": true,
-                "allowForwardedTraffic": false,
-                "allowGatewayTransit": false,
-                "useRemoteGateways": false,
-                "remoteVirtualNetwork": {
-                    "id": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkId.value, 'Resource not deployed')]"
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Virtual-Network-Peerings/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "sourceVnet": {
+                        "value": "[reference('deployC2').outputs.virtualNetworkName.value]"
+                    },
+                    "sourceVnetId": {
+                        "value": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkId.value, 'Resource not deployed')]"
+                    },
+                    "targetVnet": {
+                        "value": "[reference('deployWinADWEC').outputs.virtualNetworkName.value]"
+                    },
+                    "targetVnetId": {
+                        "value": "[reference('deployWinADWEC').outputs.virtualNetworkId.value]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
                 }
             }
         }
