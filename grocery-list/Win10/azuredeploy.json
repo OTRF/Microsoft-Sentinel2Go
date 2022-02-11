@@ -128,6 +128,27 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
+        "winNewVirtualNetwork": {
+            "type": "bool",
+            "metadata": {
+                "description": "Is this a new virtual network for your Windows environment? If so, set this to true."
+            },
+            "defaultValue": true
+        },
+        "winExistingSubnetId": {
+            "type": "string",
+            "metadata": {
+                "description": "Id of existing subnet used while setting up the windows network settings for the virtual VM."
+            },
+            "defaultValue": ""
+        },
+        "winSubnetRange": {
+            "type": "string",
+            "metadata": {
+                "description": "Address Range of the Windows subnet"
+            },
+            "defaultValue": "192.168.2.0/24"
+        },
         "collectWinEventProviders": {
             "type": "array",
             "metadata": {
@@ -161,22 +182,34 @@
                 "None",
                 "empire",
                 "covenant",
-                "metasploit"
+                "caldera",
+                "metasploit",
+                "shad0w"
             ],
             "metadata": {
                 "description": "C2 framework to deploy"
             }
         },
-        "ubuntuSKU": {
-            "type": "string",
-            "defaultValue": "18.04-LTS",
-            "allowedValues": [
-                "18.04-LTS",
-                "19.04"
-            ],
+        "c2NewVirtualNetwork": {
+            "type": "bool",
             "metadata": {
-                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
-            }
+                "description": "Is this a new virtual network? If so, set this to true."
+            },
+            "defaultValue": true
+        },
+        "c2ExistingSubnetId": {
+            "type": "string",
+            "metadata": {
+                "description": "Id of existing subnet used while setting up the network settings for the virtual VM."
+            },
+            "defaultValue": ""
+        },
+        "c2SubnetRange": {
+            "type": "string",
+            "metadata": {
+                "description": "subnet range"
+            },
+            "defaultValue": "10.0.0.0/24"
         },
         "location": {
             "type": "string",
@@ -389,6 +422,15 @@
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
+                    "newVirtualNetwork": {
+                        "value": "[parameters('winNewVirtualNetwork')]"
+                    },
+                    "existingSubnetId": {
+                        "value": "[parameters('winExistingSubnetId')]"
+                    },
+                    "subnetRange": {
+                        "value": "[parameters('winSubnetRange')]"
+                    },
                     "identityType": {
                         "value": "SystemAssigned"
                     },
@@ -506,11 +548,14 @@
                     "adminPasswordOrKey": {
                         "value": "[parameters('adminPassword')]"
                     },
-                    "vmName": {
-                        "value": "C2001"
+                    "newVirtualNetwork": {
+                        "value": "[parameters('c2NewVirtualNetwork')]"
                     },
-                    "ubuntuSKU": {
-                        "value": "[parameters('ubuntuSKU')]"
+                    "existingSubnetId": {
+                        "value": "[parameters('c2ExistingSubnetId')]"
+                    },
+                    "subnetRange": {
+                        "value": "[parameters('c2SubnetRange')]"
                     },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
@@ -523,6 +568,9 @@
                     },
                     "c2Framework": {
                         "value": "[parameters('c2Framework')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
                     }
                 }
             }
