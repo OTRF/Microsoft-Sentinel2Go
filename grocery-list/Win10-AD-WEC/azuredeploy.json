@@ -176,22 +176,34 @@
                 "None",
                 "empire",
                 "covenant",
-                "metasploit"
+                "caldera",
+                "metasploit",
+                "shad0w"
             ],
             "metadata": {
                 "description": "C2 framework to deploy"
             }
         },
-        "ubuntuSKU": {
-            "type": "string",
-            "defaultValue": "18.04-LTS",
-            "allowedValues": [
-                "18.04-LTS",
-                "19.04"
-            ],
+        "c2NewVirtualNetwork": {
+            "type": "bool",
             "metadata": {
-                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
-            }
+                "description": "Is this a new virtual network? If so, set this to true."
+            },
+            "defaultValue": true
+        },
+        "c2ExistingSubnetId": {
+            "type": "string",
+            "metadata": {
+                "description": "Id of existing subnet used while setting up the network settings for the virtual VM."
+            },
+            "defaultValue": ""
+        },
+        "c2SubnetRange": {
+            "type": "string",
+            "metadata": {
+                "description": "subnet range"
+            },
+            "defaultValue": "10.0.0.0/24"
         },
         "enableSysmon": {
             "type": "bool",
@@ -226,7 +238,7 @@
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "sysmonWindowsParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json",
-        "dataCollectionRuleName": "WindowsDCR"
+        "dataCollectionRuleName": "WinForwardedEventsDCR"
     },
     "resources": [
         {
@@ -466,20 +478,29 @@
                     "adminPasswordOrKey": {
                         "value": "[parameters('adminPassword')]"
                     },
-                    "vmName": {
-                        "value": "C2001"
+                    "newVirtualNetwork": {
+                        "value": "[parameters('c2NewVirtualNetwork')]"
                     },
-                    "ubuntuSKU": {
-                        "value": "[parameters('ubuntuSKU')]"
+                    "existingSubnetId": {
+                        "value": "[parameters('c2ExistingSubnetId')]"
+                    },
+                    "subnetRange": {
+                        "value": "[parameters('c2SubnetRange')]"
                     },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
+                    },
+                    "remoteAccessMode": {
+                        "value": "[parameters('remoteAccessMode')]"
                     },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
                     },
                     "c2Framework": {
                         "value": "[parameters('c2Framework')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
                     }
                 }
             }

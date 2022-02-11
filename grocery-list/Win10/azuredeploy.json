@@ -128,6 +128,27 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
+        "winNewVirtualNetwork": {
+            "type": "bool",
+            "metadata": {
+                "description": "Is this a new virtual network for your Windows environment? If so, set this to true."
+            },
+            "defaultValue": true
+        },
+        "winExistingSubnetId": {
+            "type": "string",
+            "metadata": {
+                "description": "Id of existing subnet used while setting up the windows network settings for the virtual VM."
+            },
+            "defaultValue": ""
+        },
+        "winSubnetRange": {
+            "type": "string",
+            "metadata": {
+                "description": "Address Range of the Windows subnet"
+            },
+            "defaultValue": "192.168.2.0/24"
+        },
         "collectWinEventProviders": {
             "type": "array",
             "metadata": {
@@ -161,22 +182,34 @@
                 "None",
                 "empire",
                 "covenant",
-                "metasploit"
+                "caldera",
+                "metasploit",
+                "shad0w"
             ],
             "metadata": {
                 "description": "C2 framework to deploy"
             }
         },
-        "ubuntuSKU": {
-            "type": "string",
-            "defaultValue": "18.04-LTS",
-            "allowedValues": [
-                "18.04-LTS",
-                "19.04"
-            ],
+        "c2NewVirtualNetwork": {
+            "type": "bool",
             "metadata": {
-                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
-            }
+                "description": "Is this a new virtual network? If so, set this to true."
+            },
+            "defaultValue": true
+        },
+        "c2ExistingSubnetId": {
+            "type": "string",
+            "metadata": {
+                "description": "Id of existing subnet used while setting up the network settings for the virtual VM."
+            },
+            "defaultValue": ""
+        },
+        "c2SubnetRange": {
+            "type": "string",
+            "metadata": {
+                "description": "subnet range"
+            },
+            "defaultValue": "10.0.0.0/24"
         },
         "location": {
             "type": "string",
@@ -190,7 +223,8 @@
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "sysmonWindowsParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json",
-        "dataCollectionRuleName": "WindowsDCR"
+        "winSecurityEventsDCRName": "WinSecurityEventsDCR",
+        "winOtherEventsDCRName": "WinOtherEventsDCR"
     },
     "resources": [
         {
@@ -226,7 +260,7 @@
             "dependsOn": [
                 "deployMSSentinel2Go"
             ],
-            "name": "[variables('dataCollectionRuleName')]",
+            "name": "[variables('winSecurityEventsDCRName')]",
             "location": "[parameters('location')]",
             "tags": {
                 "createdBy": "Sentinel"
@@ -265,14 +299,6 @@
                                 "Security!*[System[(EventID=4670 or EventID=4657)]]",
                                 "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Key']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Key']])))"
                             ]
-                        },
-                        {
-                            "name": "additionalWinDataSource",
-                            "scheduledTransferPeriod": "PT5M",
-                            "streams": [
-                                "Microsoft-WindowsEvent"
-                            ],
-                            "xPathQueries": "[parameters('collectWinEventProviders')]"
                         }
                     ]
                 },
@@ -288,8 +314,7 @@
                 "dataFlows": [
                     {
                         "streams": [
-                            "Microsoft-SecurityEvent",
-                            "Microsoft-WindowsEvent"
+                            "Microsoft-SecurityEvent"
                         ],
                         "destinations": [
                             "WindowsEvents"
@@ -299,30 +324,46 @@
             }
         },
         {
-            "condition": "[not(empty(parameters('collectWinEventProviders')))]",
-            "name": "collectWinDataSources",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-10-01",
+            "type": "microsoft.insights/dataCollectionRules",
+            "apiVersion": "2021-04-01",
             "dependsOn": [
                 "deployMSSentinel2Go"
             ],
+            "name": "[variables('winOtherEventsDCRName')]",
+            "location": "[parameters('location')]",
+            "kind": "Windows",
             "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'microsoft-sentinel/linkedtemplates/log-analytics/winDataSources.json')]",
-                    "contentVersion": "1.0.0.0"
+                "dataSources": {
+                    "windowsEventLogs": [
+                        {
+                            "name": "additionalWinDataSource",
+                            "scheduledTransferPeriod": "PT5M",
+                            "streams": [
+                                "Microsoft-WindowsEvent"
+                            ],
+                            "xPathQueries": "[parameters('collectWinEventProviders')]"
+                        }
+                    ]
                 },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
-                    },
-                    "winEventProviders": {
-                        "value": "[parameters('collectWinEventProviders')]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
+                "destinations": {
+                    "logAnalytics": [
+                        {
+                            "name": "WindowsOtherEvents",
+                            "workspaceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]",
+                            "workspaceResourceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
+                        }
+                    ]
+                },
+                "dataFlows": [
+                    {
+                        "streams": [
+                            "Microsoft-WindowsEvent"
+                        ],
+                        "destinations": [
+                            "WindowsOtherEvents"
+                        ]
                     }
-                }
+                ]
             }
         },
         {
@@ -381,6 +422,15 @@
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
+                    "newVirtualNetwork": {
+                        "value": "[parameters('winNewVirtualNetwork')]"
+                    },
+                    "existingSubnetId": {
+                        "value": "[parameters('winExistingSubnetId')]"
+                    },
+                    "subnetRange": {
+                        "value": "[parameters('winSubnetRange')]"
+                    },
                     "identityType": {
                         "value": "SystemAssigned"
                     },
@@ -424,11 +474,11 @@
             }
         },
         {
-            "name": "associateWindowsDCR",
+            "name": "associateWinSecurityEventsDCR",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "dependsOn": [
-                "[resourceId('microsoft.insights/dataCollectionRules', variables('dataCollectionRuleName'))]",
+                "[resourceId('microsoft.insights/dataCollectionRules', variables('winSecurityEventsDCRName'))]",
                 "installAzureMonitorAgent"
             ],
             "properties": {
@@ -439,13 +489,40 @@
                 },
                 "parameters": {
                     "virtualMachines": {
-                        "value": "[reference('deployWin10VM').outputs.allWinVMsDeployed.value]"
+                        "value": "[reference('deployWinADFS').outputs.allWinVMsDeployed.value]"
                     },
                     "dataCollectionRuleId": {
-                        "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('dataCollectionRuleName'))]"
+                        "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('winSecurityEventsDCRName'))]"
                     },
                     "dataCollectionRuleName": {
-                        "value": "[variables('dataCollectionRuleName')]"
+                        "value": "[variables('winSecurityEventsDCRName')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "associateWinOtherEventsDCR",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/dataCollectionRules', variables('winOtherEventsDCRName'))]",
+                "installAzureMonitorAgent"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-collection-rules/association.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWinADFS').outputs.allWinVMsDeployed.value]"
+                    },
+                    "dataCollectionRuleId": {
+                        "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('winOtherEventsDCRName'))]"
+                    },
+                    "dataCollectionRuleName": {
+                        "value": "[variables('winOtherEventsDCRName')]"
                     }
                 }
             }
@@ -471,11 +548,14 @@
                     "adminPasswordOrKey": {
                         "value": "[parameters('adminPassword')]"
                     },
-                    "vmName": {
-                        "value": "C2001"
+                    "newVirtualNetwork": {
+                        "value": "[parameters('c2NewVirtualNetwork')]"
                     },
-                    "ubuntuSKU": {
-                        "value": "[parameters('ubuntuSKU')]"
+                    "existingSubnetId": {
+                        "value": "[parameters('c2ExistingSubnetId')]"
+                    },
+                    "subnetRange": {
+                        "value": "[parameters('c2SubnetRange')]"
                     },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
@@ -488,6 +568,9 @@
                     },
                     "c2Framework": {
                         "value": "[parameters('c2Framework')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
                     }
                 }
             }

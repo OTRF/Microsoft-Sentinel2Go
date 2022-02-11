@@ -192,6 +192,27 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
+        "linuxNewVirtualNetwork": {
+            "type": "bool",
+            "metadata": {
+                "description": "Is this a new virtual network for your Linux environment? If so, set this to true."
+            },
+            "defaultValue": true
+        },
+        "linuxExistingSubnetId": {
+            "type": "string",
+            "metadata": {
+                "description": "Id of existing subnet used while setting up the Linux network settings for the virtual VM."
+            },
+            "defaultValue": ""
+        },
+        "linuxSubnetRange": {
+            "type": "string",
+            "metadata": {
+                "description": "Address Range of the Linux subnet"
+            },
+            "defaultValue": "192.168.2.0/24"
+        },
         "collectSyslogFacilities": {
             "type": "array",
             "metadata": {
@@ -228,6 +249,27 @@
             "metadata": {
                 "description": "C2 framework to deploy"
             }
+        },
+        "c2NewVirtualNetwork": {
+            "type": "bool",
+            "metadata": {
+                "description": "Is this a new virtual network? If so, set this to true."
+            },
+            "defaultValue": true
+        },
+        "c2ExistingSubnetId": {
+            "type": "string",
+            "metadata": {
+                "description": "Id of existing subnet used while setting up the network settings for the virtual VM."
+            },
+            "defaultValue": ""
+        },
+        "c2SubnetRange": {
+            "type": "string",
+            "metadata": {
+                "description": "subnet range"
+            },
+            "defaultValue": "10.0.0.0/24"
         },
         "location": {
             "type": "string",
@@ -366,6 +408,15 @@
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
+                    "newVirtualNetwork": {
+                        "value": "[parameters('linuxNewVirtualNetwork')]"
+                    },
+                    "existingSubnetId": {
+                        "value": "[parameters('linuxExistingSubnetId')]"
+                    },
+                    "subnetRange": {
+                        "value": "[parameters('linuxSubnetRange')]"
+                    },
                     "remoteAccessMode": {
                         "value": "[parameters('remoteAccessMode')]"
                     },
@@ -409,13 +460,19 @@
                         "value": "[parameters('adminUsername')]"
                     },
                     "authenticationType": {
-                        "value": "password"
+                        "value": "[parameters('authenticationType')]"
                     },
                     "adminPasswordOrKey": {
                         "value": "[parameters('adminPasswordOrKey')]"
                     },
-                    "vmName": {
-                        "value": "C2001"
+                    "newVirtualNetwork": {
+                        "value": "[parameters('c2NewVirtualNetwork')]"
+                    },
+                    "existingSubnetId": {
+                        "value": "[parameters('c2ExistingSubnetId')]"
+                    },
+                    "subnetRange": {
+                        "value": "[parameters('c2SubnetRange')]"
                     },
                     "ubuntuSKU": {
                         "value": "[parameters('ubuntuSKU')]"
@@ -431,6 +488,9 @@
                     },
                     "c2Framework": {
                         "value": "[parameters('c2Framework')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
                     }
                 }
             }
