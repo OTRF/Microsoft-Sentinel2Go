@@ -535,7 +535,7 @@
                 },
                 "parameters": {
                     "virtualMachines": {
-                        "value": "[reference('deployWinADFS').outputs.allWinVMsDeployed.value]"
+                        "value": "[reference('deployWinADMXS').outputs.allWinVMsDeployed.value]"
                     },
                     "dataCollectionRuleId": {
                         "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('winSecurityEventsDCRName'))]"
@@ -562,7 +562,7 @@
                 },
                 "parameters": {
                     "virtualMachines": {
-                        "value": "[reference('deployWinADFS').outputs.allWinVMsDeployed.value]"
+                        "value": "[reference('deployWinADMXS').outputs.allWinVMsDeployed.value]"
                     },
                     "dataCollectionRuleId": {
                         "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('winOtherEventsDCRName'))]"
