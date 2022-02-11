@@ -135,6 +135,13 @@
             },
             "defaultValue": true
         },
+        "winExistingVnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "name of existing subnet used while setting up the windows network settings for the virtual VM."
+            },
+            "defaultValue": ""
+        },
         "winExistingSubnetId": {
             "type": "string",
             "metadata": {
@@ -196,6 +203,13 @@
                 "description": "Is this a new virtual network? If so, set this to true."
             },
             "defaultValue": true
+        },
+        "c2ExistingVnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "name of existing subnet used while setting up the network settings for the virtual VM."
+            },
+            "defaultValue": ""
         },
         "c2ExistingSubnetId": {
             "type": "string",
@@ -428,6 +442,9 @@
                     "existingSubnetId": {
                         "value": "[parameters('winExistingSubnetId')]"
                     },
+                    "virtualNetworkName": {
+                        "value": "[parameters('winExistingVnetName')]"
+                    },
                     "subnetRange": {
                         "value": "[parameters('winSubnetRange')]"
                     },
@@ -553,6 +570,9 @@
                     },
                     "existingSubnetId": {
                         "value": "[parameters('c2ExistingSubnetId')]"
+                    },
+                    "virtualNetworkName": {
+                        "value": "[parameters('c2ExistingVnetName')]"
                     },
                     "subnetRange": {
                         "value": "[parameters('c2SubnetRange')]"
