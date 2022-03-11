@@ -657,7 +657,7 @@
                 },
                 "parameters": {
                     "sourceVnet": {
-                        "value": "[reference('deployC2').outputs.virtualNetworkName.value]"
+                        "value": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkName.value, 'Resource not deployed')]"
                     },
                     "sourceVnetId": {
                         "value": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkId.value, 'Resource not deployed')]"
