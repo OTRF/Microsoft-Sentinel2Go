@@ -291,6 +291,10 @@
         "workspaceResourceIdOutput": {
             "type": "string",
             "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('uniqueWorkspace'))]"
+        },
+        "workspaceLocation": {
+            "type": "string",
+            "value": "[parameters('location')]"
         }
     }
 }
