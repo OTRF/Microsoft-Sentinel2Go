@@ -11,7 +11,7 @@
         "enableLAFunctions": {
             "type": "array",
             "metadata": {
-                "description": "List of functions to enable in your Log Analytics Workspace. Available: Sysmon"
+                "description": "List of functions to enable in your Log Analytics Workspace. Available: ASimAuthentication,ASimFileEvent,ASimNetworkSession,ASimProcessEvent,ASimRegistryEvent,WinRPCFWLogs"
             },
             "defaultValue": []
         },
@@ -24,21 +24,23 @@
         }
     },
     "variables": {
-        "sysmonWindowsParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json",
-        "sysmonLinuxParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Linux/SysmonForLinuxFullDeployment.json",
-        "windowsEventParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20WindowsEvent/ARM/MicrosoftWindowsEventFullDeployment.json",
+        "asimAuthenticationParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASimAuthentication/FullDeploymentAuthentication.json",
+        "asimFileEventParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASimFileEvent/FullDeploymentFileEvent.json",
+        "asimNetworkSessionParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASimNetworkSession/ARM/FullDeploymentNetworkSession.json",
+        "asimProcessEventParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASimProcessEvent/ARM/FullDeploymentProcessEvent.json",
+        "asimRegistryEvent": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASimRegistryEvent/ARM/FullDeploymentRegistryEvent.json",
         "winRPCFWLogsParserPackTemplate": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/microsoft-sentinel/linkedtemplates/parsers/winRPCFWLogs.json"
     },
     "resources": [
         {
-            "condition": "[contains(parameters('enableLAFunctions'),'WindowsEvents')]",
-            "name": "deployWindowsEventParserPack",
+            "condition": "[contains(parameters('enableLAFunctions'),'ASimAuthentication')]",
+            "name": "deployASimAuthenticationParser",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('windowsEventParserPackTemplate')]",
+                    "uri": "[variables('asimAuthenticationParserPackTemplate')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -52,14 +54,14 @@
             }
         },
         {
-            "condition": "[contains(parameters('enableLAFunctions'),'SysmonWindows')]",
-            "name": "deploySysmonWindowsParserPack",
+            "condition": "[contains(parameters('enableLAFunctions'),'ASimFileEvent')]",
+            "name": "deployASimFileEventParser",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('sysmonWindowsParserPackTemplate')]",
+                    "uri": "[variables('asimFileEventParserPackTemplate')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -73,14 +75,56 @@
             }
         },
         {
-            "condition": "[contains(parameters('enableLAFunctions'),'SysmonLinux')]",
-            "name": "deploySysmonLinuxParserPack",
+            "condition": "[contains(parameters('enableLAFunctions'),'ASimNetworkSession')]",
+            "name": "deployASimNetworkSessionParser",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('sysmonLinuxParserPackTemplate')]",
+                    "uri": "[variables('asimNetworkSessionParserPackTemplate')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[contains(parameters('enableLAFunctions'),'ASimProcessEvent')]",
+            "name": "deployASimProcessEventParser",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('asimProcessEventParserPackTemplate')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[contains(parameters('enableLAFunctions'),'ASimRegistryEvent')]",
+            "name": "deployASimRegistryEventParser",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('asimRegistryEvent')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
