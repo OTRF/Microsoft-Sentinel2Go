@@ -89,7 +89,7 @@
                     "workspaceName": {
                         "value": "[parameters('workspaceName')]"
                     },
-                    "location": {
+                    "Workspace Region": {
                         "value": "[parameters('location')]"
                     }
                 }
@@ -110,7 +110,7 @@
                     "workspaceName": {
                         "value": "[parameters('workspaceName')]"
                     },
-                    "location": {
+                    "Workspace Region": {
                         "value": "[parameters('location')]"
                     }
                 }
@@ -131,7 +131,7 @@
                     "workspaceName": {
                         "value": "[parameters('workspaceName')]"
                     },
-                    "location": {
+                    "Workspace Region": {
                         "value": "[parameters('location')]"
                     }
                 }
