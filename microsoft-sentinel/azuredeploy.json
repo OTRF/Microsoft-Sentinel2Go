@@ -21,12 +21,14 @@
                 "description": "Pricing tier: pergb2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers."
             },
             "allowedValues": [
-                "PerGB2018",
+                "CapacityReservation",
                 "Free",
-                "Standalone",
+                "LACluster",
+                "PerGB2018",
                 "PerNode",
-                "Standard",
-                "Premium"
+                "Premium",
+                "Standalone",
+                "Standard"
             ],
             "defaultValue": "PerGB2018"
         },
@@ -123,7 +125,7 @@
         {
             "name": "[variables('uniqueWorkspace')]",
             "type": "Microsoft.OperationalInsights/workspaces",
-            "apiVersion": "2020-08-01",
+            "apiVersion": "2021-06-01",
             "location": "[parameters('location')]",
             "properties": {
                 "retentionInDays": "[parameters('dataRetention')]",
