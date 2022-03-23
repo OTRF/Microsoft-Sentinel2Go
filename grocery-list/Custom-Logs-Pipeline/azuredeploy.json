@@ -1,0 +1,246 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "dataCollectionEndpointName": {
+            "type": "String",
+            "minLength": 3,
+            "maxLength": 44,
+            "metadata": {
+                "description": "Name of data collection endpoint resource. The name must contain between 3 to 44 characters inclusive. The name only allows alphanumeric characters and hyphens and cannot start or end with hyphens. The name must be unique in the current resource group."
+            }
+        },
+        "workspaceName": {
+            "type": "string",
+            "defaultValue": "MSSen2Go",
+            "metadata": {
+                "description": "Name for the Log Analytics workspace used to aggregate data. If this is a new LA workspace, the template will add a unique string to the name you choose. If you are using an existing LA workspace, the name will not change and will be passed as is to the resources in the template."
+            }
+        },
+        "workspaceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Specifies the Azure resource ID of the Log Analytics workspace to use to send data to."
+            }
+        },
+        "pricingTier": {
+            "type": "string",
+            "allowedValues": [
+                "PerGB2018",
+                "Free",
+                "Standalone",
+                "PerNode",
+                "Standard",
+                "Premium"
+            ],
+            "defaultValue": "PerGB2018",
+            "metadata": {
+                "description": "Pricing tier: pergb2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers."
+            }
+        },
+        "dataRetention": {
+            "type": "int",
+            "defaultValue": 30,
+            "minValue": 7,
+            "maxValue": 730,
+            "metadata": {
+                "description": "Number of days of retention. Workspaces in the legacy Free pricing tier can only have 7 days."
+            }
+        },
+        "immediatePurgeDataOn30Days": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "westus2",
+            "allowedValues": [
+                "westus2",
+                "eastus2",
+                "eastus2euap"
+            ],
+            "metadata": {
+                "description": "Specifies the location in which to create resources."
+            }
+        }
+    },
+    "variables": {
+        "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
+        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/"
+
+    },
+    "resources": [
+        {
+            "condition": "[empty(parameters('workspaceId'))]",
+            "name": "deployMSSentinel2Go",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "pricingTier": {
+                        "value": "[parameters('pricingTier')]"
+                    },
+                    "dataRetention": {
+                        "value": "[parameters('dataRetention')]"
+                    },
+                    "immediatePurgeDataOn30Days": {
+                        "value": "[parameters('immediatePurgeDataOn30Days')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "deployDataCollectionEndpoint",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployMSSentinel2Go"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'),'templates/azure/Data-Collection-Endpoint/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "dataCollectionEndpointName": {
+                        "value": "[parameters('dataCollectionEndpointName')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "deployWinSecurityEventsDCR",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployDataCollectionEndpoint"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'),'templates/azure/Data-Collection-Rules/azuredeploy-2021-09-01-preview.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "ruleName": {
+                        "value": "winSecurityEventsDCR"
+                    },
+                    "tagsArray": {
+                        "value": {
+                            "createdBy": "Sentinel"
+                        }
+                    },
+                    "workspaceResourceId": {
+                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
+                    },
+                    "dataCollectionEndpointId": {
+                        "value": "[reference('deployDataCollectionEndpoint').outputs.dataCollectionEndpointId.value]"
+                    },
+                    "streams": {
+                        "value": [
+                            "Custom-SecurityEvent"
+                        ]
+                    },
+                    "streamDeclarations": {
+                        "value": {
+                            "Custom-SecurityEvent": {
+                                "columns": [
+                                    {
+                                        "name": "Time",
+                                        "type": "datetime"
+                                    },
+                                    {
+                                        "name": "RawEventData",
+                                        "type": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "transformKql": {
+                        "value": "source | extend EventData = parse_json(RawEventData) | extend TimeGenerated=Time,Computer=tostring(EventData.Hostname),EventSourceName=tostring(EventData.SourceName),Type='SecurityEvent' | project-away RawEventData"
+                    },
+                    "outputStream": {
+                        "value": "Microsoft-SecurityEvent"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "deployOtherWinEventsDCR",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployDataCollectionEndpoint"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'),'templates/azure/Data-Collection-Rules/azuredeploy-2021-09-01-preview.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "ruleName": {
+                        "value": "otherWinEventsDCR"
+                    },
+                    "workspaceResourceId": {
+                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
+                    },
+                    "dataCollectionEndpointId": {
+                        "value": "[reference('deployDataCollectionEndpoint').outputs.dataCollectionEndpointId.value]"
+                    },
+                    "streams": {
+                        "value": [
+                            "Custom-WindowsEvent"
+                        ]
+                    },
+                    "streamDeclarations": {
+                        "value": {
+                            "Custom-WindowsEvent": {
+                                "columns": [
+                                    {
+                                        "name": "Time",
+                                        "type": "datetime"
+                                    },
+                                    {
+                                        "name": "RawEventData",
+                                        "type": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "transformKql": {
+                        "value": "source | extend EventData = parse_json(RawEventData) | extend TimeGenerated=Time,Channel=tostring(EventData.Channel),Computer=tostring(EventData.Hostname),EventID=toint(EventData.EventID),EventLevel=toint(EventData.Level),Provider=tostring(EventData.SourceName),Task=toint(EventData.Task),Type='WindowsEvent'| project TimeGenerated,Channel,Computer,EventData,EventID,EventLevel,Provider,Task,Type"
+                    },
+                    "outputStream": {
+                        "value": "Microsoft-WindowsEvent"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

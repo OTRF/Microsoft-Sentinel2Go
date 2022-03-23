@@ -128,12 +128,15 @@
         },
         "windowsDesktopSKU": {
             "type": "string",
-            "defaultValue": "19h2-pro",
+            "defaultValue": "20h1-pro",
             "allowedValues": [
                 "19h1-pro",
                 "19h2-pro",
                 "rs4-pro",
-                "rs5-pro"
+                "rs5-pro",
+                "20h1-pro",
+                "20h2-pro",
+                "21h1-pro"
             ],
             "metadata": {
                 "description": "The Sku for the Desktop VM."
