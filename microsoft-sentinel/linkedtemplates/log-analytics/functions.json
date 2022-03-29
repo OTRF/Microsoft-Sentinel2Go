@@ -11,7 +11,7 @@
         "enableLAFunctions": {
             "type": "array",
             "metadata": {
-                "description": "List of functions to enable in your Log Analytics Workspace. Available: ASimAuthentication,ASimFileEvent,ASimNetworkSession,ASimProcessEvent,ASimRegistryEvent,WinRPCFWLogs"
+                "description": "List of functions to enable in your Log Analytics Workspace. Available: ASimWindowsEvents,ASimWindowsSysmon,ASimLinuxSysmon,WinRPCFWLogs"
             },
             "defaultValue": []
         },
