@@ -171,6 +171,10 @@
                     "WindowsEvents"
                 ]
             }
+        ],
+        "asimParsers": [
+            "ASimWindowsEvents",
+            "ASimWindowsSysmon"
         ]
     },
     "resources": [
@@ -197,30 +201,9 @@
                     },
                     "immediatePurgeDataOn30Days": {
                         "value": "[parameters('immediatePurgeDataOn30Days')]"
-                    }
-                }
-            }
-        },
-        {
-            "condition": "[parameters('enableSysmon')]",
-            "name": "deploySysmonWindowsParserPack",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "dependsOn": [
-                "deployMSSentinel2Go"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('sysmonWindowsParserPackTemplate')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceName.value, parameters('workspaceName'))]"
                     },
-                    "location": {
-                        "value": "[parameters('location')]"
+                    "enableLAFunctions": {
+                        "value": "[variables('asimParsers')]"
                     }
                 }
             }
