@@ -2,13 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "utcValue": {
-            "type": "string",
-            "metadata": {
-                "description": "Returns the current (UTC) datetime value in the specified format. If no format is provided, the ISO 8601 (yyyyMMddTHHmmssZ) format is used"
-            },
-            "defaultValue": "[utcNow()]"
-        },
         "workspaceName": {
             "type": "string",
             "defaultValue": "MSSen2Go",
@@ -102,13 +95,6 @@
             },
             "defaultValue": "*"
         },
-        "azureBastionSubnetRange": {
-            "type": "string",
-            "metadata": {
-                "description": "Address Range of the Azure Bastion service"
-            },
-            "defaultValue": "192.168.3.0/27"
-        },
         "numberOfUbuntuVMs": {
             "type": "int",
             "defaultValue": 1,
@@ -192,27 +178,6 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
-        "linuxNewVirtualNetwork": {
-            "type": "bool",
-            "metadata": {
-                "description": "Is this a new virtual network for your Linux environment? If so, set this to true."
-            },
-            "defaultValue": true
-        },
-        "linuxExistingSubnetId": {
-            "type": "string",
-            "metadata": {
-                "description": "Id of existing subnet used while setting up the Linux network settings for the virtual VM."
-            },
-            "defaultValue": ""
-        },
-        "linuxSubnetRange": {
-            "type": "string",
-            "metadata": {
-                "description": "Address Range of the Linux subnet"
-            },
-            "defaultValue": "192.168.2.0/24"
-        },
         "collectSyslogFacilities": {
             "type": "array",
             "metadata": {
@@ -250,26 +215,12 @@
                 "description": "C2 framework to deploy"
             }
         },
-        "c2NewVirtualNetwork": {
-            "type": "bool",
-            "metadata": {
-                "description": "Is this a new virtual network? If so, set this to true."
-            },
-            "defaultValue": true
-        },
-        "c2ExistingSubnetId": {
+        "utcValue": {
             "type": "string",
             "metadata": {
-                "description": "Id of existing subnet used while setting up the network settings for the virtual VM."
+                "description": "Returns the current (UTC) datetime value in the specified format. If no format is provided, the ISO 8601 (yyyyMMddTHHmmssZ) format is used"
             },
-            "defaultValue": ""
-        },
-        "c2SubnetRange": {
-            "type": "string",
-            "metadata": {
-                "description": "subnet range"
-            },
-            "defaultValue": "10.0.0.0/24"
+            "defaultValue": "[utcNow()]"
         },
         "location": {
             "type": "string",
@@ -281,7 +232,9 @@
     },
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/"
+        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
+        "azureBastionHostName": "vnet-mssentinel-bastion",
+        "msSentinelVirtualNetworkName": "vnet-mssentinel"
     },
     "resources": [
         {
@@ -408,14 +361,11 @@
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
-                    "newVirtualNetwork": {
-                        "value": "[parameters('linuxNewVirtualNetwork')]"
+                    "newOrExistingVnet": {
+                        "value": "new"
                     },
-                    "existingSubnetId": {
-                        "value": "[parameters('linuxExistingSubnetId')]"
-                    },
-                    "subnetRange": {
-                        "value": "[parameters('linuxSubnetRange')]"
+                    "virtualNetworkName": {
+                        "value": "[variables('msSentinelVirtualNetworkName')]"
                     },
                     "remoteAccessMode": {
                         "value": "[parameters('remoteAccessMode')]"
@@ -423,8 +373,8 @@
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
                     },
-                    "azureBastionSubnetRange": {
-                        "value": "[parameters('azureBastionSubnetRange')]"
+                    "azureBastionHostName": {
+                        "value": "[variables('azureBastionHostName')]"
                     },
                     "workspaceId": {
                         "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]"
@@ -465,15 +415,6 @@
                     "adminPasswordOrKey": {
                         "value": "[parameters('adminPasswordOrKey')]"
                     },
-                    "newVirtualNetwork": {
-                        "value": "[parameters('c2NewVirtualNetwork')]"
-                    },
-                    "existingSubnetId": {
-                        "value": "[parameters('c2ExistingSubnetId')]"
-                    },
-                    "subnetRange": {
-                        "value": "[parameters('c2SubnetRange')]"
-                    },
                     "ubuntuSKU": {
                         "value": "[parameters('ubuntuSKU')]"
                     },
@@ -485,6 +426,9 @@
                     },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
+                    },
+                    "newOrExistingBastion": {
+                        "value": "existing"
                     },
                     "c2Framework": {
                         "value": "[parameters('c2Framework')]"
