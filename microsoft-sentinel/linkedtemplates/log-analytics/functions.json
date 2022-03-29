@@ -24,23 +24,21 @@
         }
     },
     "variables": {
-        "asimAuthenticationParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASimAuthentication/FullDeploymentAuthentication.json",
-        "asimFileEventParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASimFileEvent/FullDeploymentFileEvent.json",
-        "asimNetworkSessionParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASimNetworkSession/ARM/FullDeploymentNetworkSession.json",
-        "asimProcessEventParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASimProcessEvent/ARM/FullDeploymentProcessEvent.json",
-        "asimRegistryEvent": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASimRegistryEvent/ARM/FullDeploymentRegistryEvent.json",
+        "asimWindowsEventsParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20WindowsEvent/ARM/MicrosoftWindowsEventFullDeployment.json",
+        "asimWindowsSysmonParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json",
+        "asimLinuxSysmonParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Linux/SysmonForLinuxFullDeployment.json",
         "winRPCFWLogsParserPackTemplate": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/microsoft-sentinel/linkedtemplates/parsers/winRPCFWLogs.json"
     },
     "resources": [
         {
-            "condition": "[contains(parameters('enableLAFunctions'),'ASimAuthentication')]",
-            "name": "deployASimAuthenticationParser",
+            "condition": "[contains(parameters('enableLAFunctions'),'ASimWindowsEvents')]",
+            "name": "deployASimWindowsEventsParser",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('asimAuthenticationParserPackTemplate')]",
+                    "uri": "[variables('asimWindowsEventsParserPackTemplate')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -54,14 +52,14 @@
             }
         },
         {
-            "condition": "[contains(parameters('enableLAFunctions'),'ASimFileEvent')]",
-            "name": "deployASimFileEventParser",
+            "condition": "[contains(parameters('enableLAFunctions'),'ASimWindowsSysmon')]",
+            "name": "deployASimWindowsSysmonParser",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('asimFileEventParserPackTemplate')]",
+                    "uri": "[variables('asimWindowsSysmonParserPackTemplate')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -75,63 +73,21 @@
             }
         },
         {
-            "condition": "[contains(parameters('enableLAFunctions'),'ASimNetworkSession')]",
-            "name": "deployASimNetworkSessionParser",
+            "condition": "[contains(parameters('enableLAFunctions'),'ASimLinuxSysmon')]",
+            "name": "deployASimLinuxSysmonParser",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('asimNetworkSessionParserPackTemplate')]",
+                    "uri": "[variables('asimLinuxSysmonParserPackTemplate')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "Workspace": {
+                    "workspaceName": {
                         "value": "[parameters('workspaceName')]"
                     },
-                    "Workspace Region": {
-                        "value": "[parameters('location')]"
-                    }
-                }
-            }
-        },
-        {
-            "condition": "[contains(parameters('enableLAFunctions'),'ASimProcessEvent')]",
-            "name": "deployASimProcessEventParser",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-10-01",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('asimProcessEventParserPackTemplate')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "Workspace": {
-                        "value": "[parameters('workspaceName')]"
-                    },
-                    "Workspace Region": {
-                        "value": "[parameters('location')]"
-                    }
-                }
-            }
-        },
-        {
-            "condition": "[contains(parameters('enableLAFunctions'),'ASimRegistryEvent')]",
-            "name": "deployASimRegistryEventParser",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-10-01",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('asimRegistryEvent')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "Workspace": {
-                        "value": "[parameters('workspaceName')]"
-                    },
-                    "Workspace Region": {
+                    "location": {
                         "value": "[parameters('location')]"
                     }
                 }
