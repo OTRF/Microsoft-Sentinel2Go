@@ -549,6 +549,9 @@
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
                     },
+                    "newOrExistingBastion": {
+                        "value": "existing"
+                    },
                     "c2Framework": {
                         "value": "[parameters('c2Framework')]"
                     },
