@@ -67,23 +67,6 @@
             },
             "minLength": 12
         },
-        "remoteAccessMode": {
-            "type": "string",
-            "defaultValue": "AllowPublicIP",
-            "allowedValues": [
-                "AllowPublicIP",
-                "AzureBastionHost"
-            ],
-            "metadata": {
-                "description": "Do you want to restrict access to your environment by a Public IP or set up an Azure Bastion Host. If the former, make sure you add your public IP address to the variable 'allowedIPAddresses'"
-            }
-        },
-        "allowedIPAddresses": {
-            "type": "string",
-            "metadata": {
-                "description": "The sourceAddressPrefixes allowed to connect to all the VMs in this deployment"
-            }
-        },
         "numberOfWorkstations": {
             "type": "int",
             "defaultValue": 1,
@@ -131,33 +114,22 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
-        "winNewVirtualNetwork": {
-            "type": "bool",
+        "remoteAccessMode": {
+            "type": "string",
+            "defaultValue": "AllowPublicIP",
+            "allowedValues": [
+                "AllowPublicIP",
+                "AzureBastionHost"
+            ],
             "metadata": {
-                "description": "Is this a new virtual network for your Windows environment? If so, set this to true."
-            },
-            "defaultValue": true
+                "description": "Do you want to restrict access to your environment by a Public IP or set up an Azure Bastion Host. If the former, make sure you add your public IP address to the variable 'allowedIPAddresses'"
+            }
         },
-        "winExistingSubnetId": {
+        "allowedIPAddresses": {
             "type": "string",
             "metadata": {
-                "description": "Id of existing subnet used while setting up the windows network settings for the virtual VM."
-            },
-            "defaultValue": ""
-        },
-        "winVnetName": {
-            "type": "string",
-            "metadata": {
-                "description": "name of existing vnet used while setting up the windows network settings for the virtual VM."
-            },
-            "defaultValue": "vnet-win"
-        },
-        "winSubnetRange": {
-            "type": "string",
-            "metadata": {
-                "description": "Address Range of the Windows subnet"
-            },
-            "defaultValue": "192.168.2.0/24"
+                "description": "The sourceAddressPrefixes allowed to connect to all the VMs in this deployment"
+            }
         },
         "collectWinEventProviders": {
             "type": "array",
@@ -200,34 +172,6 @@
                 "description": "C2 framework to deploy"
             }
         },
-        "c2NewVirtualNetwork": {
-            "type": "bool",
-            "metadata": {
-                "description": "Is this a new virtual network? If so, set this to true."
-            },
-            "defaultValue": true
-        },
-        "c2VnetName": {
-            "type": "string",
-            "metadata": {
-                "description": "name of existing vnet used while setting up the network settings for the C2 virtual VM."
-            },
-            "defaultValue": "c2-vnet"
-        },
-        "c2ExistingSubnetId": {
-            "type": "string",
-            "metadata": {
-                "description": "Id of existing subnet used while setting up the network settings for the virtual VM."
-            },
-            "defaultValue": ""
-        },
-        "c2SubnetRange": {
-            "type": "string",
-            "metadata": {
-                "description": "subnet range"
-            },
-            "defaultValue": "10.0.0.0/24"
-        },
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]",
@@ -240,11 +184,8 @@
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "asimParsers": [
-            "ASimAuthentication",
-            "ASimFileEvent",
-            "ASimNetworkSession",
-            "ASimProcessEvent",
-            "ASimRegistryEvent"
+            "ASimWindowsEvents",
+            "ASimWindowsSysmon"
         ],
         "winSecurityEventsDCRName": "WinSecurityEventsDCR",
         "winOtherEventsDCRName": "WinOtherEventsDCR"
@@ -396,9 +337,6 @@
             "name": "deployWin10VM",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
-            "dependsOn": [
-                "deployMSSentinel2Go"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -423,18 +361,6 @@
                     },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
-                    },
-                    "newVirtualNetwork": {
-                        "value": "[parameters('winNewVirtualNetwork')]"
-                    },
-                    "existingSubnetId": {
-                        "value": "[parameters('winExistingSubnetId')]"
-                    },
-                    "virtualNetworkName": {
-                        "value": "[parameters('winVnetName')]"
-                    },
-                    "subnetRange": {
-                        "value": "[parameters('winSubnetRange')]"
                     },
                     "identityType": {
                         "value": "SystemAssigned"
@@ -553,18 +479,6 @@
                     "adminPasswordOrKey": {
                         "value": "[parameters('adminPassword')]"
                     },
-                    "newVirtualNetwork": {
-                        "value": "[parameters('c2NewVirtualNetwork')]"
-                    },
-                    "existingSubnetId": {
-                        "value": "[parameters('c2ExistingSubnetId')]"
-                    },
-                    "virtualNetworkName": {
-                        "value": "[parameters('c2VnetName')]"
-                    },
-                    "subnetRange": {
-                        "value": "[parameters('c2SubnetRange')]"
-                    },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
@@ -573,6 +487,9 @@
                     },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
+                    },
+                    "newOrExistingBastion": {
+                        "value": "existing"
                     },
                     "c2Framework": {
                         "value": "[parameters('c2Framework')]"

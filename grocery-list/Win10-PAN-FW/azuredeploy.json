@@ -159,11 +159,8 @@
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "asimParsers": [
-            "ASimAuthentication",
-            "ASimFileEvent",
-            "ASimNetworkSession",
-            "ASimProcessEvent",
-            "ASimRegistryEvent"
+            "ASimWindowsEvents",
+            "ASimWindowsSysmon"
         ],
         "dataCollectionRuleName": "WindowsDCR"
     },
@@ -389,9 +386,6 @@
                     "adminPasswordOrKey": {
                         "value": "[parameters('adminPassword')]"
                     },
-                    "vmName": {
-                        "value": "C2001"
-                    },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
@@ -400,6 +394,9 @@
                     },
                     "c2Framework": {
                         "value": "[parameters('c2Framework')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
                     }
                 }
             }

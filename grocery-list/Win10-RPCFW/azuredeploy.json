@@ -67,23 +67,6 @@
             },
             "minLength": 8
         },
-        "remoteAccessMode": {
-            "type": "string",
-            "defaultValue": "AllowPublicIP",
-            "allowedValues": [
-                "AllowPublicIP",
-                "AzureBastionHost"
-            ],
-            "metadata": {
-                "description": "Do you want to restrict access to your environment by a Public IP or set up an Azure Bastion Host. If the former, make sure you add your public IP address to the variable 'allowedIPAddresses'"
-            }
-        },
-        "allowedIPAddresses": {
-            "type": "string",
-            "metadata": {
-                "description": "The sourceAddressPrefixes allowed to connect to this deployment"
-            }
-        },
         "numberOfWorkstations": {
             "type": "int",
             "defaultValue": 1,
@@ -172,41 +155,22 @@
             },
             "defaultValue": "mssentinel.local"
         },
-        "c2Framework": {
+        "remoteAccessMode": {
             "type": "string",
-            "defaultValue": "None",
+            "defaultValue": "AllowPublicIP",
             "allowedValues": [
-                "None",
-                "empire",
-                "covenant",
-                "caldera",
-                "metasploit",
-                "shad0w"
+                "AllowPublicIP",
+                "AzureBastionHost"
             ],
             "metadata": {
-                "description": "C2 framework to deploy"
+                "description": "Do you want to restrict access to your environment by a Public IP or set up an Azure Bastion Host. If the former, make sure you add your public IP address to the variable 'allowedIPAddresses'"
             }
         },
-        "c2NewVirtualNetwork": {
-            "type": "bool",
-            "metadata": {
-                "description": "Is this a new virtual network? If so, set this to true."
-            },
-            "defaultValue": true
-        },
-        "c2ExistingSubnetId": {
+        "allowedIPAddresses": {
             "type": "string",
             "metadata": {
-                "description": "Id of existing subnet used while setting up the network settings for the virtual VM."
-            },
-            "defaultValue": ""
-        },
-        "c2SubnetRange": {
-            "type": "string",
-            "metadata": {
-                "description": "subnet range"
-            },
-            "defaultValue": "10.0.0.0/24"
+                "description": "The sourceAddressPrefixes allowed to connect to this deployment"
+            }
         },
         "enableAADConnect": {
             "type": "bool",
@@ -221,6 +185,21 @@
                 "description": "RPC Firewall config file. Referece: https://github.com/zeronetworks/rpcfirewall"
             },
             "defaultValue": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/resources/configs/rpcfirewall/RpcFw.conf"
+        },
+        "c2Framework": {
+            "type": "string",
+            "defaultValue": "None",
+            "allowedValues": [
+                "None",
+                "empire",
+                "covenant",
+                "caldera",
+                "metasploit",
+                "shad0w"
+            ],
+            "metadata": {
+                "description": "C2 framework to deploy"
+            }
         },
         "location": {
             "type": "string",
@@ -320,9 +299,6 @@
             "name": "deployWinADWEC",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
-            "dependsOn": [
-                "deployMSSentinel2Go"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -479,15 +455,6 @@
                     "adminPasswordOrKey": {
                         "value": "[parameters('adminPassword')]"
                     },
-                    "newVirtualNetwork": {
-                        "value": "[parameters('c2NewVirtualNetwork')]"
-                    },
-                    "existingSubnetId": {
-                        "value": "[parameters('c2ExistingSubnetId')]"
-                    },
-                    "subnetRange": {
-                        "value": "[parameters('c2SubnetRange')]"
-                    },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
                     },
@@ -496,6 +463,9 @@
                     },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
+                    },
+                    "newOrExistingBastion": {
+                        "value": "existing"
                     },
                     "c2Framework": {
                         "value": "[parameters('c2Framework')]"
