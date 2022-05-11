@@ -6,7 +6,7 @@
             "defaultValue": [],
             "type": "Array",
             "metadata": {
-                "description": "Log Analytics Workspace solutions"
+                "description": "Log Analytics Workspace solutions. Example: [\"VMInsights\"]"
             }
         },
         "workspaceName": {
@@ -22,7 +22,7 @@
             }
         },
         "location": {
-            "defaultValue": "",
+            "defaultValue": "[resourceGroup().location]",
             "type": "String"
         }
     },
