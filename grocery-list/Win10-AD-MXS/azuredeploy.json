@@ -111,7 +111,7 @@
         },
         "windowsServerVersion": {
             "type": "string",
-            "defaultValue": "latest",
+            "defaultValue": "17763.3131.220505",
             "allowedValues": [
                 "17763.1282.2006061952",
                 "17763.1339.2007101755",
@@ -127,8 +127,12 @@
                 "17763.1879.2104091832",
                 "17763.1935.2105080716",
                 "17763.1999.2106060321",
+                "17763.3131.220505",
                 "latest"
-            ]
+            ],
+            "metadata": {
+                "description": "The specific version for the Server VM."
+            }
         },
         "vmSize": {
             "type": "string",
