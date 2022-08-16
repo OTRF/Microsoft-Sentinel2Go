@@ -1,0 +1,273 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "functionAppName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 60,
+            "defaultValue": "[concat('func', uniquestring(resourceGroup().id, deployment().name, utcNow()))]",
+            "metadata": {
+                "description": "Specifies the name of the Function App. This template also append random strings to make it unique."
+            }
+        },
+        "storageAccountSKUName": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_GRS",
+                "Standard_GZRS",
+                "Standard_LRS",
+                "Standard_RAGRS",
+                "Standard_RAGZRS",
+                "Standard_ZRS"
+            ],
+            "metadata": {
+                "description": "The SKU name. Required for account creation; optional for update. Note that in older versions, SKU name was called accountType."
+            }
+        },
+        "storageAccountType": {
+            "type": "string",
+            "defaultValue": "Storage",
+            "allowedValues": [
+                "Storage",
+                "StorageV2"
+            ],
+            "metadata": {
+                "description": "Indicates the type of storage account."
+            }
+        },
+        "powerShellVersion": {
+            "type": "String",
+            "defaultValue": "~7",
+            "allowedValues": [
+                "7.2",
+                "~7"
+            ],
+            "metadata": {
+                "description": "PowerShell Runtime Stack version."
+            }
+        },
+        "appServicePlanSkuName": {
+            "type": "String",
+            "defaultValue": "Y1",
+            "metadata": {
+                "description": "Name of the resource SKU"
+            },
+            "allowedValues": [
+                //name  Tier          Full name
+                "D1",   //Shared      an D1 Shared
+                "F1",   //Free        an F1 Free
+                "B1",   //Basic       an B1 Basic
+                "B2",   //Basic       an B2 Basic
+                "B3",   //Basic       an B3 Basic
+                "S1",   //Standard    an S1 Standard
+                "S2",   //Standard    an S2 Standard
+                "S3",   //Standard    an S3 Standard
+                "P1",   //Premium     an P1 Premium
+                "P2",   //Premium     an P2 Premium
+                "P3",   //Premium     an P3 Premium
+                "P1V2", //PremiumV2   an P1V2 PremiumV2
+                "P2V2", //PremiumV2   an P2V2 PremiumV2
+                "P3V2", //PremiumV2   an P3V2 PremiumV2
+                "I1",   //Isolated    an I2 Isolated
+                "I2",   //Isolated    an I2 Isolated
+                "I3",   //Isolated    an I3 Isolated
+                "Y1",   //Dynamic     a  function consumption plan
+                "EP1",  //ElasticPremium
+                "EP2",  //ElasticPremium
+                "EP3"   //ElasticPremium
+            ]
+        },
+        "use32BitWorkerProcess": {
+            "type": "Bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "use 32-bit worker process or not"
+            }
+        },
+        "netFrameworkVersion": {
+            "type": "String",
+            "defaultValue": "v6.0",
+            "allowedValues": [
+                "v4.0",
+                "v6.0"
+            ],
+            "metadata": {
+                "description": ".NET Framework version."
+            }
+        },
+        "websiteRunFromPackage": {
+            "type": "string",
+            "defaultValue": "0",
+            "allowedValues": [
+                "0",
+                "1"
+            ],
+            "metadata": {
+                "description": "WEBSITE_RUN_FROM_PACKAGE='1' lets you run your app from a package local to your app."
+            }
+        },
+        "packageUri": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The zip content url. In Azure App Service, you can run your apps directly from a deployment ZIP package file."
+            }
+        },
+        "identityType": {
+            "type": "string",
+            "metadata": {
+                "description": "The type of identity used for the virtual machine. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user assigned identities. The type 'None' will remove any identities from the virtual machine. - SystemAssigned, UserAssigned, None. Reference: https://docs.microsoft.com/en-us/azure/templates/microsoft.compute/virtualmachines?tabs=json#virtualmachineidentity-object"
+            },
+            "defaultValue": "None",
+            "allowedValues": [
+                "SystemAssigned",
+                "UserAssigned",
+                "SystemAssigned, UserAssigned",
+                "None"
+            ]
+        },
+        "userAssignedIdentityId": {
+            "type": "string",
+            "metadata": {
+                "description": "An array of user asigned managed identities associated with the Azure Function app. The user identity should be in the resource id format: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName} and separated by a comma if there is more than one."
+            },
+            "defaultValue": ""
+        },
+        "dceUri": {
+            "type": "string",
+            "metadata": {
+                "description": "Data collection endpoint URI"
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        }
+    },
+    "variables": {
+        "functionAppName": "[substring(concat(parameters('functionAppName'), uniqueString(resourceGroup().id)), 0, 20)]",
+        "appServicePlanName": "[concat('ASP-', variables('functionAppName'))]",
+        "storageAccountName":"[concat(variables('functionAppName'), 'sa')]",
+        "storageSuffix":"[environment().suffixes.storage]",
+        "kind": "functionapp", // Windows
+        "siteConfig": {
+            "powerShellVersion": "[parameters('powerShellVersion')]",
+            "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
+            "netFrameworkVersion": "[parameters('netFrameworkVersion')]"
+        },
+        // Managed Identity
+        "identityType": {"type": "[parameters('identityType')]"},
+        "userAssignedIdentity": {"userAssignedIdentities": {"[parameters('userAssignedIdentityId')]": {}}},
+        "identity" : "[if(empty(parameters('userAssignedIdentityId')), variables('identityType'), union(variables('identityType'), variables('userAssignedIdentity')))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-06-01",
+            "name": "[variables('storageAccountName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "[parameters('storageAccountSKUName')]"
+            },
+            "kind": "[parameters('storageAccountType')]"
+        },
+        {
+            "type": "Microsoft.Insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[variables('functionAppName')]",
+            "location": "[parameters('location')]",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "IngestionMode": "ApplicationInsights",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2021-03-01",
+            "name": "[variables('appServicePlanName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "Name": "[parameters('appServicePlanSkuName')]"
+            },
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2021-02-01",
+            "name": "[variables('functionAppName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+                "[resourceId('Microsoft.Insights/components', variables('functionAppName'))]"
+            ],
+            "kind": "[variables('Kind')]",
+            "identity": "[variables('identity')]",
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+                "siteConfig": "[variables('siteConfig')]"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2020-09-01",
+                    "type": "config",
+                    "name": "appsettings",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', variables('functionAppName'))]"
+                    ],
+                    "properties": {
+                        "FUNCTIONS_EXTENSION_VERSION": "~4",
+                        "FUNCTIONS_WORKER_RUNTIME": "powershell",
+                        "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.insights/components', variables('functionAppName')), '2015-05-01').InstrumentationKey]",
+                        "APPLICATIONINSIGHTS_CONNECTION_STRING": "[reference(resourceId('microsoft.insights/components', variables('functionAppName')), '2015-05-01').ConnectionString]",
+                        "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(variables('storageAccountName')),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value, ';EndpointSuffix=',toLower(variables('storageSuffix')))]",
+                        "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(variables('storageAccountName')),';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value, ';EndpointSuffix=',toLower(variables('storageSuffix')))]",
+                        "WEBSITE_CONTENTSHARE": "[toLower(variables('functionAppName'))]",
+                        "WEBSITE_RUN_FROM_PACKAGE": "[parameters('websiteRunFromPackage')]",
+                        "MUI_PRINCIPAL_ID": "[reference(parameters('userAssignedIdentityId'), '2018-11-30').principalId]",
+                        "DCE_URI": "[parameters('dceUri')]"
+                    }
+                },
+                {
+                    "condition": "[and(equals(parameters('websiteRunFromPackage'), '1'), not(empty(parameters('packageUri'))))]",
+                    "apiVersion": "2021-02-01",
+                    "type": "extensions",
+                    "name": "zipdeploy",    
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+                    ],
+                    "properties": {
+                        "packageUri": "[parameters('packageUri')]"
+                    }
+                }
+            ]      
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(variables('functionAppName'), '/', variables('functionAppName'), '.azurewebsites.net')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+            ],
+            "properties": {
+                "siteName": "[variables('functionAppName')]",
+                "hostNameType": "Verified"
+            }
+        }
+    ],
+    "outputs": {
+        "functionAppResource": {
+            "type": "object",
+            "value": "[reference(resourceId('Microsoft.Web/sites', variables('functionAppName')))]"
+        }
+    }
+}

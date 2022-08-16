@@ -1,0 +1,9 @@
+{
+    "bindings": [
+        {
+            "name": "shipping",
+            "type": "activityTrigger",
+            "direction": "in"
+        }
+    ]
+}
