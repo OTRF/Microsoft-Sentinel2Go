@@ -245,7 +245,7 @@
                     "type": "extensions",
                     "name": "zipdeploy",    
                     "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+                        "[concat('Microsoft.Web/sites/', variables('functionAppName'))]"
                     ],
                     "properties": {
                         "packageUri": "[parameters('packageUri')]"
