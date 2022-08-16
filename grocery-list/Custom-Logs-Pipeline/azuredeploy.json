@@ -12,7 +12,7 @@
         },
         "workspaceName": {
             "type": "string",
-            "defaultValue": "MSSen2Go",
+            "defaultValue": "MSSen2GoCL",
             "metadata": {
                 "description": "Name for the Log Analytics workspace used to aggregate data. If this is a new LA workspace, the template will add a unique string to the name you choose. If you are using an existing LA workspace, the name will not change and will be passed as is to the resources in the template."
             }
@@ -55,6 +55,14 @@
                 "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
             }
         },
+        "roleGuid": {
+            "type": "string",
+            "defaultValue": "[newGuid()]"
+        },
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
+        },
         "location": {
             "type": "string",
             "defaultValue": "westus2",
@@ -70,7 +78,10 @@
     },
     "variables": {
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
-        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/"
+        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
+        "funcAppIdentity" : "mssentinellogshipper",
+        "roleGuidOne" : "[guid(parameters('roleGuid'), 'guidOne')]",
+        "packageUri": "https://github.com/OTRF/Microsoft-Sentinel2Go/blob/master/grocery-list/Custom-Logs-Pipeline/functionApp/functionAppPackage.zip?raw=true"
 
     },
     "resources": [
@@ -102,6 +113,45 @@
             }
         },
         {
+            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+            "apiVersion": "2018-11-30",
+            "name": "[variables('funcAppIdentity')]",
+            "location": "[resourceGroup().location]"
+        },
+        {
+            "type": "Microsoft.Resources/deploymentScripts",
+            "apiVersion": "2020-10-01",
+            "name": "sleep",
+            "dependsOn": [
+                "[variables('funcAppIdentity')]"
+            ],
+            "location": "[resourceGroup().location]",
+            "kind": "AzurePowerShell",
+            "properties": {
+                "forceUpdateTag": "[parameters('utcValue')]",
+                "azPowerShellVersion": "6.2",
+                "timeout": "PT30M",
+                "scriptContent": "Start-Sleep -Seconds 10",
+                "supportingScriptUris": [],
+                "cleanupPreference": "OnSuccess",
+                "retentionInterval": "PT1H"
+            }
+        },
+        {
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2019-04-01-preview",
+            "name": "[variables('roleGuidOne')]",
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deploymentScripts/', 'sleep')]" 
+            ],
+            "properties": {
+                "roleDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/roleDefinitions/', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                "principalId": "[reference(variables('funcAppIdentity'), '2018-11-30').principalId]",
+                "principalType": "ServicePrincipal",
+                "scope": "[resourceGroup().id]"
+            }
+        },
+        {
             "name": "deployDataCollectionEndpoint",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
@@ -111,7 +161,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'),'templates/azure/Data-Collection-Endpoint/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmith'),'templates/azure/Azure-Monitor-Data-Collection-Endpoint/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -120,6 +170,39 @@
                     },
                     "location": {
                         "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "deployFunctionApp",
+            "dependsOn": [ 
+                "[concat('Microsoft.Authorization/roleAssignments/', variables('roleGuidOne'))]",
+                "deployDataCollectionEndpoint"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'grocery-list/Custom-Logs-Pipeline/functionApp/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "identityType": {
+                        "value": "UserAssigned"
+                    },
+                    "userAssignedIdentityId": {
+                        "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('funcAppIdentity'))]"
+                    },
+                    "websiteRunFromPackage": {
+                        "value": "1"
+                    },
+                    "packageUri": {
+                        "value": "[variables('packageUri')]"
+                    },
+                    "dceUri": {
+                        "value": "[reference('deployMSSentinel2Go').outputs.logsIngestionUri.value]"
                     }
                 }
             }
@@ -134,106 +217,22 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'),'templates/azure/Data-Collection-Rules/azuredeploy-2021-09-01-preview.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmith'),'templates/azure/Azure-Monitor-Data-Collection-Rules/custom-data-ingestion/allDCRs.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "ruleName": {
-                        "value": "winSecurityEventsDCR"
-                    },
-                    "tagsArray": {
-                        "value": {
-                            "createdBy": "Sentinel"
-                        }
+                    "targetTables": {
+                        "value": [
+                            "WindowsEvent",
+                            "SecurityEvent",
+                            "Syslog"
+                        ]
                     },
                     "workspaceResourceId": {
                         "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
                     },
-                    "dataCollectionEndpointId": {
-                        "value": "[reference('deployDataCollectionEndpoint').outputs.dataCollectionEndpointId.value]"
-                    },
-                    "streams": {
-                        "value": [
-                            "Custom-SecurityEvent"
-                        ]
-                    },
-                    "streamDeclarations": {
-                        "value": {
-                            "Custom-SecurityEvent": {
-                                "columns": [
-                                    {
-                                        "name": "Time",
-                                        "type": "datetime"
-                                    },
-                                    {
-                                        "name": "RawEventData",
-                                        "type": "string"
-                                    }
-                                ]
-                            }
-                        }
-                    },
-                    "transformKql": {
-                        "value": "source | extend EventData = parse_json(RawEventData) | extend TimeGenerated=Time,Computer=tostring(EventData.Hostname),EventSourceName=tostring(EventData.SourceName),Type='SecurityEvent' | project-away RawEventData"
-                    },
-                    "outputStream": {
-                        "value": "Microsoft-SecurityEvent"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    }
-                }
-            }
-        },
-        {
-            "name": "deployOtherWinEventsDCR",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-10-01",
-            "dependsOn": [
-                "deployDataCollectionEndpoint"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'),'templates/azure/Data-Collection-Rules/azuredeploy-2021-09-01-preview.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "ruleName": {
-                        "value": "otherWinEventsDCR"
-                    },
-                    "workspaceResourceId": {
-                        "value": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
-                    },
-                    "dataCollectionEndpointId": {
-                        "value": "[reference('deployDataCollectionEndpoint').outputs.dataCollectionEndpointId.value]"
-                    },
-                    "streams": {
-                        "value": [
-                            "Custom-WindowsEvent"
-                        ]
-                    },
-                    "streamDeclarations": {
-                        "value": {
-                            "Custom-WindowsEvent": {
-                                "columns": [
-                                    {
-                                        "name": "Time",
-                                        "type": "datetime"
-                                    },
-                                    {
-                                        "name": "RawEventData",
-                                        "type": "string"
-                                    }
-                                ]
-                            }
-                        }
-                    },
-                    "transformKql": {
-                        "value": "source | extend EventData = parse_json(RawEventData) | extend TimeGenerated=Time,Channel=tostring(EventData.Channel),Computer=tostring(EventData.Hostname),EventID=toint(EventData.EventID),EventLevel=toint(EventData.Level),Provider=tostring(EventData.SourceName),Task=toint(EventData.Task),Type='WindowsEvent'| project TimeGenerated,Channel,Computer,EventData,EventID,EventLevel,Provider,Task,Type"
-                    },
-                    "outputStream": {
-                        "value": "Microsoft-WindowsEvent"
+                    "dataCollectionEndpointResourceId": {
+                        "value": "[reference('deployDataCollectionEndpoint').outputs.dataCollectionEndpointResourceId.value]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
