@@ -202,7 +202,7 @@
                         "value": "[variables('packageUri')]"
                     },
                     "dceUri": {
-                        "value": "[reference('deployMSSentinel2Go').outputs.logsIngestionUri.value]"
+                        "value": "[reference('deployDataCollectionEndpoint').outputs.logsIngestionUri.value]"
                     }
                 }
             }
