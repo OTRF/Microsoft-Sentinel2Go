@@ -97,17 +97,6 @@
                 "description": ".NET Framework version."
             }
         },
-        "websiteRunFromPackage": {
-            "type": "string",
-            "defaultValue": "0",
-            "allowedValues": [
-                "0",
-                "1"
-            ],
-            "metadata": {
-                "description": "WEBSITE_RUN_FROM_PACKAGE='1' lets you run your app from a package local to your app."
-            }
-        },
         "packageUri": {
             "type": "string",
             "defaultValue": "",
@@ -234,21 +223,9 @@
                         "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(variables('storageAccountName')),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value, ';EndpointSuffix=',toLower(variables('storageSuffix')))]",
                         "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(variables('storageAccountName')),';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value, ';EndpointSuffix=',toLower(variables('storageSuffix')))]",
                         "WEBSITE_CONTENTSHARE": "[toLower(variables('functionAppName'))]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "[parameters('websiteRunFromPackage')]",
+                        "WEBSITE_RUN_FROM_PACKAGE": "[parameters('packageUri')]",
                         "MUI_PRINCIPAL_ID": "[reference(parameters('userAssignedIdentityId'), '2018-11-30').principalId]",
                         "DCE_URI": "[parameters('dceUri')]"
-                    }
-                },
-                {
-                    "condition": "[and(equals(parameters('websiteRunFromPackage'), '1'), not(empty(parameters('packageUri'))))]",
-                    "apiVersion": "2021-02-01",
-                    "type": "extensions",
-                    "name": "zipdeploy",    
-                    "dependsOn": [
-                        "[concat('Microsoft.Web/sites/', variables('functionAppName'))]"
-                    ],
-                    "properties": {
-                        "packageUri": "[parameters('packageUri')]"
                     }
                 }
             ]      
