@@ -14,9 +14,8 @@ if ($tableName -NotIn $builtInTables) {
 # Preparing execution
 $executorInput = @{
     EventLogUrl = $dataShippingRequest.eventLogUrl
-    DceUri = $dataShippingRequest.dceUri
+    DcrImmutableId = $dataShippingRequest.dcrImmutableId
     TableName = $tableName
-    StreamName = $dataShippingRequest.streamName
 } | ConvertTo-Json -Depth 10
 
 Write-Host ($executorInput | Out-String)

@@ -31,6 +31,8 @@ $TableName = $shipping.TableName
 Write-Host "[*] Downloading event log file.."
 # Extract Action name
 $fileLocation = Get-RemoteFile $EventLogUrl
+Write-Host "[*] File downloaded: $fileLocation"
+
 
 # Get Access Token
 $muiEndpoint = [System.Environment]::GetEnvironmentVariable('IDENTITY_ENDPOINT')
@@ -40,19 +42,19 @@ $ResourceUrl = 'https://monitor.azure.com/'
 $tokenAuthURI = $muiEndpoint + "?resource=$ResourceUrl&api-version=$ApiVersion&principal_id=$muiPrincipalId"
 $tokenResponse = Invoke-RestMethod -Method Get -Headers @{"X-IDENTITY-HEADER" = "$muiSecret" } -Uri $tokenAuthURI
 $accessToken = $tokenResponse.access_token
+$accessToken
 
 # Setting up main function
-Function Send-DataToDCE($payload, $size){
+Function Send-DataToDCE($payload, $size, $stream){
   write-host "############ Sending Data ############"
   write-host "JSON array size: $($size/1mb) MBs"
   
   $DceURI= [System.Environment]::GetEnvironmentVariable('DCE_URI')
-  $DcrImmutableId = $shipping.TableName
-  $StreamName = $shipping.StreamName
+  $DcrImmutableId = $shipping.DcrImmutableId
 
   # Initialize Headers and URI for POST request to the Data Collection Endpoint (DCE)
   $headers = @{"Authorization" = "Bearer $accessToken"; "Content-Type" = "application/json"}
-  $uri = "$DceURI/dataCollectionRules/$DcrImmutableId/streams/$StreamName`?api-version=2021-11-01-preview"
+  $uri = "$DceURI/dataCollectionRules/$DcrImmutableId/streams/$stream`?api-version=2021-11-01-preview"
   
   # Sending data to Data Collection Endpoint (DCE) -> Data Collection Rule (DCR) -> Azure Monitor table
   Invoke-RestMethod -Uri $uri -Method "Post" -Body (@($payload | ConvertFrom-Json | ConvertTo-Json)) -Headers $headers | Out-Null
@@ -107,6 +109,7 @@ foreach($line in $readLineIterator){
     }
     # Validate schema
     $allowedProperties = Compare-Object -ReferenceObject $securityEventProperties -DifferenceObject $currentEventProperties.name -PassThru -ExcludeDifferent -IncludeEqual
+    $StreamName = 'Custom-SecurityEvent'
   }
   elseif ($TableName -eq 'WindowsEvent') {
     # If Hostname is present, rename it to Computer
@@ -124,10 +127,12 @@ foreach($line in $readLineIterator){
 
     # Validate schema
     $allowedProperties = Compare-Object -ReferenceObject $windowsEventProperties -DifferenceObject $currentEventProperties.name -PassThru -ExcludeDifferent -IncludeEqual
+    $StreamName = 'Custom-WindowsEvent'
   }
   elseif ($TableName -eq 'Syslog') {
     # Validate schema
     $allowedProperties = Compare-Object -ReferenceObject $syslogProperties -DifferenceObject $currentEventProperties.name -PassThru -ExcludeDifferent -IncludeEqual
+    $StreamName = 'Custom-Syslog'
   }
 
   # Select only fields from the allowedProperties variable
@@ -143,7 +148,7 @@ foreach($line in $readLineIterator){
   }
   else {
     write-host "Sending current JSON array before processing more log entries.."
-    Send-DataToDCE -payload $json_records -size $json_array_current_size
+    Send-DataToDCE -payload $json_records -size $json_array_current_size -stream $StreamName
     # Keeping track of how much data we are sending over
     $total_size += $json_array_current_size
 
@@ -155,7 +160,7 @@ foreach($line in $readLineIterator){
   
   if($event_count -eq $numberOfLines){
     write-host "##### Last log entry in $dataset #######"
-    Send-DataToDCE -payload $json_records -size $json_array_current_size
+    Send-DataToDCE -payload $json_records -size $json_array_current_size -stream $StreamName
     # Keeping track of how much data we are sending over
     $total_size += $json_array_current_size
   }
