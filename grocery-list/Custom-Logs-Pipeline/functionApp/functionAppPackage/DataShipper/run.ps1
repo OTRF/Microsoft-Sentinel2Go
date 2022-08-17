@@ -3,25 +3,25 @@ param($shipping)
 Write-Host "[*] PowerShell Durable Activity Triggered.."
 
 function Get-RemoteFile ($uri) {
-  # Initialize WebClient
-  $wc = New-Object System.Net.WebClient
-  # Get file name
-  $request = [System.Net.WebRequest]::Create($uri)
-  $response = $request.GetResponse()
-  $fileName = [System.IO.Path]::GetFileName($response.ResponseUri)
-  $response.Close()
-  $outputFile = "$PWD\$fileName"
-  # Check to see if file already exists
-  if (!(Test-Path $outputFile)) {
-    Write-Host "[*] Downloading script from $uri .."
-    $wc.DownloadFile($uri, $outputFile)
-  }
-  # If for some reason, a file does not exists, STOP
-  if (!(Test-Path $outputFile)) {
-    throw "[*] $outputFile does not exist. File was not downloaded properly or it was deleted by system."
-  }
-  # Return file with full path
-  $outputFile
+    # Initialize WebClient
+    $wc = New-Object System.Net.WebClient
+    # Get file name
+    $request = [System.Net.WebRequest]::Create($uri)
+    $response = $request.GetResponse()
+    $fileName = [System.IO.Path]::GetFileName($response.ResponseUri)
+    $response.Close()
+    $outputFile = "$PWD\$fileName"
+    # Check to see if file already exists
+    if (!(Test-Path $outputFile)) {
+        Write-Host "[*] Downloading script from $uri .."
+        $wc.DownloadFile($uri, $outputFile)
+    }
+    # If for some reason, a file does not exists, STOP
+    if (!(Test-Path $outputFile)) {
+        throw "[*] $outputFile does not exist. File was not downloaded properly or it was deleted by system."
+    }
+    # Return file with full path
+    $outputFile
 }
 
 Write-Host "[*] Setting variables.."
@@ -33,31 +33,31 @@ Write-Host "[*] Downloading event log file.."
 $fileLocation = Get-RemoteFile $EventLogUrl
 Write-Host "[*] File downloaded: $fileLocation"
 
-
 # Get Access Token
 $muiEndpoint = [System.Environment]::GetEnvironmentVariable('IDENTITY_ENDPOINT')
 $muiSecret = [System.Environment]::GetEnvironmentVariable('IDENTITY_HEADER')
 $muiPrincipalId = [System.Environment]::GetEnvironmentVariable('MUI_PRINCIPAL_ID')
 $ResourceUrl = 'https://monitor.azure.com/'
-$tokenAuthURI = $muiEndpoint + "?resource=$ResourceUrl&api-version=$ApiVersion&principal_id=$muiPrincipalId"
+$tokenAuthURI = $muiEndpoint + "?resource=$ResourceUrl&api-version=2019-08-01&principal_id=$muiPrincipalId"
+write-host "[+] Token Auth URI: $tokenAuthURI"
 $tokenResponse = Invoke-RestMethod -Method Get -Headers @{"X-IDENTITY-HEADER" = "$muiSecret" } -Uri $tokenAuthURI
 $accessToken = $tokenResponse.access_token
-$accessToken
+write-host "[+] Access Token: $accessToken"
 
 # Setting up main function
 Function Send-DataToDCE($payload, $size, $stream){
-  write-host "############ Sending Data ############"
-  write-host "JSON array size: $($size/1mb) MBs"
-  
-  $DceURI= [System.Environment]::GetEnvironmentVariable('DCE_URI')
-  $DcrImmutableId = $shipping.DcrImmutableId
+    write-host "############ Sending Data ############"
+    write-host "JSON array size: $($size/1mb) MBs"
+    
+    $DceURI= [System.Environment]::GetEnvironmentVariable('DCE_URI')
+    $DcrImmutableId = $shipping.DcrImmutableId
 
-  # Initialize Headers and URI for POST request to the Data Collection Endpoint (DCE)
-  $headers = @{"Authorization" = "Bearer $accessToken"; "Content-Type" = "application/json"}
-  $uri = "$DceURI/dataCollectionRules/$DcrImmutableId/streams/$stream`?api-version=2021-11-01-preview"
-  
-  # Sending data to Data Collection Endpoint (DCE) -> Data Collection Rule (DCR) -> Azure Monitor table
-  Invoke-RestMethod -Uri $uri -Method "Post" -Body (@($payload | ConvertFrom-Json | ConvertTo-Json)) -Headers $headers | Out-Null
+    # Initialize Headers and URI for POST request to the Data Collection Endpoint (DCE)
+    $headers = @{"Authorization" = "Bearer $accessToken"; "Content-Type" = "application/json"}
+    $uri = "$DceURI/dataCollectionRules/$DcrImmutableId/streams/$stream`?api-version=2021-11-01-preview"
+
+    # Sending data to Data Collection Endpoint (DCE) -> Data Collection Rule (DCR) -> Azure Monitor table
+    Invoke-RestMethod -Uri $uri -Method "Post" -Body (@($payload | ConvertFrom-Json | ConvertTo-Json)) -Headers $headers | Out-Null
 }
 
 # Maximum size of API call: 1MB for both compressed and uncompressed data
@@ -85,85 +85,85 @@ Write-Host "[+] Number of events to process: $numberOfLines"
   
 # Read each JSON object from file
 foreach($line in $readLineIterator){
-  # Increase event number
-  $event_count += 1
+    # Increase event number
+    $event_count += 1
 
-  if ($shiping.TimestampField){
-    $TimeGenerated= $line | Convertfrom-json | Select-Object -ExpandProperty $shiping.TimestampField
-  }
-  else {
-    $TimeGenerated = Get-Date ([datetime]::UtcNow) -Format O
-  }
-
-  # Processing Log entry as a compressed JSON object
-  $pscustomobject = $line | ConvertFrom-Json
-  $pscustomobject | Add-Member -MemberType NoteProperty -Name 'TimeGenerated' -Value $TimeGenerated -Force
-
-  # Current properties of PSCustomObject
-  $currentEventProperties=Get-Member -InputObject $pscustomobject -MemberType NoteProperty
-
-  if ($TableName -eq 'SecurityEvent') {
-    # If Hostname is present, rename it to Computer
-    if ( $pscustomobject.psobject.properties.match('Hostname').Count ) {
-        $pscustomobject | Add-Member -MemberType NoteProperty -Name 'Computer' -Value $pscustomobject.Hostname -Force
+    if ($shiping.TimestampField){
+        $TimeGenerated= $line | Convertfrom-json | Select-Object -ExpandProperty $shiping.TimestampField
     }
-    # Validate schema
-    $allowedProperties = Compare-Object -ReferenceObject $securityEventProperties -DifferenceObject $currentEventProperties.name -PassThru -ExcludeDifferent -IncludeEqual
-    $StreamName = 'Custom-SecurityEvent'
-  }
-  elseif ($TableName -eq 'WindowsEvent') {
-    # If Hostname is present, rename it to Computer
-    if ( $pscustomobject.psobject.properties.match('Hostname').Count ) {
-        $pscustomobject | Add-Member -MemberType NoteProperty -Name 'Computer' -Value $pscustomobject.Hostname -Force
+    else {
+        $TimeGenerated = Get-Date ([datetime]::UtcNow) -Format O
     }
 
-    # Validate EventData
-    if ( -not $pscustomobject.psobject.properties.match('EventData').Count ) {
-        $pscustomobject | Add-Member -MemberType NoteProperty -Name 'EventData' -Value $($line | ConvertTo-Json -Compress) -Force
+    # Processing Log entry as a compressed JSON object
+    $pscustomobject = $line | ConvertFrom-Json
+    $pscustomobject | Add-Member -MemberType NoteProperty -Name 'TimeGenerated' -Value $TimeGenerated -Force
+
+    # Current properties of PSCustomObject
+    $currentEventProperties=Get-Member -InputObject $pscustomobject -MemberType NoteProperty
+
+    if ($TableName -eq 'SecurityEvent') {
+        # If Hostname is present, rename it to Computer
+        if ( $pscustomobject.psobject.properties.match('Hostname').Count ) {
+            $pscustomobject | Add-Member -MemberType NoteProperty -Name 'Computer' -Value $pscustomobject.Hostname -Force
+        }
+        # Validate schema
+        $allowedProperties = Compare-Object -ReferenceObject $securityEventProperties -DifferenceObject $currentEventProperties.name -PassThru -ExcludeDifferent -IncludeEqual
+        $StreamName = 'Custom-SecurityEvent'
+    }
+    elseif ($TableName -eq 'WindowsEvent') {
+      # If Hostname is present, rename it to Computer
+      if ( $pscustomobject.psobject.properties.match('Hostname').Count ) {
+          $pscustomobject | Add-Member -MemberType NoteProperty -Name 'Computer' -Value $pscustomobject.Hostname -Force
+      }
+
+      # Validate EventData
+      if ( -not $pscustomobject.psobject.properties.match('EventData').Count ) {
+          $pscustomobject | Add-Member -MemberType NoteProperty -Name 'EventData' -Value $($line | ConvertTo-Json -Compress) -Force
+      }
+      
+        # Add Type WindowsEvent
+        $pscustomobject | Add-Member -MemberType NoteProperty -Name 'Type' -Value 'WindowsEvent' -Force
+
+        # Validate schema
+        $allowedProperties = Compare-Object -ReferenceObject $windowsEventProperties -DifferenceObject $currentEventProperties.name -PassThru -ExcludeDifferent -IncludeEqual
+        $StreamName = 'Custom-WindowsEvent'
+    }
+    elseif ($TableName -eq 'Syslog') {
+        # Validate schema
+        $allowedProperties = Compare-Object -ReferenceObject $syslogProperties -DifferenceObject $currentEventProperties.name -PassThru -ExcludeDifferent -IncludeEqual
+        $StreamName = 'Custom-Syslog'
+    }
+
+    # Select only fields from the allowedProperties variable
+    $message = $pscustomobject | Select-Object -Property @($allowedProperties) | ConvertTo-Json -Compress
+    
+    # Getting proposed and current JSON array size
+    $json_array_current_size = ([System.Text.Encoding]::UTF8.GetBytes(@($json_records | Convertfrom-json | ConvertTo-Json))).Length
+    $json_array_proposed_size = ([System.Text.Encoding]::UTF8.GetBytes(@(($json_records + $message) | Convertfrom-json | ConvertTo-Json))).Length
+
+    if ($json_array_proposed_size -le $APILimitBytes){
+        $json_records += $message
+        $json_array_current_size = $json_array_proposed_size
+    }
+    else {
+        write-host "Sending current JSON array before processing more log entries.."
+        Send-DataToDCE -payload $json_records -size $json_array_current_size -stream $StreamName
+        # Keeping track of how much data we are sending over
+        $total_size += $json_array_current_size
+
+        # There are more events to process..
+        write-host"######## Resetting JSON Array ########"
+        $json_records = @($message)
+        $json_array_current_size = ([System.Text.Encoding]::UTF8.GetBytes(@($json_records | Convertfrom-json | ConvertTo-Json))).Length
     }
     
-    # Add Type WindowsEvent
-    $pscustomobject | Add-Member -MemberType NoteProperty -Name 'Type' -Value 'WindowsEvent' -Force
-
-    # Validate schema
-    $allowedProperties = Compare-Object -ReferenceObject $windowsEventProperties -DifferenceObject $currentEventProperties.name -PassThru -ExcludeDifferent -IncludeEqual
-    $StreamName = 'Custom-WindowsEvent'
-  }
-  elseif ($TableName -eq 'Syslog') {
-    # Validate schema
-    $allowedProperties = Compare-Object -ReferenceObject $syslogProperties -DifferenceObject $currentEventProperties.name -PassThru -ExcludeDifferent -IncludeEqual
-    $StreamName = 'Custom-Syslog'
-  }
-
-  # Select only fields from the allowedProperties variable
-  $message = $pscustomobject | Select-Object -Property @($allowedProperties) | ConvertTo-Json -Compress
-  
-  # Getting proposed and current JSON array size
-  $json_array_current_size = ([System.Text.Encoding]::UTF8.GetBytes(@($json_records | Convertfrom-json | ConvertTo-Json))).Length
-  $json_array_proposed_size = ([System.Text.Encoding]::UTF8.GetBytes(@(($json_records + $message) | Convertfrom-json | ConvertTo-Json))).Length
-
-  if ($json_array_proposed_size -le $APILimitBytes){
-    $json_records += $message
-    $json_array_current_size = $json_array_proposed_size
-  }
-  else {
-    write-host "Sending current JSON array before processing more log entries.."
-    Send-DataToDCE -payload $json_records -size $json_array_current_size -stream $StreamName
-    # Keeping track of how much data we are sending over
-    $total_size += $json_array_current_size
-
-    # There are more events to process..
-    write-host"######## Resetting JSON Array ########"
-    $json_records = @($message)
-    $json_array_current_size = ([System.Text.Encoding]::UTF8.GetBytes(@($json_records | Convertfrom-json | ConvertTo-Json))).Length
-  }
-  
-  if($event_count -eq $numberOfLines){
-    write-host "##### Last log entry in $dataset #######"
-    Send-DataToDCE -payload $json_records -size $json_array_current_size -stream $StreamName
-    # Keeping track of how much data we are sending over
-    $total_size += $json_array_current_size
-  }
+    if($event_count -eq $numberOfLines){
+        write-host "##### Last log entry in $dataset #######"
+        Send-DataToDCE -payload $json_records -size $json_array_current_size -stream $StreamName
+        # Keeping track of how much data we are sending over
+        $total_size += $json_array_current_size
+    }
 }
 Write-Host "[+] Finished processing dataset"
 Write-Host "[+] Number of events processed: $event_count"
