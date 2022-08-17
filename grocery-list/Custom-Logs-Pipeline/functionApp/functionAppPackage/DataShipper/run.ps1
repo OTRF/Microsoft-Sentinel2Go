@@ -169,3 +169,9 @@ Write-Host "[+] Finished processing dataset"
 Write-Host "[+] Number of events processed: $event_count"
 Write-Host "[+] Total data sent: $($total_size/1mb) MBs"
 write-Host "*******************************************"
+
+$results = [PSCustomObject]@{
+  EventsSent = "$event_count"
+  DataSent = "$($total_size/1mb) MBs"
+}
+$results

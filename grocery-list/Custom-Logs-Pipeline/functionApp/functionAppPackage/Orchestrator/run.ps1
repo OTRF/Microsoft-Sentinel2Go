@@ -16,9 +16,10 @@ $executorInput = @{
     EventLogUrl = $dataShippingRequest.eventLogUrl
     DcrImmutableId = $dataShippingRequest.dcrImmutableId
     TableName = $tableName
-}
+} | ConvertTo-Json
 
 Write-Host ($executorInput | Out-String)
 
 # Invoke activity function
-Invoke-DurableActivity -FunctionName "DataShipper" -Input $executorInput
+$output = Invoke-DurableActivity -FunctionName "DataShipper" -Input $executorInput | ConvertTo-Json
+$output
