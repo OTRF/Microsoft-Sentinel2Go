@@ -336,7 +336,8 @@
                                 "Security!*[System[(EventID=4726)]]",
                                 "Security!*[System[(EventID=4720)]]",
                                 "Security!*[System[(EventID=4670 or EventID=4657)]]",
-                                "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Key']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Key']])))"
+                                "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Key']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Key']])))",
+                                "Security!*[System[Provider[@Name='AD FS' or @Name='AD FS Auditing' or @Name='AD FS Tracing']]]"
                             ]
                         }
                     ]
