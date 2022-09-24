@@ -175,36 +175,6 @@
             }
         },
         {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2021-04-01",
-            "name": "deployFunctionApp",
-            "dependsOn": [ 
-                "[concat('Microsoft.Authorization/roleAssignments/', variables('roleGuidOne'))]",
-                "deployDataCollectionEndpoint"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'grocery-list/Custom-Logs-Pipeline/functionApp/azuredeploy.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "identityType": {
-                        "value": "UserAssigned"
-                    },
-                    "userAssignedIdentityId": {
-                        "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('funcAppIdentity'))]"
-                    },
-                    "packageUri": {
-                        "value": "[variables('packageUri')]"
-                    },
-                    "dceUri": {
-                        "value": "[reference('deployDataCollectionEndpoint').outputs.logsIngestionUri.value]"
-                    }
-                }
-            }
-        },
-        {
             "name": "deployDCRs",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
@@ -233,6 +203,42 @@
                     },
                     "location": {
                         "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "deployFunctionApp",
+            "dependsOn": [ 
+                "[concat('Microsoft.Authorization/roleAssignments/', variables('roleGuidOne'))]",
+                "deployDCRs"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'grocery-list/Custom-Logs-Pipeline/functionApp/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "identityType": {
+                        "value": "UserAssigned"
+                    },
+                    "userAssignedIdentityId": {
+                        "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('funcAppIdentity'))]"
+                    },
+                    "packageUri": {
+                        "value": "[variables('packageUri')]"
+                    },
+                    "dceUri": {
+                        "value": "[reference('deployDataCollectionEndpoint').outputs.logsIngestionUri.value]"
+                    },
+                    "windowsEventDCRId": {
+                        "value": "[reference('deployDCRs').outputs.windowsEventDCRId.value]"
+                    },
+                    "securityEventDCRId": {
+                        "value": "[reference('deployDCRs').outputs.securityEventDCRId.value]"
                     }
                 }
             }

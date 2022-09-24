@@ -2,24 +2,40 @@ param($Context)
 
 $dataShippingRequest = $Context.Input | ConvertFrom-Json -ASHashTable
 
-# Getting Information
+# Set output variable to aggregate all outputs
+$output = [ordered]@{}
 
-$builtInTables = @("SecurityEvent","WindowsEvent","Syslog")
-$tableName = $dataShippingRequest.tableName
-
-if ($tableName -NotIn $builtInTables) {
-    $tableName = "CustomTable"
+# Current event providers that would send data to a built-in table
+$eventToTable = @{
+    'Microsoft-Windows-Sysmon' = "WindowsEvent"
+    'Service Control Manager' = 'WindowsEvent'
+    'Microsoft-Windows-Directory-Services-SAM' = 'WindowsEvent'
+    'Microsoft-Windows-WMI-Activity' = 'WindowsEvent'
+    'Microsoft-Windows-Security-Auditing' = 'SecurityEvent'
 }
 
-# Preparing execution
-$executorInput = @{
-    EventLogUrl = $dataShippingRequest.eventLogUrl
-    DcrImmutableId = $dataShippingRequest.dcrImmutableId
-    TableName = $tableName
-} | ConvertTo-Json
+$ParallelTasks = 
+    foreach ($dataSample in $dataShippingRequest.dataSamples) {
+        # Set table name
+        if ($eventToTable.ContainsKey($dataSample.eventSourceName)){
+            $tableName = $eventToTable[$dataSample.eventSourceName]
+        }
+        else {
+            $tableName = "CustomTable"
+        }
 
-Write-Host ($executorInput | Out-String)
+        # Preparing execution
+        $executorInput = @{
+            EventLogUrl = $dataShippingRequest.eventLogUrl
+            TableName = $tableName
+        } | ConvertTo-Json
 
-# Invoke activity function
-$output = Invoke-DurableActivity -FunctionName "DataShipper" -Input $executorInput | ConvertTo-Json
+        Write-Host ($executorInput | Out-String)
+        
+        # Invoke activity function
+        Invoke-DurableActivity -FunctionName "DataShipper" -Input $executorInput -NoWait
+    }
+
+# Wait for outputs
+$output = Wait-ActivityFunction -Task $ParallelTasks | ConvertTo-Json
 $output
