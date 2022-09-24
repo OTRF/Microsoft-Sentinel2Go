@@ -33,7 +33,7 @@ function Get-RemoteFile ($uri) {
         $eventsFolder = Join-Path $env:ALLUSERSPROFILE $UnpackName
         Write-host "[*] Allocating new folder path: $eventsFolder"
         # Decompressing file
-        expand-archive -path $outputFile -DestinationPath $eventsFolder
+        expand-archive -path $outputFile -DestinationPath $eventsFolder -Force
         if (!(Test-Path $eventsFolder)) { Write-Error "$outputFile was not decompressed successfully" -ErrorAction Stop }
         Write-host "[*] Removing $outputFile"
         Remove-Item $outputFile
@@ -49,9 +49,6 @@ $TableName = $shipping.TableName
 $windowsEventDCRImmutableId = [System.Environment]::GetEnvironmentVariable('WINDOWS_EVENT_DCR_IMMUTABLE_ID')
 $securityEventDCRImmutableId = [System.Environment]::GetEnvironmentVariable('SECURITY_EVENT_DCR_IMMUTABLE_ID')
 $dcrImmutableId = ''
-write-host "Win DCR: $windowsEventDCRImmutableId"
-write-host "Security DCR: $securityEventDCRImmutableId"
-Write-host "DCRImmutableId Variable: $dcrImmutableId"
 
 Write-Host "[*] Downloading event log file.."
 # Extract Action name
@@ -79,10 +76,8 @@ Function Send-DataToDCE($payload, $size, $stream, $dcrImmutableId){
     # Initialize Headers and URI for POST request to the Data Collection Endpoint (DCE)
     $headers = @{"Authorization" = "Bearer $accessToken"; "Content-Type" = "application/json"}
     $uri = "$DceURI/dataCollectionRules/$dcrImmutableId/streams/$stream`?api-version=2021-11-01-preview"
-    write-host "The URI to us to send data: $uri"
+    write-host "Sending Data to $uri"
     # Sending data to Data Collection Endpoint (DCE) -> Data Collection Rule (DCR) -> Azure Monitor table
-    write-host "Sending Data:"
-    write-host $payload
     Invoke-RestMethod -Uri $uri -Method "Post" -Body (@($payload | ConvertFrom-Json | ConvertTo-Json)) -Headers $headers | Out-Null
 }
 
