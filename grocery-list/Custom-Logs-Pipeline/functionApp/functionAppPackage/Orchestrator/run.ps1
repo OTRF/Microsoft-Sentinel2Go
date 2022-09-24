@@ -26,7 +26,7 @@ $ParallelTasks =
 
         # Preparing execution
         $executorInput = @{
-            EventLogUrl = $dataShippingRequest.eventLogUrl
+            EventLogUrl = $dataSample.eventLogUrl
             TableName = $tableName
         } | ConvertTo-Json
 
