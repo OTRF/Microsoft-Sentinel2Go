@@ -10,11 +10,14 @@ function Get-RemoteFile ($uri) {
     $response = $request.GetResponse()
     $fileName = [System.IO.Path]::GetFileName($response.ResponseUri)
     $response.Close()
-    $outputFile = "$PWD\$fileName"
+    # Set path of file to be downloaded
+    $outputFile = Join-Path $env:ALLUSERSPROFILE $filename
+    Write-host "[*] Allocating new file path: $outputFile"
     # Check to see if file already exists
     if (!(Test-Path $outputFile)) {
         Write-Host "[*] Downloading script from $uri .."
         $wc.DownloadFile($uri, $outputFile)
+        write-host $Error[0]
     }
     # If for some reason, a file does not exists, STOP
     if (!(Test-Path $outputFile)) {
@@ -27,9 +30,12 @@ function Get-RemoteFile ($uri) {
         # Unzip file
         write-Host "[*] Decompressing $outputFile .."
         $UnpackName = (Get-Item $outputFile).Basename
-        $eventsFolder = "$PWD\$UnpackName"
+        $eventsFolder = Join-Path $env:ALLUSERSPROFILE $UnpackName
+        Write-host "[*] Allocating new folder path: $eventsFolder"
+        # Decompressing file
         expand-archive -path $outputFile -DestinationPath $eventsFolder
         if (!(Test-Path $eventsFolder)) { Write-Error "$outputFile was not decompressed successfully" -ErrorAction Stop }
+        Write-host "[*] Removing $outputFile"
         Remove-Item $outputFile
         $outputFile = (Get-ChildItem -Path $eventsFolder | Sort-Object | Select-Object -First 1).FullName
     }
@@ -40,8 +46,12 @@ function Get-RemoteFile ($uri) {
 Write-Host "[*] Setting variables.."
 $EventLogUrl = $shipping.EventLogUrl
 $TableName = $shipping.TableName
-$windowsEventDCRId = [System.Environment]::GetEnvironmentVariable('WINDOWS_EVENT_DCR_ID')
-$securityEventDCRId = [System.Environment]::GetEnvironmentVariable('SECURITY_EVENT_DCR_ID')
+$windowsEventDCRImmutableId = [System.Environment]::GetEnvironmentVariable('WINDOWS_EVENT_DCR_IMMUTABLE_ID')
+$securityEventDCRImmutableId = [System.Environment]::GetEnvironmentVariable('SECURITY_EVENT_DCR_IMMUTABLE_ID')
+$dcrImmutableId = ''
+write-host "Win DCR: $windowsEventDCRImmutableId"
+write-host "Security DCR: $securityEventDCRImmutableId"
+Write-host "DCRImmutableId Variable: $dcrImmutableId"
 
 Write-Host "[*] Downloading event log file.."
 # Extract Action name
@@ -68,9 +78,11 @@ Function Send-DataToDCE($payload, $size, $stream, $dcrImmutableId){
 
     # Initialize Headers and URI for POST request to the Data Collection Endpoint (DCE)
     $headers = @{"Authorization" = "Bearer $accessToken"; "Content-Type" = "application/json"}
-    $uri = "$DceURI/dataCollectionRules/$DcrImmutableId/streams/$stream`?api-version=2021-11-01-preview"
-
+    $uri = "$DceURI/dataCollectionRules/$dcrImmutableId/streams/$stream`?api-version=2021-11-01-preview"
+    write-host "The URI to us to send data: $uri"
     # Sending data to Data Collection Endpoint (DCE) -> Data Collection Rule (DCR) -> Azure Monitor table
+    write-host "Sending Data:"
+    write-host $payload
     Invoke-RestMethod -Uri $uri -Method "Post" -Body (@($payload | ConvertFrom-Json | ConvertTo-Json)) -Headers $headers | Out-Null
 }
 
@@ -126,7 +138,7 @@ foreach($eventLog in $jsonObjects){
         $allowedProperties = Compare-Object -ReferenceObject $securityEventProperties -DifferenceObject $currentEventProperties.name -PassThru -ExcludeDifferent -IncludeEqual
         # General Variables
         $StreamName = 'Custom-SecurityEvent'
-        $dcrImmutableId = $securityEventDCRId
+        $dcrImmutableId = $securityEventDCRImmutableId
     }
     elseif ($TableName -eq 'WindowsEvent') {
       # If Hostname is present, rename it to Computer
@@ -144,7 +156,7 @@ foreach($eventLog in $jsonObjects){
       $allowedProperties = Compare-Object -ReferenceObject $windowsEventProperties -DifferenceObject $currentEventProperties.name -PassThru -ExcludeDifferent -IncludeEqual
       # General variables
       $StreamName = 'Custom-WindowsEvent'
-      $dcrImmutableId = $windowsEventDCRId
+      $dcrImmutableId = $windowsEventDCRImmutableId
     }
 
     # Select only fields from the allowedProperties variable

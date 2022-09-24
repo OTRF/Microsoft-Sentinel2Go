@@ -130,13 +130,13 @@
                 "description": "Data collection endpoint URI"
             }
         },
-        "windowsEventDCRId": {
+        "windowsEventDCRImmutableId": {
             "type": "string",
             "metadata": {
                 "description": "Windows event data collection rule ID"
             }
         },
-        "securityEventDCRId": {
+        "securityEventDCRImmutableId": {
             "type": "string",
             "metadata": {
                 "description": "Security event data collection rule ID"
@@ -238,8 +238,8 @@
                         "WEBSITE_RUN_FROM_PACKAGE": "[parameters('packageUri')]",
                         "MUI_PRINCIPAL_ID": "[reference(parameters('userAssignedIdentityId'), '2018-11-30').principalId]",
                         "DCE_URI": "[parameters('dceUri')]",
-                        "WINDOWS_EVENT_DCR_ID": "[parameters('windowsEventDCRId')]",
-                        "SECURITY_EVENT_DCR_ID": "[parameters('securityEventDCRId')]"
+                        "WINDOWS_EVENT_DCR_IMMUTABLE_ID": "[parameters('windowsEventDCRImmutableId')]",
+                        "SECURITY_EVENT_DCR_IMMUTABLE_ID": "[parameters('securityEventDCRImmutableId')]"
                     }
                 }
             ]      

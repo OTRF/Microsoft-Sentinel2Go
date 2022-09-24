@@ -234,11 +234,11 @@
                     "dceUri": {
                         "value": "[reference('deployDataCollectionEndpoint').outputs.logsIngestionUri.value]"
                     },
-                    "windowsEventDCRId": {
-                        "value": "[reference('deployDataCollectionRules').outputs.windowsEventDCRId.value]"
+                    "windowsEventDCRImmutableId": {
+                        "value": "[reference('deployDataCollectionRules').outputs.windowsEventDCRImmutableId.value]"
                     },
-                    "securityEventDCRId": {
-                        "value": "[reference('deployDataCollectionRules').outputs.securityEventDCRId.value]"
+                    "securityEventDCRImmutableId": {
+                        "value": "[reference('deployDataCollectionRules').outputs.securityEventDCRImmutableId.value]"
                     }
                 }
             }
