@@ -175,7 +175,7 @@
             }
         },
         {
-            "name": "deployDCRs",
+            "name": "deployDataCollectionRules",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "dependsOn": [
@@ -213,7 +213,7 @@
             "name": "deployFunctionApp",
             "dependsOn": [ 
                 "[concat('Microsoft.Authorization/roleAssignments/', variables('roleGuidOne'))]",
-                "deployDCRs"
+                "deployDataCollectionRules"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -235,10 +235,10 @@
                         "value": "[reference('deployDataCollectionEndpoint').outputs.logsIngestionUri.value]"
                     },
                     "windowsEventDCRId": {
-                        "value": "[reference('deployDCRs').outputs.windowsEventDCRId.value]"
+                        "value": "[reference('deployDataCollectionRules').outputs.windowsEventDCRId.value]"
                     },
                     "securityEventDCRId": {
-                        "value": "[reference('deployDCRs').outputs.securityEventDCRId.value]"
+                        "value": "[reference('deployDataCollectionRules').outputs.securityEventDCRId.value]"
                     }
                 }
             }
