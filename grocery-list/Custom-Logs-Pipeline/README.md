@@ -11,11 +11,15 @@ $orchestrator = 'https://<function-name>.azurewebsites.net/api/orchestrators/Orc
 ```
 
 ### Prepare Request
+
 ```PowerShell
-$shippingRequest = [Ordered]@{
-    dataSamples = @(
-        [Ordered]@{
-            eventLogUrl = 'https://raw.githubusercontent.com/OTRF/Security-Datasets/SecurityDatasets2.0/datasets/atomic/windows/190301-ADModification-ADReplication/DC01_Windows_Security.zip'
+$SimulationRequest = @{
+    title = 'Proof of Concept'
+    destination = 'AzureLogAnalytics'
+    datasets = @(
+        @{
+            number = 1
+            eventLogUrl = 'https://github.com/OTRF/Security-Datasets/raw/SecurityDatasets2.0/datasets/atomic/windows/190518-RegKeyModification-WDigestDowngrade/WORKSTATION6_Windows_Security.zip'
             eventSourceName = 'Microsoft-Windows-Security-Auditing'
         }
     )
