@@ -29,29 +29,30 @@ else {
     $durableActivityName = $destinationSet
 }
 
-$ParallelTasks = 
-    foreach ($dataSample in $dataShippingRequest.datasets) {
-        # Set table name
-        if ($eventToTable.ContainsKey($dataSample.eventSourceName)){
-            $tableName = $eventToTable[$dataSample.eventSourceName]
-        }
-        else {
-            $tableName = "CustomTable"
-        }
+$output = @{
+    Title = $dataShippingRequest.title
+    executions = [ordered]@{}
+}
 
-        # Preparing execution
-        $executorInput = @{
-            EventLogUrl = $dataSample.eventLogUrl
-            TableName = $tableName
-            SimulationId = $newGuid
-        } | ConvertTo-Json
-
-        Write-Host ($executorInput | Out-String)
-        
-        # Invoke activity function
-        Invoke-DurableActivity -FunctionName $durableActivityName -Input $executorInput -NoWait
+foreach ($dataSample in $dataShippingRequest.datasets) {
+    # Set table name
+    if ($eventToTable.ContainsKey($dataSample.eventSourceName)){
+        $tableName = $eventToTable[$dataSample.eventSourceName]
+    }
+    else {
+        $tableName = "CustomTable"
     }
 
-# Wait for outputs
-$output = Wait-ActivityFunction -Task $ParallelTasks | ConvertTo-Json
+    # Preparing execution
+    $executorInput = @{
+        EventLogUrl = $dataSample.eventLogUrl
+        TableName = $tableName
+        SimulationId = $newGuid
+    } | ConvertTo-Json
+
+    Write-Host ($executorInput | Out-String)
+    
+    # Invoke activity function
+    $output['executions'][$dataSample.number] = Invoke-DurableActivity -FunctionName $durableActivityName -Input $executorInput | ConvertTo-Json -Depth 1
+}
 $output
