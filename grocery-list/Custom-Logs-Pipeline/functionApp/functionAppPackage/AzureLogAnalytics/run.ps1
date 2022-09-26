@@ -2,7 +2,7 @@ param($shipping)
 
 Write-Host "[*] PowerShell Durable Activity Triggered.."
 
-function Get-RemoteFile ($uri) {
+function Get-RemoteFile ($uri, $outputDirectory) {
     # Initialize WebClient
     $wc = New-Object System.Net.WebClient
     # Get file name
@@ -11,48 +11,55 @@ function Get-RemoteFile ($uri) {
     $fileName = [System.IO.Path]::GetFileName($response.ResponseUri)
     $response.Close()
     # Set path of file to be downloaded
-    $outputFile = Join-Path $env:ALLUSERSPROFILE $filename
-    Write-host "[*] Allocating new file path: $outputFile"
+    $outputFilePath = Join-Path $outputDirectory $filename
+    Write-host "[*] Allocating new file path: $outputFilePath"
     # Check to see if file already exists
-    if (!(Test-Path $outputFile)) {
-        Write-Host "[*] Downloading script from $uri .."
-        $wc.DownloadFile($uri, $outputFile)
+    if (!(Test-Path $outputFilePath)) {
+        Write-Host "[*] Downloading dataset from $uri .."
+        $wc.DownloadFile($uri, $outputFilePath)
         write-host $Error[0]
     }
     # If for some reason, a file does not exists, STOP
-    if (!(Test-Path $outputFile)) {
-        throw "[*] $outputFile does not exist. File was not downloaded properly or it was deleted by system."
+    if (!(Test-Path $outputFilePath)) {
+        throw "[*] $outputFilePath does not exist. File was not downloaded properly or it was deleted by system."
     }
 
     # Decompress if it is zip file
-    if ($outputFile.ToLower().EndsWith(".zip"))
+    if ($outputFilePath.ToLower().EndsWith(".zip"))
     {
         # Unzip file
-        write-Host "[*] Decompressing $outputFile .."
-        $UnpackName = (Get-Item $outputFile).Basename
-        $eventsFolder = Join-Path $env:ALLUSERSPROFILE $UnpackName
+        write-Host "[*] Decompressing $outputFilePath .."
+        $UnpackName = (Get-Item $outputFilePath).Basename
+        $eventsFolder = Join-Path $outputDirectory $UnpackName
         Write-host "[*] Allocating new folder path: $eventsFolder"
         # Decompressing file
-        expand-archive -path $outputFile -DestinationPath $eventsFolder -Force
-        if (!(Test-Path $eventsFolder)) { Write-Error "$outputFile was not decompressed successfully" -ErrorAction Stop }
-        Write-host "[*] Removing $outputFile"
-        Remove-Item $outputFile
-        $outputFile = (Get-ChildItem -Path $eventsFolder | Sort-Object | Select-Object -First 1).FullName
+        expand-archive -path $outputFilePath -DestinationPath $eventsFolder -Force
+        if (!(Test-Path $eventsFolder)) { Write-Error "$outputFilePath was not decompressed successfully" -ErrorAction Stop }
+        Write-host "[*] Removing $outputFilePath"
+        Remove-Item $outputFilePath
+        $outputFilePath = (Get-ChildItem -Path $eventsFolder | Sort-Object | Select-Object -First 1).FullName
     }
     # Return file with full path
-    $outputFile
+    $outputFilePath
 }
 
 Write-Host "[*] Setting variables.."
+$SimulationDirectory = Join-Path $env:ALLUSERSPROFILE $shipping.SimulationId
 $EventLogUrl = $shipping.EventLogUrl
 $TableName = $shipping.TableName
 $windowsEventDCRImmutableId = [System.Environment]::GetEnvironmentVariable('WINDOWS_EVENT_DCR_IMMUTABLE_ID')
 $securityEventDCRImmutableId = [System.Environment]::GetEnvironmentVariable('SECURITY_EVENT_DCR_IMMUTABLE_ID')
 $dcrImmutableId = ''
 
+# Create Simulation directory if it does not exist
+If (!(Test-Path $SimulationDirectory)) {
+    Write-Host "[*] Creating directory for simulation: $SimulationDirectory"
+    New-Item $SimulationDirectory -ItemType Directory
+}
+
 Write-Host "[*] Downloading event log file.."
 # Extract Action name
-$fileLocation = Get-RemoteFile $EventLogUrl
+$fileLocation = Get-RemoteFile $EventLogUrl $SimulationDirectory
 Write-Host "[*] File downloaded: $fileLocation"
 
 # Get Access Token
@@ -184,6 +191,10 @@ foreach($eventLog in $jsonObjects){
         $total_size += $json_array_current_size
     }
 }
+Write-Host "[+] Removing simulation directory"
+Remove-Item -path $SimulationDirectory -recurse -force
+
+write-Host "*******************************************"
 Write-Host "[+] Finished processing dataset"
 Write-Host "[+] Number of events processed: $event_count"
 Write-Host "[+] Total data sent: $($total_size/1mb) MBs"

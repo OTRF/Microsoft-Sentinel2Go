@@ -1,5 +1,7 @@
 param($Context)
 
+$ErrorActionPreference = "Stop"
+
 $dataShippingRequest = $Context.Input | ConvertFrom-Json -ASHashTable
 
 # Set output variable to aggregate all outputs
@@ -14,8 +16,21 @@ $eventToTable = @{
     'Microsoft-Windows-Security-Auditing' = 'SecurityEvent'
 }
 
+# Generating simulation id
+$newGuid = (new-guid).guid
+
+# Defining durable activity name
+$destinationTable = @('AzureLogAnalytics')
+$destinationSet = $dataShippingRequest.destination
+if ($destinationSet -notin $destinationTable) {
+    Write-Error "[!] $destinationSet not allowed. Only 'AzureLogAnalytics' allowed."
+}
+else {
+    $durableActivityName = $destinationSet
+}
+
 $ParallelTasks = 
-    foreach ($dataSample in $dataShippingRequest.dataSamples) {
+    foreach ($dataSample in $dataShippingRequest.datasets) {
         # Set table name
         if ($eventToTable.ContainsKey($dataSample.eventSourceName)){
             $tableName = $eventToTable[$dataSample.eventSourceName]
@@ -28,12 +43,13 @@ $ParallelTasks =
         $executorInput = @{
             EventLogUrl = $dataSample.eventLogUrl
             TableName = $tableName
+            SimulationId = $newGuid
         } | ConvertTo-Json
 
         Write-Host ($executorInput | Out-String)
         
         # Invoke activity function
-        Invoke-DurableActivity -FunctionName "DataShipper" -Input $executorInput -NoWait
+        Invoke-DurableActivity -FunctionName $durableActivityName -Input $executorInput -NoWait
     }
 
 # Wait for outputs
