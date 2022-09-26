@@ -65,14 +65,9 @@
         },
         "location": {
             "type": "string",
-            "defaultValue": "westus2",
-            "allowedValues": [
-                "westus2",
-                "eastus2",
-                "eastus2euap"
-            ],
+            "defaultValue": "[resourceGroup().location]",
             "metadata": {
-                "description": "Specifies the location in which to create resources."
+                "description": "Location for all resources."
             }
         }
     },
