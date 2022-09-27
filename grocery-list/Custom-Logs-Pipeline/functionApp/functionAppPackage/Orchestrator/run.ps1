@@ -53,6 +53,6 @@ foreach ($dataSample in $dataShippingRequest.datasets) {
     Write-Host ($executorInput | Out-String)
     
     # Invoke activity function
-    $output['executions'][$dataSample.number] = Invoke-DurableActivity -FunctionName $durableActivityName -Input $executorInput | ConvertTo-Json -Depth 1
+    $output['executions']["$($dataSample.number)"] = Invoke-DurableActivity -FunctionName $durableActivityName -Input $executorInput | ConvertTo-Json -Depth 1
 }
 $output
