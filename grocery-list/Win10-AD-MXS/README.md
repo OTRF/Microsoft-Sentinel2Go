@@ -26,7 +26,11 @@
         * In Exchange 2013 or earlier, you could install the Client Access server role and the Mailbox server role on separate computers. In Exchange 2016 or later, the Client Access server role is automatically installed as part of the Mailbox server role, and the Client Access server role isn't available as a separate installation option.
     * Admin mailbox audit logging enabled
     * Admin audit logging enabled (Every cmdlet and every parameter in the organization and Log Level set to `Verbose`)
-    * Microsoft Exchange 2016 Versions: (`ExchangeServer2016-x64-cu12.iso` default option)
+    * Microsoft Exchange 2016 Versions ([Exchange Server build numbers and release dates](https://learn.microsoft.com/en-us/Exchange/new-features/build-numbers-and-release-dates)):
+        * `MXS2016-x64-CU23-KB5011155` -> `ExchangeServer2016-x64-CU23.ISO`
+        * `MXS2016-x64-CU22-KB5005333` -> `ExchangeServer2016-x64-CU22.ISO`
+        * `MXS2016-x64-CU21-KB5003611` -> `ExchangeServer2016-x64-CU21.ISO`
+        * `MXS2016-x64-CU20-KB4602569` -> `ExchangeServer2016-x64-CU20.ISO`
         * `MXS2016-x64-CU19-KB4588884` -> `ExchangeServer2016-x64-CU19.ISO`
         * `MXS2016-x64-CU18-KB4571788` -> `ExchangeServer2016-x64-cu18.iso`
         * `MXS2016-x64-CU17-KB4556414` -> `ExchangeServer2016-x64-cu17.iso`
@@ -34,7 +38,6 @@
         * `MXS2016-x64-CU15-KB4522150` -> `ExchangeServer2016-x64-CU15.ISO`
         * `MXS2016-x64-CU14-KB4514140` -> `ExchangeServer2016-x64-cu14.iso`
         * `MXS2016-x64-CU13-KB4488406` -> `ExchangeServer2016-x64-cu13.iso`
-        * `MXS2016-x64-CU12-KB4471392` -> `ExchangeServer2016-x64-cu12.iso`
     * W3C Format IIS Log Files Collection
 * Windows 10 Workstations (Max. 10)
     * [Data Collection Rule (DCR) association](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-rule-azure-monitor-agent#data-collection-rule-associations)

@@ -263,7 +263,9 @@
             "ASimWindowsSysmon"
         ],
         "winSecurityEventsDCRName": "WinSecurityEventsDCR",
-        "winOtherEventsDCRName": "WinOtherEventsDCR"
+        "winOtherEventsDCRName": "WinOtherEventsDCR",
+        "winIISEventsDCRName": "WinIISEventsDCR",
+        "winIISEventsDCEName": "WinIISEventsDCE"
     },
     "resources": [
         {
@@ -405,6 +407,62 @@
                         "destinations": [
                             "WindowsOtherEvents"
                         ]
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Insights/dataCollectionEndpoints",
+            "apiVersion": "2021-04-01",
+            "name": "[variables('winIISEventsDCEName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "networkAcls": {
+                "publicNetworkAccess": "Enabled"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Insights/dataCollectionRules",
+            "apiVersion": "2021-09-01-preview",
+            "name": "[variables('winIISEventsDCRName')]",
+            "dependsOn": [
+                "deployMSSentinel2Go"
+            ],
+            "location": "[parameters('location')]",
+            "properties": {
+                "dataCollectionEndpointId": "[resourceId('microsoft.insights/dataCollectionEndpoints', variables('winIISEventsDCEName'))]",
+                "dataSources": {
+                    "iisLogs": [
+                        {
+                            "streams": [
+                                "Microsoft-W3CIISLog"
+                            ],
+                            "logDirectories": [
+                                "C:\\inetpub\\logs\\LogFiles\\W3SVC1\\"
+                            ],
+                            "name": "myIisLogsDataSource"
+                        }
+                    ]
+                },
+                "destinations": {
+                    "logAnalytics": [
+                        {
+                            "name": "WindowsIISEvents",
+                            "workspaceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]",
+                            "workspaceResourceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
+                        }
+                    ]
+                },
+                "dataFlows": [
+                    {
+                        "streams": [
+                            "Microsoft-W3CIISLog"
+                        ],
+                        "destinations": [
+                            "WindowsIISEvents"
+                        ],
+                        "transformKql": "source"
                     }
                 ]
             }
@@ -554,6 +612,33 @@
             "apiVersion": "2020-10-01",
             "dependsOn": [
                 "[resourceId('microsoft.insights/dataCollectionRules', variables('winOtherEventsDCRName'))]",
+                "installAzureMonitorAgent"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-collection-rules/association.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWinADMXS').outputs.allWinVMsDeployed.value]"
+                    },
+                    "dataCollectionRuleId": {
+                        "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('winOtherEventsDCRName'))]"
+                    },
+                    "dataCollectionRuleName": {
+                        "value": "[variables('winOtherEventsDCRName')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "associateWinIISEventsDCR",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/dataCollectionRules', variables('winIISEventsDCRName'))]",
                 "installAzureMonitorAgent"
             ],
             "properties": {
