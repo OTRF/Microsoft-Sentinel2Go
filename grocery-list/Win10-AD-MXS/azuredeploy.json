@@ -626,13 +626,13 @@
                 },
                 "parameters": {
                     "virtualMachines": {
-                        "value": "[reference('deployWinADMXS').outputs.allWinVMsDeployed.value]"
+                        "value": "[reference('deployWinADMXS').outputs.mxServerDeployed.value]"
                     },
                     "dataCollectionRuleId": {
-                        "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('winOtherEventsDCRName'))]"
+                        "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('winIISEventsDCRName'))]"
                     },
                     "dataCollectionRuleName": {
-                        "value": "[variables('winOtherEventsDCRName')]"
+                        "value": "[variables('winIISEventsDCRName')]"
                     }
                 }
             }
