@@ -709,7 +709,7 @@
             "apiVersion": "2020-10-01",
             "dependsOn": [
                 "deployC2",
-                "deployWinADFS"
+                "deployWinADMXS"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -725,10 +725,10 @@
                         "value": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkId.value, 'Resource not deployed')]"
                     },
                     "targetVnet": {
-                        "value": "[reference('deployWinADFS').outputs.virtualNetworkName.value]"
+                        "value": "[reference('deployWinADMXS').outputs.virtualNetworkName.value]"
                     },
                     "targetVnetId": {
-                        "value": "[reference('deployWinADFS').outputs.virtualNetworkId.value]"
+                        "value": "[reference('deployWinADMXS').outputs.virtualNetworkId.value]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
