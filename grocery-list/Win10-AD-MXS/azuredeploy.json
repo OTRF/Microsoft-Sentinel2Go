@@ -166,8 +166,9 @@
         },
         "mxsRelease": {
             "type": "string",
-            "defaultValue": "MXS2016-x64-CU19-KB4588884",
+            "defaultValue": "MXS2016-x64-CU22-KB5005333",
             "allowedValues": [
+                "MXS2016-x64-CU23-KB5011155",
                 "MXS2016-x64-CU22-KB5005333",
                 "MXS2016-x64-CU21-KB5003611",
                 "MXS2016-x64-CU20-KB4602569",
@@ -439,7 +440,8 @@
                                 "Microsoft-W3CIISLog"
                             ],
                             "logDirectories": [
-                                "C:\\inetpub\\logs\\LogFiles\\W3SVC1\\"
+                                "C:\\inetpub\\logs\\LogFiles\\W3SVC1\\",
+                                "C:\\inetpub\\logs\\LogFiles\\W3SVC2\\"
                             ],
                             "name": "myIisLogsDataSource"
                         }
