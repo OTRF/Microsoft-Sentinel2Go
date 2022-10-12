@@ -1,4 +1,4 @@
-# Windows 10 + Windows Server (Active Directory) + Windows Server 2016 (MS Exchange)
+# Windows 10 + Windows Server (Active Directory) + Windows Server (MS Exchange 2016 or 2019)
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fgrocery-list%2FWin10-AD-MXS%2Fazuredeploy.json)
 [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOTRF%2FMicrosoft-Sentinel2Go%2Fmaster%2Fgrocery-list%2FWin10-AD-MXS%2Fazuredeploy.json)
@@ -26,6 +26,9 @@
         * In Exchange 2013 or earlier, you could install the Client Access server role and the Mailbox server role on separate computers. In Exchange 2016 or later, the Client Access server role is automatically installed as part of the Mailbox server role, and the Client Access server role isn't available as a separate installation option.
     * Admin mailbox audit logging enabled
     * Admin audit logging enabled (Every cmdlet and every parameter in the organization and Log Level set to `Verbose`)
+    * Microsoft Exchange 2019 Versions ([Exchange Server build numbers and release dates](https://learn.microsoft.com/en-us/Exchange/new-features/build-numbers-and-release-dates)):
+        * `MXS2019-x64-CU12-KB5011156` -> `ExchangeServer2019-x64-CU12.ISO`
+        * `MXS2019-x64-CU11-KB5005334` -> `ExchangeServer2019-x64-CU11.ISO`
     * Microsoft Exchange 2016 Versions ([Exchange Server build numbers and release dates](https://learn.microsoft.com/en-us/Exchange/new-features/build-numbers-and-release-dates)):
         * `MXS2016-x64-CU23-KB5011155` -> `ExchangeServer2016-x64-CU23.ISO`
         * `MXS2016-x64-CU22-KB5005333` -> `ExchangeServer2016-x64-CU22.ISO`

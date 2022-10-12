@@ -149,6 +149,21 @@
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
             }
         },
+        "windowsMXServerSKU": {
+            "type": "string",
+            "defaultValue": "2016-Datacenter",
+            "allowedValues": [
+                "2016-Datacenter",
+                "2019-Datacenter"
+            ],
+            "metadata": {
+                "description": "The Windows version for the MX Server VM. This will pick a fully patched image of this given Windows version unless specified in variable windowsMXServerVersion. https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage"
+            }
+        },
+        "windowsMXServerVersion": {
+            "type": "string",
+            "defaultValue": "latest"
+        },
         "vmSizeMX": {
             "type": "string",
             "defaultValue": "Standard_B8ms",
@@ -168,6 +183,8 @@
             "type": "string",
             "defaultValue": "MXS2016-x64-CU22-KB5005333",
             "allowedValues": [
+                "MXS2019-x64-CU12-KB5011156",
+                "MXS2019-x64-CU11-KB5005334",
                 "MXS2016-x64-CU23-KB5011155",
                 "MXS2016-x64-CU22-KB5005333",
                 "MXS2016-x64-CU21-KB5003611",
@@ -503,6 +520,12 @@
                     },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"
+                    },
+                    "windowsMXServerSKU": {
+                        "value": "[parameters('windowsMXServerSKU')]"
+                    },
+                    "windowsMXServerVersion": {
+                        "value": "[parameters('windowsMXServerVersion')]"
                     },
                     "vmSizeMX": {
                         "value": "[parameters('vmSizeMX')]"
