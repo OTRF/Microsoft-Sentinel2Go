@@ -98,7 +98,7 @@
         },
         "windowsDesktopSKU": {
             "type": "string",
-            "defaultValue": "20h1-pro",
+            "defaultValue": "21h1-pro",
             "allowedValues": [
                 "19h1-pro",
                 "19h2-pro",
@@ -106,7 +106,11 @@
                 "rs5-pro",
                 "20h1-pro",
                 "20h2-pro",
-                "21h1-pro"
+                "21h1-pro",
+                "win10-21h2-pro",
+                "win10-21h2-pro",
+                "win11-21h2-pro",
+                "win11-22h2-pro"
             ],
             "metadata": {
                 "description": "The Windows version for the Desktop VM. This will pick a fully patched image of this given Windows version."
