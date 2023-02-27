@@ -260,7 +260,7 @@
                                 "Security!*[System[(EventID=5154 or EventID=5159 or EventID=5155 or EventID=5158 or EventID=5156 or EventID=5157 or EventID=5031)]]",
                                 "Security!(*[System[EventID=4656]] and ((*[EventData[Data[@Name='ObjectType']='Process']]))) or (*[System[EventID=4663]] and ((*[EventData[Data[@Name='ObjectType']='Process']])))",
                                 "Security!*[System[(EventID=4689)]]",
-                                "Security!*[System[(EventID=4698)]]",
+                                "Security!*[System[(EventID &gt;=4698 and EventID &lt;=4702)]]",
                                 "Security!*[System[(EventID=4701 or EventID=4700 or EventID=4702)]]",
                                 "Security!*[System[(EventID=4697)]]",
                                 "Security!*[System[(EventID=4725 or EventID=4722 or EventID=4717 or EventID=4740 or EventID=4738 or EventID=4781 or EventID=4767 or EventID=4718)]]",
