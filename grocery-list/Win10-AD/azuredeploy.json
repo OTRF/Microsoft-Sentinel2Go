@@ -225,7 +225,8 @@
                 "Windows PowerShell!*",
                 "Microsoft-Windows-PowerShell/Operational!*",
                 "Microsoft-Windows-WMI-Activity/Operational!*",
-                "Microsoft-Windows-TaskScheduler/Operational!*"
+                "Microsoft-Windows-TaskScheduler/Operational!*",
+                "Microsoft-Windows-GroupPolicy/Operational!*"
             ]
         },
         "enableSysmon": {
