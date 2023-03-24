@@ -144,7 +144,6 @@
             "allowedValues": [
                 "None",
                 "empire",
-                "covenant",
                 "metasploit"
             ],
             "metadata": {

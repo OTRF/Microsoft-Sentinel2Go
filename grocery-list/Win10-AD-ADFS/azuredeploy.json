@@ -276,10 +276,7 @@
             "allowedValues": [
                 "None",
                 "empire",
-                "covenant",
-                "caldera",
-                "metasploit",
-                "shad0w"
+                "metasploit"
             ],
             "metadata": {
                 "description": "C2 framework to deploy"
