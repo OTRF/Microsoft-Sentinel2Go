@@ -107,7 +107,8 @@
             "type": "string",
             "defaultValue": "2019-Datacenter",
             "allowedValues": [
-                "2019-Datacenter"
+                "2019-Datacenter",
+                "2022-datacenter"
             ],
             "metadata": {
                 "description": "The Sku for the Server VM."
@@ -115,7 +116,7 @@
         },
         "windowsServerVersion": {
             "type": "string",
-            "defaultValue": "latest",
+            "defaultValue": "17763.3131.220505",
             "allowedValues": [
                 "17763.1282.2006061952",
                 "17763.1339.2007101755",
@@ -131,6 +132,37 @@
                 "17763.1879.2104091832",
                 "17763.1935.2105080716",
                 "17763.1999.2106060321",
+                "17763.3131.220505",
+                "17763.3132.220610",
+                "17763.3165.220706",
+                "17763.3287.220806",
+                "17763.3406.220909",
+                "17763.3532.221008",
+                "17763.3534.221015",
+                "17763.3650.221105",
+                "17763.3770.221211",
+                "17763.3887.230107",
+                "17763.4010.230207",
+                "2019.0.20181107",
+                "2019.0.20181122",
+                "2019.0.20181218",
+                "2019.0.20190115",
+                "2019.0.20190214",
+                "2019.0.20190314",
+                "2019.0.20190410",
+                "20348.1006.220908",
+                "20348.1129.221007",
+                "20348.1131.221014",
+                "20348.1249.221105",
+                "20348.1366.221207",
+                "20348.1487.230106",
+                "20348.1547.230207",
+                "20348.524.220201",
+                "20348.587.220303",
+                "20348.643.220403",
+                "20348.707.220505",
+                "20348.768.220609",
+                "20348.825.220704",
                 "latest"
             ],
             "metadata": {
@@ -176,19 +208,14 @@
                 "description": "The sourceAddressPrefixes allowed to connect to this deployment"
             }
         },
-        "enableAADConnect": {
-            "type": "bool",
+        "collectWinEventProviders": {
+            "type": "array",
             "metadata": {
-                "description": "Do you want to want download the AADConnect installer and get it ready to set up after the deployment?"
+                "description": "Do you want to configure your Log Analytics Workspace to collect Windows Event Logs from several pre-defined event providers?. Windows Security Auditing is not enabled through this option. It is enabled through the Data Connectors parameter."
             },
-            "defaultValue": false
-        },
-        "rpcFWConfigUrl": {
-            "type": "string",
-            "metadata": {
-                "description": "RPC Firewall config file. Referece: https://github.com/zeronetworks/rpcfirewall"
-            },
-            "defaultValue": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/resources/configs/rpcfirewall/RpcFw.conf"
+            "defaultValue": [
+                "RPCFW!*"
+            ]
         },
         "c2Framework": {
             "type": "string",
@@ -196,10 +223,7 @@
             "allowedValues": [
                 "None",
                 "empire",
-                "covenant",
-                "caldera",
-                "metasploit",
-                "shad0w"
+                "metasploit"
             ],
             "metadata": {
                 "description": "C2 framework to deploy"
@@ -217,7 +241,8 @@
         "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
         "installRPCFWScript": "[concat(variables('artifactsBlacksmith'), 'resources/scripts/powershell/endpoint-software/Install-RPCFW.ps1')]",
-        "dataCollectionRuleName": "WinForwardedEventsDCR"
+        "rpcFWConfigUrl": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/resources/configs/rpcfirewall/RpcFw.conf",
+        "dataCollectionRuleName": "WinEventsDCR"
     },
     "resources": [
         {
@@ -260,28 +285,24 @@
             ],
             "name": "[variables('dataCollectionRuleName')]",
             "location": "[parameters('location')]",
-            "tags": {
-                "createdBy": "Sentinel"
-            },
+            "kind": "Windows",
             "properties": {
                 "dataSources": {
                     "windowsEventLogs": [
                         {
-                            "name": "eventLogsDataSource",
+                            "name": "additionalWinDataSource",
                             "scheduledTransferPeriod": "PT5M",
                             "streams": [
                                 "Microsoft-WindowsEvent"
                             ],
-                            "xPathQueries": [
-                                "ForwardedEvents!*"
-                            ]
+                            "xPathQueries": "[parameters('collectWinEventProviders')]"
                         }
                     ]
                 },
                 "destinations": {
                     "logAnalytics": [
                         {
-                            "name": "WindowsEvents",
+                            "name": "WindowsOtherEvents",
                             "workspaceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]",
                             "workspaceResourceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
                         }
@@ -293,20 +314,20 @@
                             "Microsoft-WindowsEvent"
                         ],
                         "destinations": [
-                            "WindowsEvents"
+                            "WindowsOtherEvents"
                         ]
                     }
                 ]
             }
         },
         {
-            "name": "deployWinADWEC",
+            "name": "deployWinAD",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Win10-AD-WEC/azuredeploy.json')]",
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Win10-AD/azuredeploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -337,17 +358,14 @@
                     "domainFQDN": {
                         "value": "[parameters('domainFQDN')]"
                     },
+                    "identityType": {
+                        "value": "SystemAssigned"
+                    },
                     "remoteAccessMode": {
                         "value": "[parameters('remoteAccessMode')]"
                     },
                     "allowedIPAddresses": {
                         "value": "[parameters('allowedIPAddresses')]"
-                    },
-                    "enableAADConnect": {
-                        "value": "[parameters('enableAADConnect')]"
-                    },
-                    "wefSubscriptionsUrl": {
-                        "value": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/grocery-list/Win10-RPCFW/subscriptions.zip"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -361,7 +379,7 @@
             "apiVersion": "2020-10-01",
             "dependsOn": [
                 "deployMSSentinel2Go",
-                "deployWinADWEC"
+                "deployWinAD"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -371,7 +389,7 @@
                 },
                 "parameters": {
                     "virtualMachines": {
-                        "value": "[reference('deployWinADWEC').outputs.allMonitoredWinVMsDeployed.value]"
+                        "value": "[reference('deployWinAD').outputs.allWinVMsDeployed.value]"
                     },
                     "fileUris": {
                         "value": [
@@ -379,7 +397,7 @@
                         ]
                     },
                     "commandToExecute": {
-                        "value": "[concat('powershell -ExecutionPolicy Unrestricted -File ./Install-RPCFW.ps1 -RPCFWConfigUrl ', parameters('rpcFWConfigUrl'))]"
+                        "value": "[concat('powershell -ExecutionPolicy Unrestricted -File ./Install-RPCFW.ps1 -RPCFWConfigUrl ', variables('rpcFWConfigUrl'))]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -393,7 +411,7 @@
             "apiVersion": "2020-10-01",
             "dependsOn": [
                 "deployMSSentinel2Go",
-                "deployWinADWEC"
+                "deployWinAD"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -403,7 +421,7 @@
                 },
                 "parameters": {
                     "virtualMachines": {
-                        "value": "[reference('deployWinADWEC').outputs.wecVMDeployed.value]"
+                        "value": "[reference('deployWinAD').outputs.allWinVMsDeployed.value]"
                     },
                     "monitorAgent": {
                         "value": "Azure Monitor Agent"
@@ -412,7 +430,7 @@
             }
         },
         {
-            "name": "associateWindowsDCR",
+            "name": "associateWinEventsDCR",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "dependsOn": [
@@ -427,7 +445,7 @@
                 },
                 "parameters": {
                     "virtualMachines": {
-                        "value": "[reference('deployWinADWEC').outputs.wecVMDeployed.value]"
+                        "value": "[reference('deployWinAD').outputs.allWinVMsDeployed.value]"
                     },
                     "dataCollectionRuleId": {
                         "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('dataCollectionRuleName'))]"
@@ -487,7 +505,7 @@
             "apiVersion": "2020-10-01",
             "dependsOn": [
                 "deployC2",
-                "deployWinADWEC"
+                "deployWinAD"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -503,10 +521,10 @@
                         "value": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkId.value, 'Resource not deployed')]"
                     },
                     "targetVnet": {
-                        "value": "[reference('deployWinADWEC').outputs.virtualNetworkName.value]"
+                        "value": "[reference('deployWinAD').outputs.virtualNetworkName.value]"
                     },
                     "targetVnetId": {
-                        "value": "[reference('deployWinADWEC').outputs.virtualNetworkId.value]"
+                        "value": "[reference('deployWinAD').outputs.virtualNetworkId.value]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
