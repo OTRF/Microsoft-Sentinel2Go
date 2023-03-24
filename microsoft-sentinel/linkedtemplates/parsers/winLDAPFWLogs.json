@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "workspaceName": {
+        "type": "string"
+      },
+      "location": {
+        "type": "string"
+      }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "apiVersion": "2017-03-15-preview",
+            "name": "[parameters('workspaceName')]",
+            "location": "[parameters('location')]",
+            "resources": [
+                {
+                    "type": "savedSearches",
+                    "apiVersion": "2020-08-01",
+                    "name": "LDAPFWWMicrosoftWindowsEvent",
+                    "dependsOn": [
+                      "[concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+                    ],
+                    "properties": {
+                    "etag": "*",
+                    "displayName": "Windows LDAP Firewall Parser",
+                    "category": "Security",
+                    "FunctionAlias": "winLDAPFWLogs",
+                    "query": "// KQL LDAPFW parser
+// Contributors: Roberto Rodriguez @Cyb3rWard0g MSTIC
+// Modifed: 2023/03/24
+WindowsEvent
+| where Channel == 'LDAPFW'
+| where EventID == 263
+| extend ParsedEventData = parse_xml(EventData)
+| extend user_name = tostring(ParsedEventData.[\"01\"])
+| extend action = tostring(ParsedEventData.[\"02\"])
+| extend base_dn = tostring(ParsedEventData.[\"03\"])
+| extend ldap_filter = tostring(ParsedEventData.[\"04\"])
+| extend scope = tostring(ParsedEventData.[\"05\"])
+| extend attributes = tostring(ParsedEventData.[\"06\"])
+| extend client_network_address = tostring(ParsedEventData.[\"07\"])
+| extend client_port = tostring(ParsedEventData.[\"08\"])
+| project-away EventData, ParsedEventData",
+                    "version": 1
+                    }
+                }
+            ]
+        }
+    ]
+}

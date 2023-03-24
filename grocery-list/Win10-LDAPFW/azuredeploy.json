@@ -1,0 +1,536 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspaceName": {
+            "type": "string",
+            "defaultValue": "MSSen2Go",
+            "metadata": {
+                "description": "Name for the Log Analytics workspace used to aggregate data. If this is a new LA workspace, the template will add a unique string to the name you choose. If you are using an existing LA workspace, the name will not change and will be passed as is to the resources in the template."
+            }
+        },
+        "workspaceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own existing log analytics workspace ID. Leave it empty if you are deploying a new LA workspace."
+            }
+        },
+        "workspaceKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Your own existing log analytics workspace key. Leave it empty if you are deploying a new LA workspace."
+            }
+        },
+        "pricingTier": {
+            "type": "string",
+            "allowedValues": [
+                "PerGB2018",
+                "Free",
+                "Standalone",
+                "PerNode",
+                "Standard",
+                "Premium"
+            ],
+            "defaultValue": "PerGB2018",
+            "metadata": {
+                "description": "Pricing tier: pergb2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers."
+            }
+        },
+        "dataRetention": {
+            "type": "int",
+            "defaultValue": 30,
+            "minValue": 7,
+            "maxValue": 730,
+            "metadata": {
+                "description": "Number of days of retention. Workspaces in the legacy Free pricing tier can only have 7 days."
+            }
+        },
+        "immediatePurgeDataOn30Days": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
+            }
+        },
+        "adminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Admin username for all virtual machines."
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the all Virtual machines. The password must be at least 8 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter"
+            },
+            "minLength": 8
+        },
+        "numberOfWorkstations": {
+            "type": "int",
+            "defaultValue": 1,
+            "minValue": 1,
+            "maxValue": 10,
+            "metadata": {
+                "description": "Number of Windows 10 virtual machines to deploy"
+            }
+        },
+        "vmNamePrefix": {
+            "type": "string",
+            "defaultValue": "WORKSTATION",
+            "metadata": {
+                "description": "Prefix for the name of your virtual machine. Template will add a number starting from 5."
+            }
+        },
+        "windowsDesktopSKU": {
+            "type": "string",
+            "defaultValue": "21h1-pro",
+            "allowedValues": [
+                "19h1-pro",
+                "19h2-pro",
+                "rs4-pro",
+                "rs5-pro",
+                "20h1-pro",
+                "20h2-pro",
+                "21h1-pro",
+                "win10-21h2-pro",
+                "win10-21h2-pro",
+                "win11-21h2-pro",
+                "win11-22h2-pro"
+            ],
+            "metadata": {
+                "description": "The Sku for the Desktop VM."
+            }
+        },
+        "windowsServerSKU": {
+            "type": "string",
+            "defaultValue": "2019-Datacenter",
+            "allowedValues": [
+                "2019-Datacenter",
+                "2022-datacenter"
+            ],
+            "metadata": {
+                "description": "The Sku for the Server VM."
+            }
+        },
+        "windowsServerVersion": {
+            "type": "string",
+            "defaultValue": "17763.3131.220505",
+            "allowedValues": [
+                "17763.1282.2006061952",
+                "17763.1339.2007101755",
+                "17763.1397.2008070242",
+                "17763.1457.2009030514",
+                "17763.1518.2010132039",
+                "17763.1577.2011031610",
+                "17763.1579.2011180054",
+                "17763.1637.2012040632",
+                "17763.1697.2101090203",
+                "17763.1757.2102060435",
+                "17763.1817.2103030313",
+                "17763.1879.2104091832",
+                "17763.1935.2105080716",
+                "17763.1999.2106060321",
+                "17763.3131.220505",
+                "17763.3132.220610",
+                "17763.3165.220706",
+                "17763.3287.220806",
+                "17763.3406.220909",
+                "17763.3532.221008",
+                "17763.3534.221015",
+                "17763.3650.221105",
+                "17763.3770.221211",
+                "17763.3887.230107",
+                "17763.4010.230207",
+                "2019.0.20181107",
+                "2019.0.20181122",
+                "2019.0.20181218",
+                "2019.0.20190115",
+                "2019.0.20190214",
+                "2019.0.20190314",
+                "2019.0.20190410",
+                "20348.1006.220908",
+                "20348.1129.221007",
+                "20348.1131.221014",
+                "20348.1249.221105",
+                "20348.1366.221207",
+                "20348.1487.230106",
+                "20348.1547.230207",
+                "20348.524.220201",
+                "20348.587.220303",
+                "20348.643.220403",
+                "20348.707.220505",
+                "20348.768.220609",
+                "20348.825.220704",
+                "latest"
+            ],
+            "metadata": {
+                "description": "The specific version for the Server VM."
+            }
+        },
+        "vmSize": {
+            "type": "string",
+            "defaultValue": "Standard_B2s",
+            "allowedValues": [
+                "Standard_A2",
+                "Standard_A3",
+                "Standard_B2s",
+                "Standard_B2ms",
+                "Standard_A2_v2",
+                "Standard_A4_v2"
+            ],
+            "metadata": {
+                "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
+            }
+        },
+        "domainFQDN": {
+            "type": "string",
+            "metadata": {
+                "description": "The FQDN of the Active Directory Domain to be created"
+            },
+            "defaultValue": "mssentinel.local"
+        },
+        "remoteAccessMode": {
+            "type": "string",
+            "defaultValue": "AllowPublicIP",
+            "allowedValues": [
+                "AllowPublicIP",
+                "AzureBastionHost"
+            ],
+            "metadata": {
+                "description": "Do you want to restrict access to your environment by a Public IP or set up an Azure Bastion Host. If the former, make sure you add your public IP address to the variable 'allowedIPAddresses'"
+            }
+        },
+        "allowedIPAddresses": {
+            "type": "string",
+            "metadata": {
+                "description": "The sourceAddressPrefixes allowed to connect to this deployment"
+            }
+        },
+        "collectWinEventProviders": {
+            "type": "array",
+            "metadata": {
+                "description": "Do you want to configure your Log Analytics Workspace to collect Windows Event Logs from several pre-defined event providers?. Windows Security Auditing is not enabled through this option. It is enabled through the Data Connectors parameter."
+            },
+            "defaultValue": [
+                "LDAPFW!*"
+            ]
+        },
+        "c2Framework": {
+            "type": "string",
+            "defaultValue": "None",
+            "allowedValues": [
+                "None",
+                "empire",
+                "metasploit"
+            ],
+            "metadata": {
+                "description": "C2 framework to deploy"
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        }
+    },
+    "variables": {
+        "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
+        "artifactsMicrosoftSentinel2Go": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/",
+        "installLDAPFWScript": "[concat(variables('artifactsBlacksmith'), 'resources/scripts/powershell/endpoint-software/Install-LDAPFW.ps1')]",
+        "dataCollectionRuleName": "WinEventsDCR"
+    },
+    "resources": [
+        {
+            "condition": "[and(empty(parameters('workspaceId')),empty(parameters('workspaceKey')))]",
+            "name": "deployMSSentinel2Go",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'),'microsoft-sentinel/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "pricingTier": {
+                        "value": "[parameters('pricingTier')]"
+                    },
+                    "dataRetention": {
+                        "value": "[parameters('dataRetention')]"
+                    },
+                    "immediatePurgeDataOn30Days": {
+                        "value": "[parameters('immediatePurgeDataOn30Days')]"
+                    },
+                    "enableLAFunctions": {
+                        "value": [
+                            "WinLDAPFWLogs"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "type": "microsoft.insights/dataCollectionRules",
+            "apiVersion": "2021-04-01",
+            "dependsOn": [
+                "deployMSSentinel2Go"
+            ],
+            "name": "[variables('dataCollectionRuleName')]",
+            "location": "[parameters('location')]",
+            "kind": "Windows",
+            "properties": {
+                "dataSources": {
+                    "windowsEventLogs": [
+                        {
+                            "name": "additionalWinDataSource",
+                            "scheduledTransferPeriod": "PT5M",
+                            "streams": [
+                                "Microsoft-WindowsEvent"
+                            ],
+                            "xPathQueries": "[parameters('collectWinEventProviders')]"
+                        }
+                    ]
+                },
+                "destinations": {
+                    "logAnalytics": [
+                        {
+                            "name": "WindowsOtherEvents",
+                            "workspaceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceIdOutput.value, parameters('workspaceId'))]",
+                            "workspaceResourceId": "[if(empty(parameters('workspaceId')), reference('deployMSSentinel2Go').outputs.workspaceResourceIdOutput.value, parameters('workspaceId'))]"
+                        }
+                    ]
+                },
+                "dataFlows": [
+                    {
+                        "streams": [
+                            "Microsoft-WindowsEvent"
+                        ],
+                        "destinations": [
+                            "WindowsOtherEvents"
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "name": "deployWinAD",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Win10-AD/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "numberOfWorkstations": {
+                        "value": "[parameters('numberOfWorkstations')]"
+                    },
+                    "vmNamePrefix": {
+                        "value": "[parameters('vmNamePrefix')]"
+                    },
+                    "windowsDesktopSKU": {
+                        "value": "[parameters('windowsDesktopSKU')]"
+                    },
+                    "windowsServerSKU": {
+                        "value": "[parameters('windowsServerSKU')]"
+                    },
+                    "vmSize": {
+                        "value": "[parameters('vmSize')]"
+                    },
+                    "windowsServerVersion": {
+                        "value": "[parameters('windowsServerVersion')]"
+                    },
+                    "domainFQDN": {
+                        "value": "[parameters('domainFQDN')]"
+                    },
+                    "identityType": {
+                        "value": "SystemAssigned"
+                    },
+                    "remoteAccessMode": {
+                        "value": "[parameters('remoteAccessMode')]"
+                    },
+                    "allowedIPAddresses": {
+                        "value": "[parameters('allowedIPAddresses')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "installLDAPFW",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployMSSentinel2Go",
+                "deployWinAD"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'grocery-list/Win10-LDAPFW/linkedtemplates/customScriptExtension.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWinAD').outputs.dcVMDeployed.value]"
+                    },
+                    "fileUris": {
+                        "value": [
+                            "[variables('installLDAPFWScript')]"
+                        ]
+                    },
+                    "commandToExecute": {
+                        "value": "'powershell -ExecutionPolicy Unrestricted -File ./Install-LDAPFW.ps1"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "installAzureMonitorAgent",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployMSSentinel2Go",
+                "deployWinAD"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Azure-Monitor-Agents/windows.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWinAD').outputs.dcVMDeployed.value]"
+                    },
+                    "monitorAgent": {
+                        "value": "Azure Monitor Agent"
+                    }
+                }
+            }
+        },
+        {
+            "name": "associateWinEventsDCR",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/dataCollectionRules', variables('dataCollectionRuleName'))]",
+                "installAzureMonitorAgent"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsMicrosoftSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-collection-rules/association.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines": {
+                        "value": "[reference('deployWinAD').outputs.dcVMDeployed.value]"
+                    },
+                    "dataCollectionRuleId": {
+                        "value": "[resourceId('microsoft.insights/dataCollectionRules', variables('dataCollectionRuleName'))]"
+                    },
+                    "dataCollectionRuleName": {
+                        "value": "[variables('dataCollectionRuleName')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
+            "name": "deployC2",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Linux-C2/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "authenticationType": {
+                        "value": "password"
+                    },
+                    "adminPasswordOrKey": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "vmSize": {
+                        "value": "[parameters('vmSize')]"
+                    },
+                    "remoteAccessMode": {
+                        "value": "[parameters('remoteAccessMode')]"
+                    },
+                    "allowedIPAddresses": {
+                        "value": "[parameters('allowedIPAddresses')]"
+                    },
+                    "newOrExistingBastion": {
+                        "value": "existing"
+                    },
+                    "c2Framework": {
+                        "value": "[parameters('c2Framework')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[not(equals(parameters('c2Framework'), 'None'))]",
+            "name": "deployVnetPeering",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "deployC2",
+                "deployWinAD"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsBlacksmith'), 'templates/azure/Virtual-Network-Peerings/azuredeploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "sourceVnet": {
+                        "value": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkName.value, 'Resource not deployed')]"
+                    },
+                    "sourceVnetId": {
+                        "value": "[if(not(equals(parameters('c2Framework'), 'None')), reference('deployC2').outputs.virtualNetworkId.value, 'Resource not deployed')]"
+                    },
+                    "targetVnet": {
+                        "value": "[reference('deployWinAD').outputs.virtualNetworkName.value]"
+                    },
+                    "targetVnetId": {
+                        "value": "[reference('deployWinAD').outputs.virtualNetworkId.value]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

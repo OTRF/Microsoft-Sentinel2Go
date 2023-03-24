@@ -27,7 +27,8 @@
         "asimWindowsEventsParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20WindowsEvent/ARM/MicrosoftWindowsEventFullDeployment.json",
         "asimWindowsSysmonParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Windows/SysmonFullDeployment.json",
         "asimLinuxSysmonParserPackTemplate": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Parsers/ASim%20Sysmon%20for%20Linux/SysmonForLinuxFullDeployment.json",
-        "winRPCFWLogsParserPackTemplate": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/microsoft-sentinel/linkedtemplates/parsers/winRPCFWLogs.json"
+        "winRPCFWLogsParserPackTemplate": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/microsoft-sentinel/linkedtemplates/parsers/winRPCFWLogs.json",
+        "winLDAPFWLogsParserPackTemplate": "https://raw.githubusercontent.com/OTRF/Microsoft-Sentinel2Go/master/microsoft-sentinel/linkedtemplates/parsers/winLDAPFWLogs.json"
     },
     "resources": [
         {
@@ -102,6 +103,27 @@
                 "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('winRPCFWLogsParserPackTemplate')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[contains(parameters('enableLAFunctions'),'WinLDAPFWLogs')]",
+            "name": "deployWinLDAPFWLogsParserPack",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('winLDAPFWLogsParserPackTemplate')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
