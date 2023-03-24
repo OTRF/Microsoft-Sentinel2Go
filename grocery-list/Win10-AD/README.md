@@ -9,7 +9,8 @@
     * Would you like to Bring-Your-Own Microsoft Sentinel?.
     * If so, set the `workspaceId` and `workspaceKey` parameters of your own workspace.
     * [Windows Security Events via AMA](https://docs.microsoft.com/en-us/azure/sentinel/data-connectors-reference#windows-security-events-via-ama) data connector enabled.
-    * [Data collection rule (DCR)](https://docs.microsoft.com/en-us/azure/templates/microsoft.insights/datacollectionrules?tabs=json) to collect Windows Security events.
+    * [Windows Forwarded Events](https://learn.microsoft.com/en-us/azure/sentinel/data-connectors/windows-forwarded-events) data connector enabled.
+    * [Data collection rules (DCR)](https://docs.microsoft.com/en-us/azure/templates/microsoft.insights/datacollectionrules?tabs=json) to collect Windows Security events.
 * Windows event channels enabled
     * `System`
     * `Microsoft-Windows-Sysmon/Operational`
