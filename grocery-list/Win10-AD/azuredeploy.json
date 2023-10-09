@@ -85,7 +85,7 @@
         },
         "windowsDesktopSKU": {
             "type": "string",
-            "defaultValue": "21h1-pro",
+            "defaultValue": "win10-22h2-pro",
             "allowedValues": [
                 "19h1-pro",
                 "19h2-pro",
@@ -95,7 +95,7 @@
                 "20h2-pro",
                 "21h1-pro",
                 "win10-21h2-pro",
-                "win10-21h2-pro",
+                "win10-22h2-pro",
                 "win11-21h2-pro",
                 "win11-22h2-pro"
             ],
@@ -105,7 +105,7 @@
         },
         "windowsServerSKU": {
             "type": "string",
-            "defaultValue": "2019-Datacenter",
+            "defaultValue": "2022-datacenter",
             "allowedValues": [
                 "2019-Datacenter",
                 "2022-datacenter"
@@ -116,7 +116,7 @@
         },
         "windowsServerVersion": {
             "type": "string",
-            "defaultValue": "17763.3131.220505",
+            "defaultValue": "latest",
             "allowedValues": [
                 "17763.1282.2006061952",
                 "17763.1339.2007101755",
@@ -171,14 +171,17 @@
         },
         "vmSize": {
             "type": "string",
-            "defaultValue": "Standard_B2s",
+            "defaultValue": "Standard_B4ms",
             "allowedValues": [
                 "Standard_A2",
                 "Standard_A3",
                 "Standard_B2s",
                 "Standard_B2ms",
+                "Standard_B4ms",
+                "Standard_B8ms",
                 "Standard_A2_v2",
-                "Standard_A4_v2"
+                "Standard_A4_v2",
+                "Standard_A8_v2"
             ],
             "metadata": {
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
