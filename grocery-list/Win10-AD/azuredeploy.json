@@ -194,6 +194,13 @@
             },
             "defaultValue": "mssentinel.local"
         },
+        "domainNetbiosName": {
+            "type": "string",
+            "metadata": {
+                "description": "NetBIOS name for the new AD domain"
+            },
+            "defaultValue": ""
+        },
         "remoteAccessMode": {
             "type": "string",
             "defaultValue": "AllowPublicIP",
@@ -457,6 +464,9 @@
                     },
                     "domainFQDN": {
                         "value": "[parameters('domainFQDN')]"
+                    },
+                    "domainNetbiosName": {
+                        "value": "[parameters('domainNetbiosName')]"
                     },
                     "identityType": {
                         "value": "SystemAssigned"
