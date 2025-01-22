@@ -95,9 +95,11 @@
                 "20h2-pro",
                 "21h1-pro",
                 "win10-21h2-pro",
-                "win10-21h2-pro",
+                "win10-22h2-pro",
                 "win11-21h2-pro",
-                "win11-22h2-pro"
+                "win11-22h2-pro",
+                "win11-23h2-pro",
+                "win11-24h2-pro"
             ],
             "metadata": {
                 "description": "The Windows version for the Desktop VM. This will pick a fully patched image of this given Windows version."
@@ -111,8 +113,11 @@
                 "Standard_A3",
                 "Standard_B2s",
                 "Standard_B2ms",
+                "Standard_B4ms",
+                "Standard_B8ms",
                 "Standard_A2_v2",
-                "Standard_A4_v2"
+                "Standard_A4_v2",
+                "Standard_A8_v2"
             ],
             "metadata": {
                 "description": "Size of the virtual machine. Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general"
